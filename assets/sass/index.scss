@@ -1,0 +1,19 @@
+.status-message {
+	border: 1px solid #c00;
+	background: #fac7c7;
+	padding: 10px;
+}
+
+.outerwrapper {
+	width: 100%;
+	min-height: 900px;
+	position: relative;
+	border: 1px solid #c8c7cf;
+
+	h2,h3,p {
+		padding: 10px 10px 0 10px;
+		margin: 0;
+	}
+
+} // outerwrapper
+

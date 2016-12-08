@@ -1,0 +1,9 @@
+{
+  "name": "nature-gene-popularity",
+  "version": "0.0.1",
+  "author": "chris-ryan",
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
