@@ -3432,7 +3432,6 @@ var formatTypes = {
   }
 };
 
-// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5331,7 +5330,6 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6412,7 +6410,6 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -6813,14 +6810,6 @@ function completeAssign(target) {
 	return target;
 }
 
-// Don't use Object.assign because the event property is a getter ie:
-// `get event () { return event; },`
-// Object.assign will compute the return value now (before any event is fired)
-// so d3.event will always be null  ie.
-// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
-
-// instead use completeAssign:
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom);
 
 var collisionDetection = function collisionDetection(elem, index, array) {
