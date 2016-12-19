@@ -10,9 +10,29 @@
 	position: relative;
 	border: 1px solid #c8c7cf;
 
-	h2,h3,p {
+	h1,h2,h3,p {
 		padding: 10px 10px 0 10px;
 		margin: 0;
+		hyphens: auto;
+	}
+
+
+	// SVG
+	svg {
+		font: 10px sans-serif;
+	}
+
+	.axis {
+		shape-rendering: crispEdges;
+	}
+
+	svg text {
+		pointer-events: none;
+		transition: opacity 200ms linear;
+	}
+
+	svg text.hide-svg-text {
+		opacity: 0;
 	}
 
 } // outerwrapper
