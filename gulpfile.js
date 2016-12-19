@@ -38,7 +38,7 @@ gulp.task("concat:build", function () {
 gulp.task("concat:dist", function () {
 	return gulp.src([	
 						'./assets/concat/style-open.txt',
-						'./build/css/index.css',
+						'./dist/css/index.css',
 						'./assets/concat/style-close.txt',
 						'./assets/widget.html',
 						'./assets/concat/script-open.txt',
@@ -49,12 +49,18 @@ gulp.task("concat:dist", function () {
 		.pipe(gulp.dest("./dist/"));
 });
 
-gulp.task("sass", function () {
+gulp.task("sass:build", function () {
 	return gulp.src("./assets/sass/*.scss")
 		.pipe(sass({outputStyle: 'expanded'}).on("error", sass.logError))
 		.pipe(postcss([ autoprefixer({ browsers: ['> 1%'] }) ]))
-		.pipe(gulp.dest("./assets/css/"))
 		.pipe(gulp.dest("./build/css/"));
+});
+
+gulp.task("sass:dist", function () {
+	return gulp.src("./assets/sass/*.scss")
+		.pipe(sass({outputStyle: 'compressed'}).on("error", sass.logError))
+		.pipe(postcss([ autoprefixer({ browsers: ['> 1%'] }) ]))
+		.pipe(gulp.dest("./dist/css/"));
 });
 
 gulp.task("jshint", function () {
@@ -87,12 +93,12 @@ gulp.task("watch", () => gulp.watch([
 			"./assets/js/*.js",
 			"./assets/js/*/*.js",
 			"./assets/sass/*.scss"], 
-		() => gulprun(["jshint", "rollup:build", "sass", "concat:build"])
+		() => gulprun(["jshint", "rollup:build", "sass:build", "concat:build"])
 	)
 );
 
 gulp.task("dist", function () {
-	gulprun("jshint", "rollup:build", "uglify", "sass", "concat:dist");
+	gulprun("jshint", "rollup:build", "uglify", "sass:dist", "concat:dist");
 });
 
 gulp.task("default", ["rollup:build", "concat:build", "serve", "watch",]);
