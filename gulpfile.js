@@ -15,14 +15,6 @@ var gulprun = require("run-sequence");
 var uglify = require('gulp-uglify');
 var pump = require('pump');
 
-const OPTIONS = {
-	browserSync: {
-		server: {
-			baseDir: "./build/"
-		}
-	}
-};
-
 gulp.task("concat:build", function () {
 	return gulp.src([	
 						'./assets/concat/polopoly-header.html',
@@ -85,7 +77,7 @@ gulp.task("uglify", function (cb) {
 	);
 });
 
-gulp.task("serve", (callback) => browserSync.init(OPTIONS.browserSync));
+gulp.task("serve", (callback) => browserSync.init({server: { baseDir: "./build/" }}));
 gulp.task("refresh", () => browserSync.reload());
 
 gulp.task("watch", () => gulp.watch([
