@@ -2775,29 +2775,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
 
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
 
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
+
 
 
 
@@ -2830,21 +2810,6 @@ var get$2 = function get$2(object, property, receiver) {
   }
 };
 
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
 
 
 
@@ -2856,13 +2821,8 @@ var inherits = function (subClass, superClass) {
 
 
 
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
 
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
+
 
 
 
@@ -3432,7 +3392,6 @@ var formatTypes = {
   }
 };
 
-// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5331,7 +5290,6 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6412,7 +6370,6 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -6813,40 +6770,38 @@ function completeAssign(target) {
 	return target;
 }
 
-// Don't use Object.assign because the event property is a getter ie:
-// `get event () { return event; },`
-// Object.assign will compute the return value now (before any event is fired)
-// so d3.event will always be null  ie.
-// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
-
-// instead use completeAssign:
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom);
 
-var collisionDetection = function collisionDetection(elem, index, array) {
-	// Check all subsequent elements
-	// until they are out of reach of this element
-	// if they are in reach - set visibility to hidden
-	// Only bother checking if this element is visible
-	// This should probably be throttled...
+function Goomba(data) {
+		this.width = data.width ? data.width : 550;
+		this.height = data.height ? data.height : 400;
+		this.margin = data.margin ? data.margin : { 'top': 30, 'left': 30, 'bottom': 30, 'right': 40 };
+		this.data = data.data;
+		this.target = data.target ? data.target : "body";
+}
 
-	var thisBox = elem.getBBox();
-	var rightEdge = thisBox.x + thisBox.width;
+function buildChart() {
+	this.svg = d3.select(this.target).append("svg").attr('width', this.width).attr('height', this.height).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
-	if (!elem.hasAttribute("class")) {
-		for (var n = index + 1; n < array.length; n++) {
+	var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width - this.margin.left - this.margin.right).attr("height", this.height - this.margin.top - this.margin.bottom);
 
-			var nextBox = array[n].getBBox();
-			var leftEdge = nextBox.x;
+	// Rect just just for registering the zoom event
+	this.pane = this.svg.insert("rect", "g").attr("class", "pane").attr("width", this.width).attr("height", this.height).attr("opacity", 0).attr('pointer-events', 'all');
 
-			if (leftEdge < rightEdge) {
-				array[n].setAttribute("class", "hide-svg-text");
-			} else {
-				break;
-			}
-		}
-	}
-};
+	// Group to hold all the rects
+	this.gMain = this.svg.append('g').attr("class", "g-main").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	// Group to hold all the rects
+	this.gMainText = this.svg.append('g').attr("class", "g-main-text").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	// Group to hold the x axis 
+	this.gXAxis = this.svg.append('g').attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height - this.margin.top) + ")");
+
+	// Group to hold the y axis
+	this.gYAxis = this.svg.append('g').attr("class", "y axis").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	return this;
+}
 
 var chromosomesInOrder = function chromosomesInOrder(data) {
 	// Get the names of the chromosomes
@@ -6886,287 +6841,216 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 	return inOrder;
 };
 
-var GoombaConstructor = function () {
-	function GoombaConstructor(data) {
-		classCallCheck(this, GoombaConstructor);
+function buildScales() {
+	this.dataByChromosome = chromosomesInOrder(this.data);
+	var inOrder = this.dataByChromosome.map(function (d) {
+		return d.name;
+	});
+	var xScaleDomain = [0, d3.max(this.data.map(function (d) {
+		return +d.end;
+	}))];
+	var colorDomain = d3.extent(this.data.map(function (d) {
+		return +Math.log(d.count);
+	}));
 
-		this.width = data.width ? data.width : 550;
-		this.height = data.height ? data.height : 400;
-		this.margin = data.margin ? data.margin : { 'top': 30, 'left': 30, 'bottom': 30, 'right': 40 };
-		this.data = data.data;
-		this.target = data.target ? data.target : "body";
-	}
+	this.yScale = d3.scaleBand().domain(inOrder).range([0, this.height - this.margin.top - this.margin.bottom]).round(true).paddingInner(0.6).paddingOuter(0.3);
 
-	createClass(GoombaConstructor, [{
-		key: 'buildChart',
-		value: function buildChart() {
-			this.svg = d3.select(this.target).append("svg").attr('width', this.width).attr('height', this.height).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
+	this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width - this.margin.left - this.margin.right]);
 
-			var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width - this.margin.left - this.margin.right).attr("height", this.height - this.margin.top - this.margin.bottom);
+	this.xt = this.xScale;
 
-			// Rect just just for registering the zoom event
-			this.pane = this.svg.insert("rect", "g").attr("class", "pane").attr("width", this.width).attr("height", this.height).attr("opacity", 0).attr('pointer-events', 'all');
+	// Use a log scale to account for the wide range of numbers
+	this.colorScale = d3.scaleLinear().domain(colorDomain).range(['#FFFF00', '#FF0000']);
 
-			// Group to hold all the rects
-			this.gMain = this.svg.append('g').attr("class", "g-main").attr("clip-path", "url(#clip)").attr('transform', 'translate(' + this.margin.left + ', ' + this.margin.top + ')');
+	return this;
+}
 
-			// Group to hold all the rects
-			this.gMainText = this.svg.append('g').attr("class", "g-main-text").attr("clip-path", "url(#clip)").attr('transform', 'translate(' + this.margin.left + ', ' + this.margin.top + ')');
+function buildAxis() {
 
-			// Group to hold the x axis 
-			this.gXAxis = this.svg.append('g').attr("class", "x axis").attr("transform", 'translate(' + this.margin.left + ', ' + (this.height - this.margin.top) + ')');
+	this.xAxis = d3.axisBottom(this.xScale).tickArguments([4]);
+	this.gXAxis.call(this.xAxis);
 
-			// Group to hold the y axis
-			this.gYAxis = this.svg.append('g').attr("class", "y axis").attr("transform", 'translate(' + this.margin.left + ', ' + this.margin.top + ')');
+	this.yAxis = d3.axisLeft(this.yScale);
+	this.gYAxis.call(this.yAxis);
 
-			return this;
-		}
-	}]);
-	return GoombaConstructor;
-}();
+	return this;
+}
 
-var GoombaScales = function (_GoombaConstructor) {
-	inherits(GoombaScales, _GoombaConstructor);
+function updateAxis() {
+	this.xAxis.scale(this.xt);
+	this.gXAxis.call(this.xAxis);
 
-	function GoombaScales() {
-		classCallCheck(this, GoombaScales);
-		return possibleConstructorReturn(this, (GoombaScales.__proto__ || Object.getPrototypeOf(GoombaScales)).apply(this, arguments));
-	}
+	return this;
+}
 
-	createClass(GoombaScales, [{
-		key: "buildScales",
-		value: function buildScales() {
-			this.dataByChromosome = chromosomesInOrder(this.data);
-			var inOrder = this.dataByChromosome.map(function (d) {
-				return d.name;
-			});
-			var xScaleDomain = [0, d3.max(this.data.map(function (d) {
-				return +d.end;
-			}))];
-			var colorDomain = d3.extent(this.data.map(function (d) {
-				return +Math.log(d.count);
-			}));
+function buildGraphic() {
+	var _this = this;
 
-			this.yScale = d3.scaleBand().domain(inOrder).range([0, this.height - this.margin.top - this.margin.bottom]).round(true).paddingInner(0.6).paddingOuter(0.3);
+	var that = this;
 
-			this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width - this.margin.left - this.margin.right]);
+	this.gChromosome = this.gMain.selectAll("g").data(this.dataByChromosome, function (d) {
+		return d.name;
+	}).enter().append("g").attr("class", "g-chromosome").attr('transform', function (d) {
+		var y = _this.yScale(d.name);
+		return "translate(0, " + y + ")";
+	});
 
-			this.xt = this.xScale;
+	this.gChromosome.each(function (data) {
+		d3.select(this).selectAll("rect").data(data.genes, function (d) {
+			return d.geneid;
+		}).enter().append("rect").attr("x", function (d) {
+			return that.xScale(d.start);
+		}).attr("y", 0).attr("width", function (d) {
+			return that.xScale(d.end) - that.xScale(d.start);
+		}).attr("height", that.yScale.bandwidth()).attr("stroke", function (d) {
+			return that.colorScale(Math.log(+d.count));
+		}).attr("fill", function (d) {
+			return that.colorScale(Math.log(+d.count));
+		});
+	});
 
-			// Use a log scale to account for the wide range of numbers
-			this.colorScale = d3.scaleLinear().domain(colorDomain).range(['#FFFF00', '#FF0000']);
+	return this;
+}
 
-			return this;
-		}
-	}]);
-	return GoombaScales;
-}(GoombaConstructor);
+function updateGraphic() {
 
-var GoombaAxis = function (_GoombaScales) {
-	inherits(GoombaAxis, _GoombaScales);
+	var that = this;
 
-	function GoombaAxis() {
-		classCallCheck(this, GoombaAxis);
-		return possibleConstructorReturn(this, (GoombaAxis.__proto__ || Object.getPrototypeOf(GoombaAxis)).apply(this, arguments));
-	}
+	this.gChromosome.each(function (data) {
+		d3.select(this).selectAll("rect").attr('x', function (d) {
+			return that.xt(d.start);
+		}).attr('width', function (d) {
+			return that.xt(d.end) - that.xt(d.start);
+		});
+	});
 
-	createClass(GoombaAxis, [{
-		key: "buildAxis",
-		value: function buildAxis() {
+	return this;
+}
 
-			this.xAxis = d3.axisBottom(this.xScale).tickArguments([4]);
-			this.gXAxis.call(this.xAxis);
+function buildText() {
+	var _this = this;
 
-			this.yAxis = d3.axisLeft(this.yScale);
-			this.gYAxis.call(this.yAxis);
+	var that = this;
 
-			return this;
-		}
-	}, {
-		key: "updateAxis",
-		value: function updateAxis() {
-			this.xAxis.scale(this.xt);
-			this.gXAxis.call(this.xAxis);
+	this.gText = this.gMainText.selectAll("g").data(this.dataByChromosome, function (d) {
+		return d.name;
+	}).enter().append("g").attr("class", "g-text").attr('transform', function (d) {
+		var y = _this.yScale(d.name);
+		return "translate(0, " + y + ")";
+	});
 
-			return this;
-		}
-	}]);
-	return GoombaAxis;
-}(GoombaScales);
+	this.gText.each(function (data, i) {
 
-var GoombaGraphic = function (_GoombaAxis) {
-	inherits(GoombaGraphic, _GoombaAxis);
+		d3.select(this).selectAll('text').data(data.genes, function (d) {
+			return d.geneid;
+		}).enter().append("text").attr("opacity", 0).attr("x", function (d) {
+			var start = that.xScale(d.start);
+			var width = that.xScale(d.end) - that.xScale(d.start);
 
-	function GoombaGraphic() {
-		classCallCheck(this, GoombaGraphic);
-		return possibleConstructorReturn(this, (GoombaGraphic.__proto__ || Object.getPrototypeOf(GoombaGraphic)).apply(this, arguments));
-	}
+			return start + width / 2;
+		}).attr("y", -5).attr("text-anchor", "middle").text(function (d) {
+			return d.symbol;
+		}).transition(500).attr("opacity", 1);
+	});
 
-	createClass(GoombaGraphic, [{
-		key: "buildGraphic",
-		value: function buildGraphic() {
-			var _this2 = this;
+	return this;
+}
 
-			var that = this;
+function updateText() {
 
-			this.gChromosome = this.gMain.selectAll("g").data(this.dataByChromosome, function (d) {
-				return d.name;
-			}).enter().append("g").attr("class", "g-chromosome").attr('transform', function (d) {
-				var y = _this2.yScale(d.name);
-				return "translate(0, " + y + ")";
-			});
+	var that = this;
 
-			this.gChromosome.each(function (data) {
-				d3.select(this).selectAll("rect").data(data.genes, function (d) {
-					return d.geneid;
-				}).enter().append("rect").attr("x", function (d) {
-					return that.xScale(d.start);
-				}).attr("y", 0).attr("width", function (d) {
-					return that.xScale(d.end) - that.xScale(d.start);
-				}).attr("height", that.yScale.bandwidth()).attr("stroke", function (d) {
-					return that.colorScale(Math.log(+d.count));
-				}).attr("fill", function (d) {
-					return that.colorScale(Math.log(+d.count));
-				});
-			});
+	this.gText.each(function (data) {
 
-			return this;
-		}
-	}, {
-		key: "updateGraphic",
-		value: function updateGraphic() {
+		d3.select(this).selectAll("text").attr("x", function (d) {
+			var start = that.xt(d.start);
+			var width = that.xt(d.end) - that.xt(d.start);
 
-			var that = this;
+			return start + width / 2;
+		});
+	});
 
-			this.gChromosome.each(function (data) {
-				d3.select(this).selectAll("rect").attr('x', function (d) {
-					return that.xt(d.start);
-				}).attr('width', function (d) {
-					return that.xt(d.end) - that.xt(d.start);
-				});
-			});
+	return this;
+}
 
-			return this;
-		}
-	}]);
-	return GoombaGraphic;
-}(GoombaAxis);
+var collisionDetection = function collisionDetection(elem, index, array) {
+	// Check all subsequent elements
+	// until they are out of reach of this element
+	// if they are in reach - set visibility to hidden
+	// Only bother checking if this element is visible
+	// This should probably be throttled...
 
-var GoombaText = function (_GoombaGraphic) {
-	inherits(GoombaText, _GoombaGraphic);
+	var thisBox = elem.getBBox();
+	var rightEdge = thisBox.x + thisBox.width;
 
-	function GoombaText() {
-		classCallCheck(this, GoombaText);
-		return possibleConstructorReturn(this, (GoombaText.__proto__ || Object.getPrototypeOf(GoombaText)).apply(this, arguments));
-	}
+	if (!elem.hasAttribute("class")) {
+		for (var n = index + 1; n < array.length; n++) {
 
-	createClass(GoombaText, [{
-		key: "buildText",
-		value: function buildText() {
-			var _this2 = this;
+			var nextBox = array[n].getBBox();
+			var leftEdge = nextBox.x;
 
-			var that = this;
-
-			this.gText = this.gMainText.selectAll("g").data(this.dataByChromosome, function (d) {
-				return d.name;
-			}).enter().append("g").attr("class", "g-text").attr('transform', function (d) {
-				var y = _this2.yScale(d.name);
-				return "translate(0, " + y + ")";
-			});
-
-			this.gText.each(function (data, i) {
-
-				d3.select(this).selectAll('text').data(data.genes, function (d) {
-					return d.geneid;
-				}).enter().append("text").attr("opacity", 0).attr("x", function (d) {
-					var start = that.xScale(d.start);
-					var width = that.xScale(d.end) - that.xScale(d.start);
-
-					return start + width / 2;
-				}).attr("y", -5).attr("text-anchor", "middle").text(function (d) {
-					return d.symbol;
-				}).transition(500).attr("opacity", 1);
-			});
-
-			return this;
-		}
-	}, {
-		key: "updateText",
-		value: function updateText() {
-
-			var that = this;
-
-			this.gText.each(function (data) {
-
-				d3.select(this).selectAll("text").attr("x", function (d) {
-					var start = that.xt(d.start);
-					var width = that.xt(d.end) - that.xt(d.start);
-
-					return start + width / 2;
-				});
-			});
-
-			return this;
-		}
-	}, {
-		key: "showHideText",
-		value: function showHideText() {
-			this.gText.each(function () {
-				var thisGroup = d3.select(this).selectAll("text").attr("class", null);
-
-				thisGroup._groups[0].forEach(collisionDetection);
-			});
-
-			return this;
-		}
-	}]);
-	return GoombaText;
-}(GoombaGraphic);
-
-var GoombaZoom = function (_GoombaText) {
-	inherits(GoombaZoom, _GoombaText);
-
-	function GoombaZoom() {
-		classCallCheck(this, GoombaZoom);
-		return possibleConstructorReturn(this, (GoombaZoom.__proto__ || Object.getPrototypeOf(GoombaZoom)).apply(this, arguments));
-	}
-
-	createClass(GoombaZoom, [{
-		key: "buildZoom",
-		value: function buildZoom() {
-			var that = this;
-
-			var zoom = d3.zoom().on("zoom", zoomed);
-
-			zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width, this.height]]);
-
-			this.pane.call(zoom);
-
-			function zoomed() {
-				var zooming = true;
-
-				var t = d3.event.transform;
-				that.xt = t.rescaleX(that.xScale);
-
-				that.updateGraphic().updateText().updateAxis();
-
-				// Throttle the showHideText function
-				setTimeout(function () {
-					if (zooming) {
-						that.showHideText();
-					}
-				}, 500);
+			if (leftEdge < rightEdge) {
+				array[n].setAttribute("class", "hide-svg-text");
+			} else {
+				break;
 			}
 		}
-	}]);
-	return GoombaZoom;
-}(GoombaText);
+	}
+};
+
+function showHideText() {
+	this.gText.each(function () {
+		var thisGroup = d3.select(this).selectAll("text").attr("class", null);
+
+		thisGroup._groups[0].forEach(collisionDetection);
+	});
+
+	return this;
+}
+
+function buildZoom() {
+	var that = this;
+
+	var zoom = d3.zoom().on("zoom", zoomed);
+
+	zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width, this.height]]);
+
+	this.pane.call(zoom);
+
+	function zoomed() {
+		var zooming = true;
+
+		var t = d3.event.transform;
+		that.xt = t.rescaleX(that.xScale);
+
+		that.updateGraphic().updateText().updateAxis();
+
+		// Throttle the showHideText function
+		setTimeout(function () {
+			if (zooming) {
+				that.showHideText();
+			}
+		}, 500);
+	}
+}
+
+Goomba.prototype.buildChart = buildChart;
+Goomba.prototype.buildScales = buildScales;
+Goomba.prototype.buildAxis = buildAxis;
+Goomba.prototype.updateAxis = updateAxis;
+Goomba.prototype.buildGraphic = buildGraphic;
+Goomba.prototype.updateGraphic = updateGraphic;
+Goomba.prototype.buildText = buildText;
+Goomba.prototype.updateText = updateText;
+Goomba.prototype.showHideText = showHideText;
+Goomba.prototype.buildZoom = buildZoom;
 
 d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 	if (error) {
 		console.log('error:', error);
 	} else {
-		var goombaPlot = new GoombaZoom({
+
+		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
 			height: 800,
@@ -7174,6 +7058,8 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		});
 
 		goombaPlot.buildChart().buildScales().buildAxis().buildGraphic().buildText().showHideText().buildZoom();
+
+		console.log(goombaPlot);
 	}
 });
 

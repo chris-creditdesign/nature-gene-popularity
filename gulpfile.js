@@ -77,7 +77,7 @@ gulp.task("uglify", function (cb) {
 	);
 });
 
-gulp.task("serve", (callback) => browserSync.init({server: { baseDir: "./build/" }}));
+gulp.task("serve", (callback) => browserSync.init({server: { baseDir: "./build/" }, open: false}));
 gulp.task("refresh", () => browserSync.reload());
 
 gulp.task("watch", () => gulp.watch([
