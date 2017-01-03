@@ -1,6 +1,6 @@
 import d3 from "../d3-bundle";
 
-function buildGraphic () {
+function buildSVG () {
 	var that = this;
 
 	this.gChromosome = this.gMain.selectAll("g")
@@ -24,12 +24,12 @@ function buildGraphic () {
 			.attr("y", 0 )
 			.attr("width", d => that.xScale(d.end) - that.xScale(d.start) )
 			.attr("height", that.yScale.bandwidth() )
-			.attr("stroke", d => that.colorScale(Math.log(+d.count)) )
-			.attr("fill", d => that.colorScale(Math.log(+d.count)) );
+			.attr("stroke", d => that.colorScale(parseFloat(d.count)) )
+			.attr("fill", d => that.colorScale(parseFloat(d.count)) );
 
 	});
 
 	return this;
 }
 
-export default buildGraphic;
+export default buildSVG;

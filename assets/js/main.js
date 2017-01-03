@@ -15,13 +15,12 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function(error, data) {
 
 		goombaPlot.buildChart()
 			.buildScales()
+			.buildKey()
 			.buildAxis()
-			.buildGraphic()
+			.buildSVG()
 			.buildText()
 			.showHideText()
 			.buildZoom();
-
-		console.log(goombaPlot);
 
 	}
 });

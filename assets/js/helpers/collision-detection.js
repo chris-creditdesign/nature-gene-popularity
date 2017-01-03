@@ -14,7 +14,7 @@ var collisionDetection = function (elem, index, array) {
 			let nextBox = array[n].getBBox();
 			let leftEdge = nextBox.x;
 
-			if (leftEdge < rightEdge) {
+			if (leftEdge < rightEdge + 10) {
 				array[n].setAttribute("class", "hide-svg-text");
 			} else {
 				break;

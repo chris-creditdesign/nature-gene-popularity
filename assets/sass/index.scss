@@ -6,20 +6,30 @@
 
 .outerwrapper {
 	width: 100%;
-	min-height: 900px;
 	position: relative;
 	border: 1px solid #c8c7cf;
 
-	h1,h2,h3,p {
+	h1,h2,h3,p,ul {
 		padding: 10px 10px 0 10px;
 		margin: 0;
 		hyphens: auto;
 	}
 
+	.key span {
+		width: 10px;
+		height: 10px;
+		display: inline-block;
+	}
+
+	// Canvas 
+	canvas {
+		position: absolute;
+	}
 
 	// SVG
 	svg {
 		font: 10px sans-serif;
+		position: absolute;
 	}
 
 	.axis {

@@ -1,7 +1,15 @@
 import d3 from "../d3-bundle";
 
 function buildChart() {
+	this.canvas = d3.select(this.target)
+		.append("canvas")
+		.attr("width", this.width)
+		.attr("height", this.height);
+
+	this.context = this.canvas.node().getContext("2d");
+
 	this.svg = d3.select(this.target)
+		.style('height', `${this.height}px`)
 		.append("svg")
 		.attr('width', this.width)
 		.attr('height', this.height)
@@ -34,7 +42,6 @@ function buildChart() {
 		.attr("class", "g-main-text")
 		.attr("clip-path", "url(#clip)")
 		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-
 
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g')

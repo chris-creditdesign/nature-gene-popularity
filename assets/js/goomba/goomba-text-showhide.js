@@ -3,7 +3,14 @@ import collisionDetection from "../helpers/collision-detection";
 
 function showHideText() {
 	this.gText.each(function () {
-		let thisGroup = d3.select(this).selectAll("text").attr("class", null);
+		let thisGroup = d3.select(this)
+			.selectAll("text")
+			.attr("class", d => {
+				// Only show labels for counts over 1000
+				return parseInt(d.count, 10) > 1000 ? null : "hide-svg-text";
+			});
+
+
 
 		thisGroup._groups[0].forEach(collisionDetection);
 

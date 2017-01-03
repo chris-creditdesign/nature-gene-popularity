@@ -1,6 +1,6 @@
 import d3 from "../d3-bundle";
 
-function updateGraphic() {
+function updateSVG() {
 
 	var that = this;
 
@@ -15,4 +15,4 @@ function updateGraphic() {
 	return this;
 }
 
-export default updateGraphic;
+export default updateSVG;

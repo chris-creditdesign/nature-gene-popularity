@@ -12,21 +12,12 @@ function buildZoom() {
 	this.pane.call(zoom);
 
 	function zoomed() {
-		var zooming = true;
-
+		
 		var	t = d3.event.transform;
 		that.xt = t.rescaleX(that.xScale);
 
-		that.updateGraphic()
-			.updateText()
-			.updateAxis();
+		that.updateAll();
 
-		// Throttle the showHideText function
-		setTimeout(function () {
-			if (zooming) {
-				that.showHideText();
-			}
-		}, 500);
 	}
 }
 

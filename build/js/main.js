@@ -3604,6 +3604,19 @@ var precisionRound = function (step, max) {
   return Math.max(0, exponent(max) - exponent(step)) + 1;
 };
 
+
+
+var _format = Object.freeze({
+	formatDefaultLocale: defaultLocale,
+	get format () { return format$1; },
+	get formatPrefix () { return formatPrefix; },
+	formatLocale: formatLocale,
+	formatSpecifier: formatSpecifier,
+	precisionFixed: precisionFixed,
+	precisionPrefix: precisionPrefix,
+	precisionRound: precisionRound
+});
+
 var tickFormat = function (domain, count, specifier) {
   var start = domain[0],
       stop = domain[domain.length - 1],
@@ -6770,10 +6783,10 @@ function completeAssign(target) {
 	return target;
 }
 
-var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom);
+var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format);
 
 function Goomba(data) {
-		this.width = data.width ? data.width : 550;
+		this.width = data.width ? data.width : 630;
 		this.height = data.height ? data.height : 400;
 		this.margin = data.margin ? data.margin : { 'top': 30, 'left': 30, 'bottom': 30, 'right': 40 };
 		this.data = data.data;
@@ -6781,7 +6794,11 @@ function Goomba(data) {
 }
 
 function buildChart() {
-	this.svg = d3.select(this.target).append("svg").attr('width', this.width).attr('height', this.height).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
+	this.canvas = d3.select(this.target).append("canvas").attr("width", this.width).attr("height", this.height);
+
+	this.context = this.canvas.node().getContext("2d");
+
+	this.svg = d3.select(this.target).style('height', this.height + "px").append("svg").attr('width', this.width).attr('height', this.height).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
 	var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width - this.margin.left - this.margin.right).attr("height", this.height - this.margin.top - this.margin.bottom);
 
@@ -6850,7 +6867,7 @@ function buildScales() {
 		return +d.end;
 	}))];
 	var colorDomain = d3.extent(this.data.map(function (d) {
-		return +Math.log(d.count);
+		return parseFloat(d.count);
 	}));
 
 	this.yScale = d3.scaleBand().domain(inOrder).range([0, this.height - this.margin.top - this.margin.bottom]).round(true).paddingInner(0.6).paddingOuter(0.3);
@@ -6860,7 +6877,23 @@ function buildScales() {
 	this.xt = this.xScale;
 
 	// Use a log scale to account for the wide range of numbers
-	this.colorScale = d3.scaleLinear().domain(colorDomain).range(['#FFFF00', '#FF0000']);
+	this.colorScale = d3.scaleLog().domain(colorDomain).range(['#FFFF00', '#FF0000']);
+
+	return this;
+}
+
+function buildKey() {
+	var _this = this;
+
+	function oneInFour(elem, index, array) {
+		return index % 4 ? false : true;
+	}
+
+	var ticks = this.colorScale.ticks().filter(oneInFour);
+
+	d3.select("#temp-key").selectAll("li").data(ticks).enter().append("li").html(function (d) {
+		return "<span style=\"background-color: " + _this.colorScale(d) + "\"></span> " + d3.format(',')(d) + " citations";
+	});
 
 	return this;
 }
@@ -6883,7 +6916,7 @@ function updateAxis() {
 	return this;
 }
 
-function buildGraphic() {
+function buildSVG() {
 	var _this = this;
 
 	var that = this;
@@ -6903,16 +6936,16 @@ function buildGraphic() {
 		}).attr("y", 0).attr("width", function (d) {
 			return that.xScale(d.end) - that.xScale(d.start);
 		}).attr("height", that.yScale.bandwidth()).attr("stroke", function (d) {
-			return that.colorScale(Math.log(+d.count));
+			return that.colorScale(parseFloat(d.count));
 		}).attr("fill", function (d) {
-			return that.colorScale(Math.log(+d.count));
+			return that.colorScale(parseFloat(d.count));
 		});
 	});
 
 	return this;
 }
 
-function updateGraphic() {
+function updateSVG() {
 
 	var that = this;
 
@@ -6989,7 +7022,7 @@ var collisionDetection = function collisionDetection(elem, index, array) {
 			var nextBox = array[n].getBBox();
 			var leftEdge = nextBox.x;
 
-			if (leftEdge < rightEdge) {
+			if (leftEdge < rightEdge + 10) {
 				array[n].setAttribute("class", "hide-svg-text");
 			} else {
 				break;
@@ -7000,7 +7033,10 @@ var collisionDetection = function collisionDetection(elem, index, array) {
 
 function showHideText() {
 	this.gText.each(function () {
-		var thisGroup = d3.select(this).selectAll("text").attr("class", null);
+		var thisGroup = d3.select(this).selectAll("text").attr("class", function (d) {
+			// Only show labels for counts over 1000
+			return parseInt(d.count, 10) > 1000 ? null : "hide-svg-text";
+		});
 
 		thisGroup._groups[0].forEach(collisionDetection);
 	});
@@ -7018,32 +7054,40 @@ function buildZoom() {
 	this.pane.call(zoom);
 
 	function zoomed() {
-		var zooming = true;
 
 		var t = d3.event.transform;
 		that.xt = t.rescaleX(that.xScale);
 
-		that.updateGraphic().updateText().updateAxis();
-
-		// Throttle the showHideText function
-		setTimeout(function () {
-			if (zooming) {
-				that.showHideText();
-			}
-		}, 500);
+		that.updateAll();
 	}
+}
+
+function updateAll() {
+	var that = this;
+	var zooming = true;
+
+	this.updateSVG().updateText().updateAxis();
+
+	// Throttle the showHideText function
+	setTimeout(function () {
+		if (zooming) {
+			that.showHideText();
+		}
+	}, 500);
 }
 
 Goomba.prototype.buildChart = buildChart;
 Goomba.prototype.buildScales = buildScales;
+Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
-Goomba.prototype.buildGraphic = buildGraphic;
-Goomba.prototype.updateGraphic = updateGraphic;
+Goomba.prototype.buildSVG = buildSVG;
+Goomba.prototype.updateSVG = updateSVG;
 Goomba.prototype.buildText = buildText;
 Goomba.prototype.updateText = updateText;
 Goomba.prototype.showHideText = showHideText;
 Goomba.prototype.buildZoom = buildZoom;
+Goomba.prototype.updateAll = updateAll;
 
 d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 	if (error) {
@@ -7057,9 +7101,7 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 			width: 630
 		});
 
-		goombaPlot.buildChart().buildScales().buildAxis().buildGraphic().buildText().showHideText().buildZoom();
-
-		console.log(goombaPlot);
+		goombaPlot.buildChart().buildScales().buildKey().buildAxis().buildSVG().buildText().showHideText().buildZoom();
 	}
 });
 

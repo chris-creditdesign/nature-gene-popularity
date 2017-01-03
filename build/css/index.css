@@ -6,12 +6,11 @@
 
 .outerwrapper {
   width: 100%;
-  min-height: 900px;
   position: relative;
   border: 1px solid #c8c7cf;
 }
 
-.outerwrapper h1, .outerwrapper h2, .outerwrapper h3, .outerwrapper p {
+.outerwrapper h1, .outerwrapper h2, .outerwrapper h3, .outerwrapper p, .outerwrapper ul {
   padding: 10px 10px 0 10px;
   margin: 0;
   -webkit-hyphens: auto;
@@ -19,8 +18,19 @@
           hyphens: auto;
 }
 
+.outerwrapper .key span {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+
+.outerwrapper canvas {
+  position: absolute;
+}
+
 .outerwrapper svg {
   font: 10px sans-serif;
+  position: absolute;
 }
 
 .outerwrapper .axis {

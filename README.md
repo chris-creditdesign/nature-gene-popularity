@@ -13,3 +13,7 @@ Interactive graphic for @naturenews
 ## gh-pages
 
 	git subtree push --prefix build origin gh-pages
+
+## To Do
+
+-	Update margins
