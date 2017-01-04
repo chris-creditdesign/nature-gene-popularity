@@ -1,4 +1,4 @@
-import d3 from "../d3-bundle";
+import d3 from "../../d3-bundle";
 
 function buildAxis() {
 
@@ -6,7 +6,12 @@ function buildAxis() {
 			.tickArguments([4]);
 	this.gXAxis.call(this.xAxis);
 
-	this.yAxis = d3.axisLeft(this.yScale);
+	if (this.expanded) {
+		this.yAxis = d3.axisLeft(this.yScaleExpanded);
+	} else {
+		this.yAxis = d3.axisLeft(this.yScaleContracted);
+	}
+
 	this.gYAxis.call(this.yAxis);
 
 	return this;

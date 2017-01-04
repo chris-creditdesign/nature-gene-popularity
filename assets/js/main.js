@@ -9,18 +9,11 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function(error, data) {
 		var goombaPlot = new myGoomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 800,
+			height: 600,
 			width: 630
 		});
 
-		goombaPlot.buildChart()
-			.buildScales()
-			.buildKey()
-			.buildAxis()
-			.buildSVG()
-			.buildText()
-			.showHideText()
-			.buildZoom();
+		goombaPlot.init();
 
 	}
 });

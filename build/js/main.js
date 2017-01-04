@@ -6791,25 +6791,40 @@ function Goomba(data) {
 		this.margin = data.margin ? data.margin : { 'top': 30, 'left': 30, 'bottom': 30, 'right': 40 };
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
+		this.expanded = false;
+		this.activeChromosome = 0;
 }
 
 function buildChart() {
-	this.canvas = d3.select(this.target).append("canvas").attr("width", this.width).attr("height", this.height);
+	// this.canvas = d3.select(this.target)
+	// 	.append("canvas")
+	// 	.attr("width", this.width)
+	// 	.attr("height", this.height);
 
-	this.context = this.canvas.node().getContext("2d");
+	// this.context = this.canvas.node().getContext("2d");
 
 	this.svg = d3.select(this.target).style('height', this.height + "px").append("svg").attr('width', this.width).attr('height', this.height).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
 	var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width - this.margin.left - this.margin.right).attr("height", this.height - this.margin.top - this.margin.bottom);
 
-	// Rect just just for registering the zoom event
-	this.pane = this.svg.insert("rect", "g").attr("class", "pane").attr("width", this.width).attr("height", this.height).attr("opacity", 0).attr('pointer-events', 'all');
+	// Group to hold all the rects
+	this.gChromosomes = this.svg.append('g').attr("class", "g-chromosomes").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	// Group to hold all the rects
-	this.gMain = this.svg.append('g').attr("class", "g-main").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+	this.gChromosomeSelector = this.svg.append('g').attr("class", "g-chromosome-selector").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	this.gSelectors = this.gChromosomeSelector.append("g");
 
 	// Group to hold all the rects
 	this.gMainText = this.svg.append('g').attr("class", "g-main-text").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	// Rect just just for registering the zoom event
+	// this.pane = this.svg.insert("rect")
+	// 	.attr("class", "pane")
+	// 	.attr("width", this.width)
+	// 	.attr("height", this.height)
+	// 	.attr("opacity", 0)
+	// 	.attr('pointer-events', 'all');
 
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g').attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height - this.margin.top) + ")");
@@ -6867,10 +6882,12 @@ function buildScales() {
 		return +d.end;
 	}))];
 	var colorDomain = d3.extent(this.data.map(function (d) {
-		return parseFloat(d.count);
+		return parseInt(d.count, 10);
 	}));
 
-	this.yScale = d3.scaleBand().domain(inOrder).range([0, this.height - this.margin.top - this.margin.bottom]).round(true).paddingInner(0.6).paddingOuter(0.3);
+	this.yScaleExpanded = d3.scaleBand().domain(inOrder).range([0, this.height - this.margin.top - this.margin.bottom]).round(true).paddingInner(0.1).paddingOuter(0.5);
+
+	this.yScaleContracted = d3.scaleBand().domain(inOrder).range([0, this.height - this.margin.top - this.margin.bottom]).round(true).paddingInner(0.1).paddingOuter(0.5);
 
 	this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width - this.margin.left - this.margin.right]);
 
@@ -6903,7 +6920,12 @@ function buildAxis() {
 	this.xAxis = d3.axisBottom(this.xScale).tickArguments([4]);
 	this.gXAxis.call(this.xAxis);
 
-	this.yAxis = d3.axisLeft(this.yScale);
+	if (this.expanded) {
+		this.yAxis = d3.axisLeft(this.yScaleExpanded);
+	} else {
+		this.yAxis = d3.axisLeft(this.yScaleContracted);
+	}
+
 	this.gYAxis.call(this.yAxis);
 
 	return this;
@@ -6913,43 +6935,92 @@ function updateAxis() {
 	this.xAxis.scale(this.xt);
 	this.gXAxis.call(this.xAxis);
 
+	if (this.expanded) {
+		this.yAxis = d3.axisLeft(this.yScaleExpanded);
+	} else {
+		this.yAxis = d3.axisLeft(this.yScaleContracted);
+	}
+
+	this.gYAxis.call(this.yAxis);
+
 	return this;
 }
 
-function buildSVG() {
+function buildChromosomes() {
+	var _this = this;
+
+	var data = this.expanded ? [this.dataByChromosome[this.activeChromosome]] : this.dataByChromosome;
+
+	this.gChromosome = this.gChromosomes.selectAll("g").data(data, function (d) {
+		return d.name;
+	});
+
+	// Enter
+	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
+		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+		return "translate(0, " + y + ")";
+	});
+
+	// Update
+	this.gChromosome.attr('transform', function (d) {
+		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+		return "translate(0, " + y + ")";
+	});
+
+	// Exit
+	this.gChromosome.exit().transition().attr("opacity", 0).remove();
+
+	return this;
+}
+
+function buildChromosomeSelector() {
 	var _this = this;
 
 	var that = this;
 
-	this.gChromosome = this.gMain.selectAll("g").data(this.dataByChromosome, function (d) {
+	this.gSelectors.selectAll("rect").data(this.dataByChromosome, function (d) {
 		return d.name;
-	}).enter().append("g").attr("class", "g-chromosome").attr('transform', function (d) {
-		var y = _this.yScale(d.name);
+	}).enter().append("rect").attr("class", "g-chromosome").attr('transform', function (d) {
+		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
 		return "translate(0, " + y + ")";
-	});
+	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ffffff").attr("fill-opacity", 0).attr("stroke", "#ffffff").attr("stroke-width", 1).attr("opacity", 1).on("mouseenter", function () {
+		d3.select(this).attr("stroke", "#000000");
+	}).on("mouseleave", function () {
+		d3.select(this).attr("stroke", "#ffffff");
+	}).on("click", function (d, i) {
 
-	this.gChromosome.each(function (data) {
-		d3.select(this).selectAll("rect").data(data.genes, function (d) {
-			return d.geneid;
-		}).enter().append("rect").attr("x", function (d) {
-			return that.xScale(d.start);
-		}).attr("y", 0).attr("width", function (d) {
-			return that.xScale(d.end) - that.xScale(d.start);
-		}).attr("height", that.yScale.bandwidth()).attr("stroke", function (d) {
-			return that.colorScale(parseFloat(d.count));
-		}).attr("fill", function (d) {
-			return that.colorScale(parseFloat(d.count));
-		});
+		if (that.activeChromosome === i && that.expanded) {
+			that.expanded = false;
+		} else {
+			that.activeChromosome = i;
+			that.expanded = true;
+		}
+
+		that.updateAll();
 	});
 
 	return this;
 }
 
-function updateSVG() {
+function buildGenes() {
 
 	var that = this;
 
-	this.gChromosome.each(function (data) {
+	this.gChromosomes.selectAll("g").each(function (data) {
+		// Enter
+		d3.select(this).selectAll("rect").data(data.genes, function (d) {
+			return d.geneid;
+		}).enter().append("rect").attr("x", function (d) {
+			return that.xt(d.start);
+		}).attr("y", 0).attr("width", function (d) {
+			return that.xt(d.end) - that.xt(d.start);
+		}).attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth()).attr("stroke", function (d) {
+			return that.colorScale(parseInt(d.count, 0));
+		}).attr("stroke-width", 0.5).attr("fill", function (d) {
+			return that.colorScale(parseInt(d.count, 0));
+		});
+
+		// Update
 		d3.select(this).selectAll("rect").attr('x', function (d) {
 			return that.xt(d.start);
 		}).attr('width', function (d) {
@@ -6960,41 +7031,57 @@ function updateSVG() {
 	return this;
 }
 
-function buildText() {
+function buildTextGroup() {
 	var _this = this;
 
-	var that = this;
+	var data = this.expanded ? [this.dataByChromosome[this.activeChromosome]] : this.dataByChromosome;
 
-	this.gText = this.gMainText.selectAll("g").data(this.dataByChromosome, function (d) {
+	this.gText = this.gMainText.selectAll("g").attr("opacity", 1).data(data, function (d) {
 		return d.name;
-	}).enter().append("g").attr("class", "g-text").attr('transform', function (d) {
-		var y = _this.yScale(d.name);
-		return "translate(0, " + y + ")";
 	});
 
-	this.gText.each(function (data, i) {
+	if (this.expanded) {
+		// Enter
+		this.gText.enter().append("g").attr("class", "g-text").attr('transform', function (d) {
+			var y = _this.expandend ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+			return "translate(0, " + y + ")";
+		});
 
-		d3.select(this).selectAll('text').data(data.genes, function (d) {
-			return d.geneid;
-		}).enter().append("text").attr("opacity", 0).attr("x", function (d) {
-			var start = that.xScale(d.start);
-			var width = that.xScale(d.end) - that.xScale(d.start);
+		// Update
+		this.gText.attr('transform', function (d) {
+			var y = _this.expandend ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+			return "translate(0, " + y + ")";
+		});
 
-			return start + width / 2;
-		}).attr("y", -5).attr("text-anchor", "middle").text(function (d) {
-			return d.symbol;
-		}).transition(500).attr("opacity", 1);
-	});
+		// Remove
+		this.gText.exit().transition().attr("opacity", 0).remove();
+	} else {
+		this.gText.each(function () {
+			d3.select(this).selectAll('text').attr("class", "hide-svg-text");
+		}).transition().delay(300).attr("opacity", 0).remove();
+	}
 
 	return this;
 }
 
-function updateText() {
-
+function buildText() {
 	var that = this;
 
-	this.gText.each(function (data) {
+	this.gMainText.selectAll("g").each(function (data, i) {
 
+		// Enter
+		d3.select(this).selectAll('text').data(data.genes, function (d) {
+			return d.geneid;
+		}).enter().append("text").attr("x", function (d) {
+			var start = that.xt(d.start);
+			var width = that.xt(d.end) - that.xt(d.start);
+
+			return start + width / 2;
+		}).attr("y", -5).attr("text-anchor", "middle").text(function (d) {
+			return d.symbol;
+		}).attr("class", "hide-svg-text");
+
+		// Update
 		d3.select(this).selectAll("text").attr("x", function (d) {
 			var start = that.xt(d.start);
 			var width = that.xt(d.end) - that.xt(d.start);
@@ -7032,10 +7119,10 @@ var collisionDetection = function collisionDetection(elem, index, array) {
 };
 
 function showHideText() {
-	this.gText.each(function () {
+	this.gMainText.selectAll("g").each(function () {
 		var thisGroup = d3.select(this).selectAll("text").attr("class", function (d) {
 			// Only show labels for counts over 1000
-			return parseInt(d.count, 10) > 1000 ? null : "hide-svg-text";
+			return parseInt(d.count, 10) > 0 ? null : "hide-svg-text";
 		});
 
 		thisGroup._groups[0].forEach(collisionDetection);
@@ -7051,7 +7138,7 @@ function buildZoom() {
 
 	zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width, this.height]]);
 
-	this.pane.call(zoom);
+	this.gSelectors.call(zoom);
 
 	function zoomed() {
 
@@ -7060,20 +7147,34 @@ function buildZoom() {
 
 		that.updateAll();
 	}
+
+	return this;
 }
 
 function updateAll() {
 	var that = this;
-	var zooming = true;
+	var zooming = false;
 
-	this.updateSVG().updateText().updateAxis();
+	this.buildChromosomes().buildGenes().updateAxis();
 
-	// Throttle the showHideText function
-	setTimeout(function () {
-		if (zooming) {
-			that.showHideText();
-		}
-	}, 500);
+	this.buildTextGroup().buildText();
+
+	if (this.expanded) {
+
+		zooming = true;
+		// Throttle the showHideText function
+		setTimeout(function () {
+			if (zooming) {
+				that.showHideText();
+				zooming = false;
+			}
+		}, 200);
+	}
+}
+
+function init$1() {
+
+	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildZoom().buildTextGroup().buildText().showHideText();
 }
 
 Goomba.prototype.buildChart = buildChart;
@@ -7081,13 +7182,18 @@ Goomba.prototype.buildScales = buildScales;
 Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
-Goomba.prototype.buildSVG = buildSVG;
-Goomba.prototype.updateSVG = updateSVG;
+
+Goomba.prototype.buildChromosomes = buildChromosomes;
+Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
+Goomba.prototype.buildGenes = buildGenes;
+
+Goomba.prototype.buildTextGroup = buildTextGroup;
 Goomba.prototype.buildText = buildText;
-Goomba.prototype.updateText = updateText;
 Goomba.prototype.showHideText = showHideText;
+
 Goomba.prototype.buildZoom = buildZoom;
 Goomba.prototype.updateAll = updateAll;
+Goomba.prototype.init = init$1;
 
 d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 	if (error) {
@@ -7097,11 +7203,11 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 800,
+			height: 600,
 			width: 630
 		});
 
-		goombaPlot.buildChart().buildScales().buildKey().buildAxis().buildSVG().buildText().showHideText().buildZoom();
+		goombaPlot.init();
 	}
 });
 

@@ -1,28 +1,38 @@
 import Goomba from "./goomba/goomba";
-import buildChart from "./goomba/goomba-chart-build";
-import buildScales from "./goomba/goomba-scales-build";
-import buildKey from "./goomba/goomba-key-build";
-import buildAxis from "./goomba/goomba-axis-build";
-import updateAxis from "./goomba/goomba-axis-update";
-import buildSVG from "./goomba/goomba-svg-build";
-import updateSVG from "./goomba/goomba-svg-update";
-import buildText from "./goomba/goomba-text-build";
-import updateText from "./goomba/goomba-text-update";
-import showHideText from "./goomba/goomba-text-showhide";
-import buildZoom from "./goomba/goomba-zoom";
-import updateAll from "./goomba/goomba-update-all";
+import buildChart from "./goomba/chart-build";
+import buildScales from "./goomba/scales/scales-build";
+import buildKey from "./goomba/key/key-build";
+import buildAxis from "./goomba/axis/axis-build";
+import updateAxis from "./goomba/axis/axis-update";
+
+import buildChromosomes from "./goomba/svg/chromosome-build";
+import buildChromosomeSelector from "./goomba/svg/chromosome-selector-build";
+import buildGenes from "./goomba/svg/gene-build";
+
+import buildTextGroup from "./goomba/text/text-group-build";
+import buildText from "./goomba/text/text-build";
+import showHideText from "./goomba/text/text-showhide";
+
+import buildZoom from "./goomba/zoom/zoom";
+import updateAll from "./goomba/update-all";
+import init from "./goomba/init";
 
 Goomba.prototype.buildChart = buildChart;
 Goomba.prototype.buildScales = buildScales;
 Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
-Goomba.prototype.buildSVG = buildSVG;
-Goomba.prototype.updateSVG = updateSVG;
+
+Goomba.prototype.buildChromosomes = buildChromosomes;
+Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
+Goomba.prototype.buildGenes = buildGenes;
+
+Goomba.prototype.buildTextGroup = buildTextGroup;
 Goomba.prototype.buildText = buildText;
-Goomba.prototype.updateText = updateText;
 Goomba.prototype.showHideText = showHideText;
+
 Goomba.prototype.buildZoom = buildZoom;
 Goomba.prototype.updateAll = updateAll;
+Goomba.prototype.init = init;
 
 export default Goomba;

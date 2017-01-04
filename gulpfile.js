@@ -84,6 +84,7 @@ gulp.task("watch", () => gulp.watch([
 			"./assets/widget.html",
 			"./assets/js/*.js",
 			"./assets/js/*/*.js",
+			"./assets/js/*/*/*.js",
 			"./assets/sass/*.scss"], 
 		() => gulprun(["jshint", "rollup:build", "sass:build", "concat:build"])
 	)

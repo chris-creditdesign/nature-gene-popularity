@@ -17,3 +17,10 @@ Interactive graphic for @naturenews
 ## To Do
 
 -	Update margins
+-	Add axis labels
+-	Add expand each chromosome
+-	Add citation slider
+-	Improve color scale (break into log regions then ordinal)
+-	Add UI colours to params
+-	Show hide return true and false 
+-	Zoom should not be controlled by the selectors
