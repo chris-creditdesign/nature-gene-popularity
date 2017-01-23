@@ -9,10 +9,10 @@ function buildChart() {
 	// this.context = this.canvas.node().getContext("2d");
 
 	this.svg = d3.select(this.target)
-		.style('height', `${this.height}px`)
+		// .style('height', `${this.height}px`) // Only explicitally set the height when positioning canvas ovre svg
 		.append("svg")
-		.attr('width', this.width)
-		.attr('height', this.height)
+		.attr('width', this.width + this.margin.left + this.margin.right)
+		.attr('height', this.height + this.margin.top + this.margin.bottom)
 		.style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
 	var clip = this.svg.append("defs").append("svg:clipPath")
@@ -20,8 +20,8 @@ function buildChart() {
 					  .append("svg:rect")
 						.attr("x", 0)
 						.attr("y", 0)
-						.attr("width", this.width - this.margin.left - this.margin.right)
-						.attr("height", this.height - this.margin.top - this.margin.bottom);
+						.attr("width", this.width)
+						.attr("height", this.height);
 
 	// Group to hold all the rects
 	this.gChromosomes = this.svg.append('g')
@@ -54,7 +54,7 @@ function buildChart() {
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g')
 			.attr("class", "x axis")
-			.attr("transform", `translate(${this.margin.left}, ${this.height - this.margin.top})`);
+			.attr("transform", `translate(${this.margin.left}, ${this.height})`);
 
 	// Group to hold the y axis
 	this.gYAxis = this.svg.append('g')

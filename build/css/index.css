@@ -30,7 +30,7 @@
 
 .outerwrapper svg {
   font: 10px sans-serif;
-  position: absolute;
+  margin: 20px 0;
 }
 
 .outerwrapper .axis {

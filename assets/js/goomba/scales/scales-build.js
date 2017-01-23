@@ -9,21 +9,21 @@ function buildScales() {
 
 	this.yScaleExpanded = d3.scaleBand()
 		.domain(inOrder)
-		.range([0, this.height - this.margin.top - this.margin.bottom])
+		.range([0, this.height])
 		.round(true)
 		.paddingInner(0.1)
 		.paddingOuter(0.5);
 
 	this.yScaleContracted = d3.scaleBand()
 		.domain(inOrder)
-		.range([0, this.height - this.margin.top - this.margin.bottom])
+		.range([0, this.height])
 		.round(true)
 		.paddingInner(0.1)
 		.paddingOuter(0.5);
 
 	this.xScale = d3.scaleLinear()
 		.domain(xScaleDomain)
-		.range([0, this.width - this.margin.left - this.margin.right]);
+		.range([0, this.width]);
 
 	this.xt = this.xScale;
 

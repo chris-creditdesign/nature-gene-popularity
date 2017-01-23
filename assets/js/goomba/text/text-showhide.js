@@ -10,8 +10,6 @@ function showHideText() {
 				return parseInt(d.count, 10) > 0 ? null : "hide-svg-text";
 			});
 
-
-
 		thisGroup._groups[0].forEach(collisionDetection);
 
 	});

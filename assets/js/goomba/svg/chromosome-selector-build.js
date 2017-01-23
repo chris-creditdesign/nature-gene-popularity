@@ -18,16 +18,17 @@ function buildChromosomeSelector () {
 		.attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth())
 		.attr("fill", "#ffffff")
 		.attr("fill-opacity", 0)
-		.attr("stroke", "#ffffff")
+		.attr("stroke", "#000000")
 		.attr("stroke-width", 1)
-		.attr("opacity", 1)
+		.attr("shape-rendering","crispEdges")
+		.attr("opacity", 0)
 		.on("mouseenter", function() {
 			d3.select(this)
-				.attr("stroke", "#000000");
+				.attr("opacity", 1)
 		})
 		.on("mouseleave", function() {
 			d3.select(this)
-				.attr("stroke", "#ffffff");
+				.attr("opacity", 0);
 		})
 		.on("click", function(d, i) {
 

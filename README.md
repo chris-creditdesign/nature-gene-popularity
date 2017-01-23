@@ -24,3 +24,4 @@ Interactive graphic for @naturenews
 -	Add UI colours to params
 -	Show hide return true and false 
 -	Zoom should not be controlled by the selectors
+-	Zoom into chromosome lenghtways when clicked
