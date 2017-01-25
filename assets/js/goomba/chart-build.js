@@ -54,7 +54,7 @@ function buildChart() {
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g')
 			.attr("class", "x axis")
-			.attr("transform", `translate(${this.margin.left}, ${this.height})`);
+			.attr("transform", `translate(${this.margin.left}, ${this.height + this.margin.top})`);
 
 	// Group to hold the y axis
 	this.gYAxis = this.svg.append('g')

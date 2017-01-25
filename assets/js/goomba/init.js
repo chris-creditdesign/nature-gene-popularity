@@ -10,8 +10,7 @@ function init() {
 		.buildZoom()
 		.buildTextGroup()
 		.buildText()
-		.showHideText();
-		
+		.showHideText();		
 
 }
 

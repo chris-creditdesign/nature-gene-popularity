@@ -5,9 +5,9 @@ function updateAxis() {
 	this.gXAxis.call(this.xAxis);
 
 	if (this.expanded) {
-		this.yAxis = d3.axisLeft(this.yScaleExpanded);
+		this.yAxis.scale(this.yScaleExpanded);
 	} else {
-		this.yAxis = d3.axisLeft(this.yScaleContracted);
+		this.yAxis.scale(this.yScaleContracted);
 	}
 
 	this.gYAxis.call(this.yAxis);

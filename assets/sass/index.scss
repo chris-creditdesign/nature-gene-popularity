@@ -28,23 +28,32 @@
 
 	// SVG
 	svg {
-		font: 10px sans-serif;
+		
 		// position: absolute;
 		margin: 20px 0;
+
+		text {
+			font-size: 10px;
+
+			pointer-events: none;
+			transition: opacity 200ms linear;
+		}
+
+		text.hide-svg-text {
+			opacity: 0;
+		}
+
 	}
 
 	.axis {
 		shape-rendering: crispEdges;
+
+		text {
+			font-size: 12px;
+		}
 	}
 
-	svg text {
-		pointer-events: none;
-		transition: opacity 200ms linear;
-	}
 
-	svg text.hide-svg-text {
-		opacity: 0;
-	}
 
 } // outerwrapper
 

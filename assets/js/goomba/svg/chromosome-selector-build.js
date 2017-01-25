@@ -20,7 +20,6 @@ function buildChromosomeSelector () {
 		.attr("fill-opacity", 0)
 		.attr("stroke", "#000000")
 		.attr("stroke-width", 1)
-		.attr("shape-rendering","crispEdges")
 		.attr("opacity", 0)
 		.on("mouseenter", function() {
 			d3.select(this)
