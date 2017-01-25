@@ -7,7 +7,7 @@ function buildZoom() {
 		.on("zoom", zoomed);
 
 	zoom.scaleExtent([1, this.data.length / 10])
-			.translateExtent([[0, 0], [(this.width), (this.height)]]);
+			.translateExtent([[0, 0], [(this.width + this.margin.left + this.margin.right), (this.height + this.margin.top + this.margin.bottom)]]);
 
 	this.gSelectors.call(zoom);
 
@@ -17,7 +17,6 @@ function buildZoom() {
 		that.xt = t.rescaleX(that.xScale);
 
 		that.updateAll();
-
 	}
 
 	return this;
