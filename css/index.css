@@ -29,15 +29,11 @@
 }
 
 .outerwrapper svg {
-  font: 10px sans-serif;
   margin: 20px 0;
 }
 
-.outerwrapper .axis {
-  shape-rendering: crispEdges;
-}
-
 .outerwrapper svg text {
+  font-size: 10px;
   pointer-events: none;
   -webkit-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
@@ -45,4 +41,12 @@
 
 .outerwrapper svg text.hide-svg-text {
   opacity: 0;
+}
+
+.outerwrapper .axis {
+  shape-rendering: crispEdges;
+}
+
+.outerwrapper .axis text {
+  font-size: 12px;
 }

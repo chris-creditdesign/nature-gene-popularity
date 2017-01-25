@@ -6787,8 +6787,8 @@ var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, 
 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
-		this.totalHeight = data.height ? data.height : 400;
-		this.margin = data.margin ? data.margin : { 'top': 0, 'left': 30, 'bottom': 30, 'right': 10 };
+		this.totalHeight = data.height ? data.height : 450;
+		this.margin = data.margin ? data.margin : { 'top': 0, 'left': 50, 'bottom': 40, 'right': 10 };
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
@@ -6831,7 +6831,7 @@ function buildChart() {
 	// 	.attr('pointer-events', 'all');
 
 	// Group to hold the x axis 
-	this.gXAxis = this.svg.append('g').attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + this.height + ")");
+	this.gXAxis = this.svg.append('g').attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height + this.margin.top) + ")");
 
 	// Group to hold the y axis
 	this.gYAxis = this.svg.append('g').attr("class", "y axis").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
@@ -6921,7 +6921,7 @@ function buildKey() {
 
 function buildAxis() {
 
-	this.xAxis = d3.axisBottom(this.xScale).tickArguments([4]);
+	this.xAxis = d3.axisBottom(this.xt).tickArguments([4]);
 	this.gXAxis.call(this.xAxis);
 
 	if (this.expanded) {
@@ -6932,6 +6932,11 @@ function buildAxis() {
 
 	this.gYAxis.call(this.yAxis);
 
+	// Add y axis label 
+	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", this.margin.left * -0.5).attr("dy", -5).text("Chromosome number");
+
+	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", this.margin.bottom * 0.5).attr("dy", 15).text("Gene position");
+
 	return this;
 }
 
@@ -6940,9 +6945,9 @@ function updateAxis() {
 	this.gXAxis.call(this.xAxis);
 
 	if (this.expanded) {
-		this.yAxis = d3.axisLeft(this.yScaleExpanded);
+		this.yAxis.scale(this.yScaleExpanded);
 	} else {
-		this.yAxis = d3.axisLeft(this.yScaleContracted);
+		this.yAxis.scale(this.yScaleContracted);
 	}
 
 	this.gYAxis.call(this.yAxis);
@@ -6987,7 +6992,7 @@ function buildChromosomeSelector() {
 	}).enter().append("rect").attr("class", "g-chromosome").attr('transform', function (d) {
 		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
 		return "translate(0, " + y + ")";
-	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ffffff").attr("fill-opacity", 0).attr("stroke", "#000000").attr("stroke-width", 1).attr("shape-rendering", "crispEdges").attr("opacity", 0).on("mouseenter", function () {
+	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ffffff").attr("fill-opacity", 0).attr("stroke", "#000000").attr("stroke-width", 1).attr("opacity", 0).on("mouseenter", function () {
 		d3.select(this).attr("opacity", 1);
 	}).on("mouseleave", function () {
 		d3.select(this).attr("opacity", 0);
@@ -7140,7 +7145,7 @@ function buildZoom() {
 
 	var zoom = d3.zoom().on("zoom", zoomed);
 
-	zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width, this.height]]);
+	zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom]]);
 
 	this.gSelectors.call(zoom);
 
@@ -7207,7 +7212,7 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 400,
+			height: 450,
 			width: 630
 		});
 
