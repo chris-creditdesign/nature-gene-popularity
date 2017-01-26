@@ -25,3 +25,9 @@ Interactive graphic for @naturenews
 -	Show hide return true and false 
 -	Zoom should not be controlled by the selectors
 -	Zoom into chromosome lenghtways when clicked
+-	Add propre exit for chromosome selector - as per chromosomes
+-	Show Hide text doesn't work in safari
+-	Contract isActiveChromosome into one file
+-	New way to zoom, not chromosome selector
+-	Reset button
+-	Transaction on expand view

@@ -23,7 +23,9 @@ function buildGenes() {
 		d3.select(this)
 			.selectAll("rect")
 			.attr('x', d => that.xt(d.start) )
-			.attr('width', d => that.xt(d.end) - that.xt(d.start) );
+			.attr('width', d => that.xt(d.end) - that.xt(d.start) )
+			.attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth());
+
 	});
 
 	return this;

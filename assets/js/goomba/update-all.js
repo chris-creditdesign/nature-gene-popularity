@@ -2,8 +2,12 @@ function updateAll() {
 	var that = this;
 	var zooming = false;
 
+	this.yScaleExpanded
+		.domain([this.activeChromosome]);
+
 	this.buildChromosomes()
 		.buildGenes()
+		.buildChromosomeSelector()
 		.updateAxis();
 	
 	this.buildTextGroup()

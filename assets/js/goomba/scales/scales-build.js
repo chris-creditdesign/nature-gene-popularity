@@ -31,7 +31,7 @@ function buildScales() {
 	this.colorScale = d3.scaleLog()
 		.domain(colorDomain)
 		.range(['#FFFF00', '#FF0000']);
-	
+			
 	return this;
 }
 

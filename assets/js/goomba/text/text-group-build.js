@@ -1,8 +1,15 @@
 import d3 from "../../d3-bundle";
 
 function buildTextGroup () {
+	var that = this;
 
-	let data = this.expanded ? [this.dataByChromosome[this.activeChromosome]] : this.dataByChromosome;
+	// Find the active chromosome by name in an array of objects
+	// This should be contracted into one file
+	function isActiveChromosome(elem, index, array) {
+		return elem.name === that.activeChromosome;
+	}
+
+	let data = this.expanded ? [this.dataByChromosome.find(isActiveChromosome)] : this.dataByChromosome;
 
 	this.gText = this.gMainText.selectAll("g")
 		.attr("opacity", 1)
@@ -14,7 +21,7 @@ function buildTextGroup () {
 			.append("g")
 			.attr("class", "g-text")
 			.attr('transform', d => {
-				let y = this.expandend ? this.yScaleExpanded(d.name) : this.yScaleContracted(d.name);
+				let y = this.yScaleExpanded(d.name);
 				return `translate(0, ${y})`;
 				}
 			);
@@ -22,7 +29,7 @@ function buildTextGroup () {
 		// Update
 		this.gText
 			.attr('transform', d => {
-				let y = this.expandend ? this.yScaleExpanded(d.name) : this.yScaleContracted(d.name);
+				let y = this.yScaleExpanded(d.name);
 				return `translate(0, ${y})`;
 				}
 			);
@@ -32,6 +39,7 @@ function buildTextGroup () {
 			.transition()
 			.attr("opacity", 0)
 			.remove();
+
 	} else {
 		this.gText.each(function() {
 				d3.select(this)
@@ -43,7 +51,6 @@ function buildTextGroup () {
 			.attr("opacity", 0)
 			.remove();
 	}
-
 
 	return this;
 

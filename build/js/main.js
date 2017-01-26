@@ -6958,7 +6958,15 @@ function updateAxis() {
 function buildChromosomes() {
 	var _this = this;
 
-	var data = this.expanded ? [this.dataByChromosome[this.activeChromosome]] : this.dataByChromosome;
+	var that = this;
+
+	// Find the active chromosome by name in an array of objects
+	// This should be contracted into one file
+	function isActiveChromosome(elem, index, array) {
+		return elem.name === that.activeChromosome;
+	}
+
+	var data = this.expanded ? [this.dataByChromosome.find(isActiveChromosome)] : this.dataByChromosome;
 
 	this.gChromosome = this.gChromosomes.selectAll("g").data(data, function (d) {
 		return d.name;
@@ -6973,6 +6981,10 @@ function buildChromosomes() {
 	// Update
 	this.gChromosome.attr('transform', function (d) {
 		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+		// console.log(d.name);
+		// console.log(this.activeChromosome);
+		// console.log(this.yScaleExpanded.domain());
+		// console.log(this.yScaleExpanded(d.name));
 		return "translate(0, " + y + ")";
 	});
 
@@ -6987,26 +6999,33 @@ function buildChromosomeSelector() {
 
 	var that = this;
 
-	this.gSelectors.selectAll("rect").data(this.dataByChromosome, function (d) {
-		return d.name;
-	}).enter().append("rect").attr("class", "g-chromosome").attr('transform', function (d) {
-		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
-		return "translate(0, " + y + ")";
-	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ffffff").attr("fill-opacity", 0).attr("stroke", "#000000").attr("stroke-width", 1).attr("opacity", 0).on("mouseenter", function () {
-		d3.select(this).attr("opacity", 1);
-	}).on("mouseleave", function () {
-		d3.select(this).attr("opacity", 0);
-	}).on("click", function (d, i) {
+	if (!this.expanded) {
+		// Enter
+		this.gSelectors.selectAll("rect").data(this.dataByChromosome, function (d) {
+			return d.name;
+		}).enter().append("rect").attr("class", "g-chromosome").attr('transform', function (d) {
+			var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+			return "translate(0, " + y + ")";
+		}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ffffff").attr("fill-opacity", 0).attr("stroke", "#000000").attr("stroke-width", 1).attr("opacity", 0).on("mouseenter", function () {
+			d3.select(this).attr("opacity", 1);
+		}).on("mouseleave", function () {
+			d3.select(this).attr("opacity", 0);
+		}).on("click", function (d) {
 
-		if (that.activeChromosome === i && that.expanded) {
-			that.expanded = false;
-		} else {
-			that.activeChromosome = i;
-			that.expanded = true;
-		}
+			if (that.activeChromosome === d.name && that.expanded) {
+				that.expanded = false;
+			} else {
+				that.activeChromosome = d.name;
+				that.expanded = true;
+			}
 
-		that.updateAll();
-	});
+			that.updateAll();
+		});
+	} else {
+		// Remove all the selectors in the expanded view
+		// Need to add a reset button
+		this.gSelectors.selectAll("rect").remove();
+	}
 
 	return this;
 }
@@ -7034,7 +7053,7 @@ function buildGenes() {
 			return that.xt(d.start);
 		}).attr('width', function (d) {
 			return that.xt(d.end) - that.xt(d.start);
-		});
+		}).attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth());
 	});
 
 	return this;
@@ -7043,7 +7062,15 @@ function buildGenes() {
 function buildTextGroup() {
 	var _this = this;
 
-	var data = this.expanded ? [this.dataByChromosome[this.activeChromosome]] : this.dataByChromosome;
+	var that = this;
+
+	// Find the active chromosome by name in an array of objects
+	// This should be contracted into one file
+	function isActiveChromosome(elem, index, array) {
+		return elem.name === that.activeChromosome;
+	}
+
+	var data = this.expanded ? [this.dataByChromosome.find(isActiveChromosome)] : this.dataByChromosome;
 
 	this.gText = this.gMainText.selectAll("g").attr("opacity", 1).data(data, function (d) {
 		return d.name;
@@ -7052,13 +7079,13 @@ function buildTextGroup() {
 	if (this.expanded) {
 		// Enter
 		this.gText.enter().append("g").attr("class", "g-text").attr('transform', function (d) {
-			var y = _this.expandend ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+			var y = _this.yScaleExpanded(d.name);
 			return "translate(0, " + y + ")";
 		});
 
 		// Update
 		this.gText.attr('transform', function (d) {
-			var y = _this.expandend ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+			var y = _this.yScaleExpanded(d.name);
 			return "translate(0, " + y + ")";
 		});
 
@@ -7164,7 +7191,9 @@ function updateAll() {
 	var that = this;
 	var zooming = false;
 
-	this.buildChromosomes().buildGenes().updateAxis();
+	this.yScaleExpanded.domain([this.activeChromosome]);
+
+	this.buildChromosomes().buildGenes().buildChromosomeSelector().updateAxis();
 
 	this.buildTextGroup().buildText();
 
