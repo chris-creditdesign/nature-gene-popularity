@@ -28,10 +28,6 @@ function buildChromosomes() {
 	this.gChromosome
 		.attr('transform', d => {
 			let y = this.expanded ? this.yScaleExpanded(d.name) : this.yScaleContracted(d.name);
-			// console.log(d.name);
-			// console.log(this.activeChromosome);
-			// console.log(this.yScaleExpanded.domain());
-			// console.log(this.yScaleExpanded(d.name));
 			return `translate(0, ${y})`;
 		});		
 

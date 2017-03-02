@@ -7,7 +7,7 @@ function Goomba (data) {
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
 		this.expanded = false;
-		this.activeChromosome = 0;
+		this.activeChromosome = "1";
 }
 
 export default Goomba;

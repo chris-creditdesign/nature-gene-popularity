@@ -7,7 +7,7 @@ function updateAll() {
 
 	this.buildChromosomes()
 		.buildGenes()
-		.buildChromosomeSelector()
+		// .buildChromosomeSelector()
 		.updateAxis();
 	
 	this.buildTextGroup()

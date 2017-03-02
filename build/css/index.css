@@ -10,7 +10,7 @@
   border: 1px solid #c8c7cf;
 }
 
-.outerwrapper h1, .outerwrapper h2, .outerwrapper h3, .outerwrapper p, .outerwrapper ul {
+.outerwrapper h1, .outerwrapper h2, .outerwrapper h3, .outerwrapper p, .outerwrapper ul, .outerwrapper label {
   padding: 10px 10px 0 10px;
   margin: 0;
   -webkit-hyphens: auto;
@@ -18,10 +18,22 @@
           hyphens: auto;
 }
 
-.outerwrapper .key span {
-  width: 10px;
-  height: 10px;
+.outerwrapper label {
+  padding: 10px 10px 0 10px;
+  margin: 0;
   display: inline-block;
+}
+
+.outerwrapper .key li {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.outerwrapper .key span {
+  width: 13px;
+  height: 13px;
+  display: inline-block;
+  margin-right: 3px;
 }
 
 .outerwrapper canvas {

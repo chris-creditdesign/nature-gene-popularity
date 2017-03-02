@@ -8,7 +8,7 @@ function buildScales() {
 	let colorDomain = d3.extent(this.data.map( d => parseInt(d.count, 10) ));
 
 	this.yScaleExpanded = d3.scaleBand()
-		.domain(inOrder)
+		.domain([this.activeChromosome])
 		.range([0, this.height])
 		.round(true)
 		.paddingInner(0.1)

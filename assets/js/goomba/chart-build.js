@@ -1,13 +1,6 @@
 import d3 from "../d3-bundle";
 
 function buildChart() {
-	// this.canvas = d3.select(this.target)
-	// 	.append("canvas")
-	// 	.attr("width", this.width)
-	// 	.attr("height", this.height);
-
-	// this.context = this.canvas.node().getContext("2d");
-
 	this.svg = d3.select(this.target)
 		// .style('height', `${this.height}px`) // Only explicitally set the height when positioning canvas ovre svg
 		.append("svg")
@@ -44,12 +37,15 @@ function buildChart() {
 		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
 	// Rect just just for registering the zoom event
-	// this.pane = this.svg.insert("rect")
-	// 	.attr("class", "pane")
-	// 	.attr("width", this.width)
-	// 	.attr("height", this.height)
-	// 	.attr("opacity", 0)
-	// 	.attr('pointer-events', 'all');
+	this.pane = this.svg.append("g")
+		.attr("class", "pane")
+		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+
+	this.pane.append("rect")
+		.attr("width", this.width)
+		.attr("height", this.height)
+		.attr("opacity", 0)
+		.attr('pointer-events', 'all');
 
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g')

@@ -1,12 +1,13 @@
 import Goomba from "./goomba/goomba";
 import buildChart from "./goomba/chart-build";
 import buildScales from "./goomba/scales/scales-build";
-import buildKey from "./goomba/key/key-build";
 import buildAxis from "./goomba/axis/axis-build";
 import updateAxis from "./goomba/axis/axis-update";
 
+import buildKey from "./goomba/ui/key-build";
+import buildChromosomeSelector from "./goomba/ui/chromosome-selector-build";
+
 import buildChromosomes from "./goomba/svg/chromosome-build";
-import buildChromosomeSelector from "./goomba/svg/chromosome-selector-build";
 import buildGenes from "./goomba/svg/gene-build";
 
 import buildTextGroup from "./goomba/text/text-group-build";

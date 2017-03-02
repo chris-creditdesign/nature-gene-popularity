@@ -9,7 +9,8 @@ function buildZoom() {
 	zoom.scaleExtent([1, this.data.length / 10])
 			.translateExtent([[0, 0], [(this.width + this.margin.left + this.margin.right), (this.height + this.margin.top + this.margin.bottom)]]);
 
-	this.gSelectors.call(zoom);
+	this.pane.call(zoom);
+	// this.gChromosomes.call(zoom);
 
 	function zoomed() {
 		
