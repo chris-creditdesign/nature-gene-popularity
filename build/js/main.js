@@ -3392,7 +3392,6 @@ var formatTypes = {
   }
 };
 
-// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5304,7 +5303,6 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6385,7 +6383,6 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -6786,14 +6783,6 @@ function completeAssign(target) {
 	return target;
 }
 
-// Don't use Object.assign because the event property is a getter ie:
-// `get event () { return event; },`
-// Object.assign will compute the return value now (before any event is fired)
-// so d3.event will always be null  ie.
-// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
-
-// instead use completeAssign:
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format);
 
 function Goomba(data) {
@@ -6815,21 +6804,14 @@ function buildChart() {
 
 	var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.height);
 
-	// Group to hold all the rects
+	// Group to hold all the chomosome selector rects
+	this.gChromosomeSelector = this.svg.append('g').attr("class", "g-chromosome-selector").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	// Group to hold all the groups that will hold the genes
 	this.gChromosomes = this.svg.append('g').attr("class", "g-chromosomes").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	// Group to hold all the rects
-	this.gChromosomeSelector = this.svg.append('g').attr("class", "g-chromosome-selector").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
-
-	this.gSelectors = this.gChromosomeSelector.append("g");
-
-	// Group to hold all the rects
 	this.gMainText = this.svg.append('g').attr("class", "g-main-text").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
-
-	// Rect just just for registering the zoom event
-	this.pane = this.svg.append("g").attr("class", "pane").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
-
-	this.pane.append("rect").attr("width", this.width).attr("height", this.height).attr("opacity", 0).attr('pointer-events', 'all');
 
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g').attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height + this.margin.top) + ")");
@@ -7032,7 +7014,7 @@ function buildGenes() {
 		// Enter
 		d3.select(this).selectAll("rect").data(data.genes, function (d) {
 			return d.geneid;
-		}).enter().append("rect").attr("x", function (d) {
+		}).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
 			return that.xt(d.start);
 		}).attr("y", 0).attr("width", function (d) {
 			return that.xt(d.end) - that.xt(d.start);
@@ -7048,6 +7030,26 @@ function buildGenes() {
 		}).attr('width', function (d) {
 			return that.xt(d.end) - that.xt(d.start);
 		}).attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth());
+	});
+
+	return this;
+}
+
+function buildSvgChromosomeSelector() {
+	var _this = this;
+
+	var that = this;
+
+	this.gChromosomeSelector.selectAll("rect").data(this.dataByChromosome, function (d) {
+		return d.name;
+	}).enter().append("rect").attr("class", "chromosome-selector").attr('transform', function (d) {
+		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+		return "translate(0, " + y + ")";
+	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ccc").attr("stroke-width", 0).on("click", function (d, i) {
+		that.activeChromosome = d.name;
+		that.expanded = true;
+		that.chromosomeSelector.node().value = d.name;
+		that.updateAll();
 	});
 
 	return this;
@@ -7184,43 +7186,52 @@ function buildZoom() {
 
 function updateAll() {
 	var that = this;
-	var zooming = false;
+	// var zooming = false;
 
 	this.yScaleExpanded.domain([this.activeChromosome]);
 
-	this.buildChromosomes().buildGenes()
-	// .buildChromosomeSelector()
-	.updateAxis();
+	this.buildChromosomes().buildGenes().updateAxis();
 
 	this.buildTextGroup().buildText();
 
 	if (this.expanded) {
-
-		zooming = true;
-		// Throttle the showHideText function
-		setTimeout(function () {
-			if (zooming) {
-				that.showHideText();
-				zooming = false;
-			}
-		}, 200);
+		this.gChromosomeSelector.selectAll("rect").remove();
+	} else {
+		this.buildSvgChromosomeSelector();
 	}
+
+	// if (this.expanded) {
+
+	// 	zooming = true;
+	// 	// Throttle the showHideText function
+	// 	setTimeout(function () {
+	// 		if (zooming) {
+	// 			that.showHideText();
+	// 			zooming = false;
+	// 		}
+	// 	}, 200);
+	// }
+
 }
 
 function init$1() {
 
-	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildZoom().buildTextGroup().buildText().showHideText();
+	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildSvgChromosomeSelector()
+	// .buildZoom()
+	.buildTextGroup().buildText().showHideText();
 }
 
 Goomba.prototype.buildChart = buildChart;
 Goomba.prototype.buildScales = buildScales;
-Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
 
+Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildChromosomes = buildChromosomes;
+
 Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
 Goomba.prototype.buildGenes = buildGenes;
+Goomba.prototype.buildSvgChromosomeSelector = buildSvgChromosomeSelector;
 
 Goomba.prototype.buildTextGroup = buildTextGroup;
 Goomba.prototype.buildText = buildText;

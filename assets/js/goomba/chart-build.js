@@ -16,36 +16,23 @@ function buildChart() {
 						.attr("width", this.width)
 						.attr("height", this.height);
 
-	// Group to hold all the rects
+	// Group to hold all the chomosome selector rects
+	this.gChromosomeSelector = this.svg.append('g')
+		.attr("class", "g-chromosome-selector")
+		.attr("clip-path", "url(#clip)")
+		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+
+	// Group to hold all the groups that will hold the genes
 	this.gChromosomes = this.svg.append('g')
 		.attr("class", "g-chromosomes")
 		.attr("clip-path", "url(#clip)")
 		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
 	// Group to hold all the rects
-	this.gChromosomeSelector = this.svg.append('g')
-		.attr("class", "g-chromosome-selector")
-		.attr("clip-path", "url(#clip)")
-		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-
-	this.gSelectors = this.gChromosomeSelector.append("g");
-
-	// Group to hold all the rects
 	this.gMainText = this.svg.append('g')
 		.attr("class", "g-main-text")
 		.attr("clip-path", "url(#clip)")
 		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-
-	// Rect just just for registering the zoom event
-	this.pane = this.svg.append("g")
-		.attr("class", "pane")
-		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-
-	this.pane.append("rect")
-		.attr("width", this.width)
-		.attr("height", this.height)
-		.attr("opacity", 0)
-		.attr('pointer-events', 'all');
 
 	// Group to hold the x axis 
 	this.gXAxis = this.svg.append('g')

@@ -11,6 +11,7 @@ function buildGenes() {
 			.data(data.genes, d => d.geneid)
 			.enter()
 			.append("rect")
+			.attr("class", "gene contracted")
 			.attr("x", d => that.xt(d.start) )
 			.attr("y", 0 )
 			.attr("width", d => that.xt(d.end) - that.xt(d.start) )

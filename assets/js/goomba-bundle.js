@@ -9,6 +9,7 @@ import buildChromosomeSelector from "./goomba/ui/chromosome-selector-build";
 
 import buildChromosomes from "./goomba/svg/chromosome-build";
 import buildGenes from "./goomba/svg/gene-build";
+import buildSvgChromosomeSelector from "./goomba/svg/chromosome-selector-build";
 
 import buildTextGroup from "./goomba/text/text-group-build";
 import buildText from "./goomba/text/text-build";
@@ -20,13 +21,15 @@ import init from "./goomba/init";
 
 Goomba.prototype.buildChart = buildChart;
 Goomba.prototype.buildScales = buildScales;
-Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
 
+Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildChromosomes = buildChromosomes;
+
 Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
 Goomba.prototype.buildGenes = buildGenes;
+Goomba.prototype.buildSvgChromosomeSelector = buildSvgChromosomeSelector;
 
 Goomba.prototype.buildTextGroup = buildTextGroup;
 Goomba.prototype.buildText = buildText;
