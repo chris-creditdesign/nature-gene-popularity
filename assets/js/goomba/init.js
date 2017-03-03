@@ -9,10 +9,11 @@ function init() {
 		.buildGenes()
 		.buildSvgChromosomeSelector()
 		// .buildZoom()
+		.buildBrush()
 		.buildTextGroup()
 		.buildText()
-		.showHideText();		
-
+		.showHideText();
+		
 }
 
 export default init;

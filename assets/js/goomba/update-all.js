@@ -10,7 +10,8 @@ function updateAll() {
 		.updateAxis();
 	
 	this.buildTextGroup()
-		.buildText();
+		.buildText()
+		.showHideText();
 
 	if (this.expanded) {
 		this.gChromosomeSelector.selectAll("rect")

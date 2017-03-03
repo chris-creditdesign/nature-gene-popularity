@@ -25,7 +25,9 @@ function buildScales() {
 		.domain(xScaleDomain)
 		.range([0, this.width]);
 
-	this.xt = this.xScale;
+	this.xt = d3.scaleLinear()
+		.domain(xScaleDomain)
+		.range([0, this.width]);
 
 	// Use a log scale to account for the wide range of numbers
 	this.colorScale = d3.scaleLog()

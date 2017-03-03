@@ -16,6 +16,7 @@ import buildText from "./goomba/text/text-build";
 import showHideText from "./goomba/text/text-showhide";
 
 import buildZoom from "./goomba/zoom/zoom";
+import buildBrush from "./goomba/brush/build-brush";
 import updateAll from "./goomba/update-all";
 import init from "./goomba/init";
 
@@ -36,6 +37,8 @@ Goomba.prototype.buildText = buildText;
 Goomba.prototype.showHideText = showHideText;
 
 Goomba.prototype.buildZoom = buildZoom;
+Goomba.prototype.buildBrush = buildBrush;
+
 Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.init = init;
 
