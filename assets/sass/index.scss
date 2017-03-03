@@ -69,6 +69,17 @@
 			pointer-events: none;
 		}
 
+		// Brush
+		rect.handle {
+			// stroke: #000;
+			// stroke-width: 1;
+			fill: #555;
+		}
+
+		rect.selection {
+			stroke-width: 0;
+		}
+
 	}
 
 	.axis {

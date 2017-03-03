@@ -9,7 +9,6 @@ function buildBrush() {
 		if (!d3.event.selection) {
 			that.gBrush.select(".brush").call(that.brush.move, s);
 		}	// Expand brush if just click and no drag
-			// Do I need this?
 
 		that.xt.domain([that.xScale.invert(s[0]), that.xScale.invert(s[1])]);
 		that.updateAll();
@@ -17,6 +16,7 @@ function buildBrush() {
 
 	this.brush = d3.brushX()
 		.extent([[0,0], [this.width, this.brushHeight]])
+		.handleSize(8)
 		.on("brush end", brushed);
 
 	this.gBrush.append("rect")

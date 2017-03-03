@@ -5,7 +5,7 @@ import * as _array from "d3-array";
 import * as _axis from  "d3-axis";
 import * as _zoom from "d3-zoom";
 import * as _format from "d3-format";
-import * as _brush from "d3-brush";
+import * as _brush from "./lib/brush";
 import completeAssign from "./helpers/complete-assign";
 
 // Don't use Object.assign because the event property is a getter ie:

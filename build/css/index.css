@@ -67,6 +67,14 @@
   pointer-events: none;
 }
 
+.outerwrapper svg rect.handle {
+  fill: #555;
+}
+
+.outerwrapper svg rect.selection {
+  stroke-width: 0;
+}
+
 .outerwrapper .axis {
   shape-rendering: crispEdges;
 }

@@ -44,15 +44,15 @@ function buildChart() {
 			.attr("class", "y axis")
 			.attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
 
-	// Group to hold the brush
-	this.gBrush = this.svg.append("g")
-		.attr("class", "g-brush")
-		.attr("transform", `translate(${this.margin.left}, ${this.margin.top + this.height + this.margin.mid})`);
-
 	// Group to hold the x axis 
 	this.gXAxisBrush = this.svg.append("g")
 			.attr("class", "x axis")
 			.attr("transform", `translate(${this.margin.left}, ${this.height + this.margin.top + this.margin.mid + this.brushHeight})`);
+
+	// Group to hold the brush
+	this.gBrush = this.svg.append("g")
+		.attr("class", "g-brush")
+		.attr("transform", `translate(${this.margin.left}, ${this.margin.top + this.height + this.margin.mid})`);
 	
 	return this;
 }

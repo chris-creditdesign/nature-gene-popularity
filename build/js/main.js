@@ -6999,11 +6999,11 @@ function brush$1(dim) {
       group.selectAll(".handle").style("display", null).attr("x", function (d) {
         return d.type[d.type.length - 1] === "e" ? selection$$1[1][0] - handleSize / 2 : selection$$1[0][0] - handleSize / 2;
       }).attr("y", function (d) {
-        return d.type[0] === "s" ? selection$$1[1][1] - handleSize / 2 : selection$$1[0][1] - handleSize / 2;
+        return d.type[0] === "s" ? selection$$1[1][1] - handleSize / 2 : selection$$1[0][1];
       }).attr("width", function (d) {
         return d.type === "n" || d.type === "s" ? selection$$1[1][0] - selection$$1[0][0] + handleSize : handleSize;
       }).attr("height", function (d) {
-        return d.type === "e" || d.type === "w" ? selection$$1[1][1] - selection$$1[0][1] + handleSize : handleSize;
+        return d.type === "e" || d.type === "w" ? selection$$1[1][1] - selection$$1[0][1] : handleSize;
       });
     } else {
       group.selectAll(".selection,.handle").style("display", "none").attr("x", null).attr("y", null).attr("width", null).attr("height", null);
@@ -7305,13 +7305,11 @@ function brush$1(dim) {
   return brush;
 }
 
-
-
 var _brush = Object.freeze({
-	brush: brush,
+	brushSelection: brushSelection,
 	brushX: brushX,
 	brushY: brushY,
-	brushSelection: brushSelection
+	default: brush
 });
 
 function completeAssign(target) {
@@ -7343,6 +7341,7 @@ function Goomba(data) {
 		this.totalHeight = data.height ? data.height : 450;
 		this.margin = data.margin ? data.margin : { 'top': 0, 'left': 50, 'mid': 60, 'bottom': 40, 'right': 10 };
 		this.brushHeight = data.brushHeight ? data.brushHeight : 50;
+		this.handleWidth = data.handleWidth ? data.handleWidth : 10;
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.mid - this.brushHeight - this.margin.bottom;
 		this.data = data.data;
@@ -7373,11 +7372,11 @@ function buildChart() {
 	// Group to hold the y axis
 	this.gYAxis = this.svg.append("g").attr("class", "y axis").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
-	// Group to hold the brush
-	this.gBrush = this.svg.append("g").attr("class", "g-brush").attr("transform", "translate(" + this.margin.left + ", " + (this.margin.top + this.height + this.margin.mid) + ")");
-
 	// Group to hold the x axis 
 	this.gXAxisBrush = this.svg.append("g").attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height + this.margin.top + this.margin.mid + this.brushHeight) + ")");
+
+	// Group to hold the brush
+	this.gBrush = this.svg.append("g").attr("class", "g-brush").attr("transform", "translate(" + this.margin.left + ", " + (this.margin.top + this.height + this.margin.mid) + ")");
 
 	return this;
 }
@@ -7756,13 +7755,12 @@ function buildBrush() {
 		if (!d3.event.selection) {
 			that.gBrush.select(".brush").call(that.brush.move, s);
 		} // Expand brush if just click and no drag
-		// Do I need this?
 
 		that.xt.domain([that.xScale.invert(s[0]), that.xScale.invert(s[1])]);
 		that.updateAll();
 	}
 
-	this.brush = d3.brushX().extent([[0, 0], [this.width, this.brushHeight]]).on("brush end", brushed);
+	this.brush = d3.brushX().extent([[0, 0], [this.width, this.brushHeight]]).handleSize(8).on("brush end", brushed);
 
 	this.gBrush.append("rect").attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.brushHeight).attr("fill", "#ccc");
 
