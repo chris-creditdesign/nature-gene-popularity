@@ -67,12 +67,18 @@
   pointer-events: none;
 }
 
-.outerwrapper svg rect.handle {
+.outerwrapper svg rect.handle-box {
   fill: #555;
+}
+
+.outerwrapper svg line.handle-line {
+  stroke: #ddd;
+  stroke-width: 1;
 }
 
 .outerwrapper svg rect.selection {
   stroke-width: 0;
+  opacity: 0.7;
 }
 
 .outerwrapper .axis {

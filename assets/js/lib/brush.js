@@ -174,9 +174,31 @@ function brush(dim) {
 
     handle.exit().remove();
 
-    handle.enter().append("rect")
+    handle.enter().append("g")
         .attr("class", function(d) { return "handle handle--" + d.type; })
         .attr("cursor", function(d) { return cursors[d.type]; });
+
+    group.selectAll(".handle").append("rect")
+      .attr("class", "handle-box")
+      .attr("x", (handleSize * -0.5))
+      .attr("y", 0)
+      .attr("width", handleSize )
+      .attr("height", extent()[1][1] );
+
+    group.selectAll(".handle").append("line")
+      .attr("class", "handle-line")
+      .attr("x1", -handleSize/6)
+      .attr("y1", handleSize/2)
+      .attr("x2", -handleSize/6)
+      .attr("y2", extent()[1][1] - (handleSize/2) );
+
+    group.selectAll(".handle").append("line")
+      .attr("class", "handle-line")
+      .attr("x1", handleSize/6)
+      .attr("y1", handleSize/2)
+      .attr("x2", handleSize/6)
+      .attr("y2", extent()[1][1] - (handleSize/2) );
+
 
     group
         .each(redraw)
@@ -238,14 +260,10 @@ function brush(dim) {
 
       group.selectAll(".handle")
           .style("display", null)
-          .attr("x", function(d) { 
-            return d.type[d.type.length - 1] === "e" ? selection[1][0] - handleSize / 2 : selection[0][0] - handleSize / 2; 
-          })
-          .attr("y", function(d) { 
-            return d.type[0] === "s" ? selection[1][1] - handleSize / 2 : selection[0][1]; 
-          })
-          .attr("width", function(d) { return d.type === "n" || d.type === "s" ? selection[1][0] - selection[0][0] + handleSize : handleSize; })
-          .attr("height", function(d) { return d.type === "e" || d.type === "w" ? selection[1][1] - selection[0][1] : handleSize; });
+          .attr("transform", function(d) {
+            return `translate(${d.type[d.type.length - 1] === "e" ? selection[1][0] : selection[0][0]},0)`;
+          });
+          
     }
 
     else {
