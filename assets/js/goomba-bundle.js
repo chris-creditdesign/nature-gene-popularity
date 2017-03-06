@@ -11,9 +11,7 @@ import buildChromosomes from "./goomba/svg/chromosome-build";
 import buildGenes from "./goomba/svg/gene-build";
 import buildSvgChromosomeSelector from "./goomba/svg/chromosome-selector-build";
 
-import buildTextGroup from "./goomba/text/text-group-build";
 import buildText from "./goomba/text/text-build";
-import showHideText from "./goomba/text/text-showhide";
 
 import buildZoom from "./goomba/zoom/zoom";
 import buildBrush from "./goomba/brush/build-brush";
@@ -32,9 +30,7 @@ Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
 Goomba.prototype.buildGenes = buildGenes;
 Goomba.prototype.buildSvgChromosomeSelector = buildSvgChromosomeSelector;
 
-Goomba.prototype.buildTextGroup = buildTextGroup;
 Goomba.prototype.buildText = buildText;
-Goomba.prototype.showHideText = showHideText;
 
 Goomba.prototype.buildZoom = buildZoom;
 Goomba.prototype.buildBrush = buildBrush;

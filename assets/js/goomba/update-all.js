@@ -9,9 +9,8 @@ function updateAll() {
 		.buildGenes()
 		.updateAxis();
 	
-	this.buildTextGroup()
-		.buildText()
-		.showHideText();
+	this.buildText();
+		
 
 	if (this.expanded) {
 		this.gChromosomeSelector.selectAll("rect")

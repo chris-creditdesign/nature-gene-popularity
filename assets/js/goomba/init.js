@@ -10,9 +10,7 @@ function init() {
 		.buildSvgChromosomeSelector()
 		// .buildZoom()
 		.buildBrush()
-		.buildTextGroup()
-		.buildText()
-		.showHideText();
+		.buildText();
 		
 }
 

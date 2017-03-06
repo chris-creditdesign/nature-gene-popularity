@@ -3392,6 +3392,7 @@ var formatTypes = {
   }
 };
 
+// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5303,6 +5304,7 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
+// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6383,6 +6385,7 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
+// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -7334,6 +7337,14 @@ function completeAssign(target) {
 	return target;
 }
 
+// Don't use Object.assign because the event property is a getter ie:
+// `get event () { return event; },`
+// Object.assign will compute the return value now (before any event is fired)
+// so d3.event will always be null  ie.
+// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
+
+// instead use completeAssign:
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format, _brush);
 
 function Goomba(data) {
@@ -7617,76 +7628,6 @@ function buildSvgChromosomeSelector() {
 	return this;
 }
 
-function buildTextGroup() {
-	var _this = this;
-
-	var that = this;
-
-	// Find the active chromosome by name in an array of objects
-	// This should be contracted into one file
-	function isActiveChromosome(elem, index, array) {
-		return elem.name === that.activeChromosome;
-	}
-
-	var data = this.expanded ? [this.dataByChromosome.find(isActiveChromosome)] : this.dataByChromosome;
-
-	this.gText = this.gMainText.selectAll("g").attr("opacity", 1).data(data, function (d) {
-		return d.name;
-	});
-
-	if (this.expanded) {
-		// Enter
-		this.gText.enter().append("g").attr("class", "g-text").attr('transform', function (d) {
-			var y = _this.yScaleExpanded(d.name);
-			return "translate(0, " + y + ")";
-		});
-
-		// Update
-		this.gText.attr('transform', function (d) {
-			var y = _this.yScaleExpanded(d.name);
-			return "translate(0, " + y + ")";
-		});
-
-		// Remove
-		this.gText.exit().transition().attr("opacity", 0).remove();
-	} else {
-		this.gText.each(function () {
-			d3.select(this).selectAll('text').attr("class", "hide-svg-text");
-		}).transition().delay(300).attr("opacity", 0).remove();
-	}
-
-	return this;
-}
-
-function buildText() {
-	var that = this;
-
-	this.gMainText.selectAll("g").each(function (data, i) {
-
-		// Enter
-		d3.select(this).selectAll('text').data(data.genes, function (d) {
-			return d.geneid;
-		}).enter().append("text").attr("x", function (d) {
-			var start = that.xt(d.start);
-			var width = that.xt(d.end) - that.xt(d.start);
-
-			return start + width / 2;
-		}).attr("y", -5).attr("text-anchor", "middle").text(function (d) {
-			return d.symbol;
-		}).attr("class", "hide-svg-text");
-
-		// Update
-		d3.select(this).selectAll("text").attr("x", function (d) {
-			var start = that.xt(d.start);
-			var width = that.xt(d.end) - that.xt(d.start);
-
-			return start + width / 2;
-		});
-	});
-
-	return this;
-}
-
 var collisionDetection = function collisionDetection(elem, index, array) {
 	// Check all subsequent elements
 	// until they are out of reach of this element
@@ -7712,15 +7653,49 @@ var collisionDetection = function collisionDetection(elem, index, array) {
 	}
 };
 
-function showHideText() {
-	this.gMainText.selectAll("g").each(function () {
-		var thisGroup = d3.select(this).selectAll("text").attr("class", function (d) {
-			// Only show labels for counts over 1000
-			return parseInt(d.count, 10) > 0 ? null : "hide-svg-text";
-		});
+function buildText() {
+	var _this = this;
 
-		thisGroup._groups[0].forEach(collisionDetection);
+	var that = this;
+
+	// Find the active chromosome by name in an array of objects
+	// This should be contracted into one file
+	function isActiveChromosome(elem, index, array) {
+		return elem.name === that.activeChromosome;
+	}
+
+	var data = this.expanded ? this.dataByChromosome.find(isActiveChromosome).genes : [];
+
+	this.gText = this.gMainText.selectAll("text").data(data, function (d) {
+		return d.name;
 	});
+
+	// Enter
+	this.gText.enter().append("text").attr("x", function (d) {
+		var start = that.xt(d.start);
+		var width = that.xt(d.end) - that.xt(d.start);
+
+		return start + width / 2;
+	}).attr("y", function () {
+		return _this.height / 2 - _this.yScaleExpanded.bandwidth() / 2 - 10;
+	}).attr("text-anchor", "middle").text(function (d) {
+		return d.symbol;
+	}).attr("class", null).each(function (elem, index, array) {
+		collisionDetection(this, index, array);
+	});
+
+	// Update
+	this.gText.attr("x", function (d) {
+		var start = that.xt(d.start);
+		var width = that.xt(d.end) - that.xt(d.start);
+
+		return start + width / 2;
+	}).attr("class", null).each(function (elem, index, array) {
+		collisionDetection(this, index, array);
+	});
+
+	// Exit 
+	this.gText.exit().remove();
 
 	return this;
 }
@@ -7777,7 +7752,7 @@ function updateAll() {
 
 	this.buildChromosomes().buildGenes().updateAxis();
 
-	this.buildTextGroup().buildText().showHideText();
+	this.buildText();
 
 	if (this.expanded) {
 		this.gChromosomeSelector.selectAll("rect").remove();
@@ -7803,7 +7778,7 @@ function init$1() {
 
 	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildSvgChromosomeSelector()
 	// .buildZoom()
-	.buildBrush().buildTextGroup().buildText().showHideText();
+	.buildBrush().buildText();
 }
 
 Goomba.prototype.buildChart = buildChart;
@@ -7818,9 +7793,7 @@ Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
 Goomba.prototype.buildGenes = buildGenes;
 Goomba.prototype.buildSvgChromosomeSelector = buildSvgChromosomeSelector;
 
-Goomba.prototype.buildTextGroup = buildTextGroup;
 Goomba.prototype.buildText = buildText;
-Goomba.prototype.showHideText = showHideText;
 
 Goomba.prototype.buildZoom = buildZoom;
 Goomba.prototype.buildBrush = buildBrush;
