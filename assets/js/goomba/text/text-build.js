@@ -13,7 +13,7 @@ function buildText () {
 	let data = this.expanded ? this.dataByChromosome.find(isActiveChromosome).genes : [];
 
 	this.gText = this.gMainText.selectAll("text")
-		.data(data, d => d.name);
+		.data(data);
 
 	// Enter
 	this.gText.enter()

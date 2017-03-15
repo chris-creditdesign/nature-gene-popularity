@@ -18,8 +18,8 @@ function buildScales() {
 		.domain(inOrder)
 		.range([0, this.height])
 		.round(true)
-		.paddingInner(0.1)
-		.paddingOuter(0.5);
+		.paddingInner(0)
+		.paddingOuter(0);
 
 
 	// Custom invert function 

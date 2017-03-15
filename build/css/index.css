@@ -47,8 +47,8 @@
 .outerwrapper svg text {
   font-size: 10px;
   pointer-events: none;
-  -webkit-transition: opacity 200ms linear;
-  transition: opacity 200ms linear;
+  -webkit-transition: opacity 150ms linear;
+  transition: opacity 150ms linear;
 }
 
 .outerwrapper svg text.hide-svg-text {

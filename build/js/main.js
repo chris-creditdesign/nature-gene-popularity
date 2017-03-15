@@ -7438,7 +7438,7 @@ function buildScales() {
 
 	this.yScaleExpanded = d3.scaleBand().domain([this.activeChromosome]).range([0, this.height]).round(true).paddingInner(0.1).paddingOuter(0.5);
 
-	this.yScaleContracted = d3.scaleBand().domain(inOrder).range([0, this.height]).round(true).paddingInner(0.1).paddingOuter(0.5);
+	this.yScaleContracted = d3.scaleBand().domain(inOrder).range([0, this.height]).round(true).paddingInner(0).paddingOuter(0);
 
 	// Custom invert function 
 	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
@@ -7591,9 +7591,7 @@ function buildGenes() {
 
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
-		d3.select(this).selectAll("rect").data(data.genes, function (d) {
-			return d.geneid;
-		}).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
+		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
 			return that.xt(d.start);
 		}).attr("y", 0).attr("width", function (d) {
 			return that.xt(d.end) - that.xt(d.start);
@@ -7654,11 +7652,15 @@ var collisionDetection = function collisionDetection(elem, index, array) {
 	if (!elem.hasAttribute("class")) {
 		for (var n = index + 1; n < array.length; n++) {
 
-			var nextBox = array[n].getBBox();
-			var leftEdge = nextBox.x;
+			if (array[n]) {
+				var nextBox = array[n].getBBox();
+				var leftEdge = nextBox.x;
 
-			if (leftEdge < rightEdge + 10) {
-				array[n].setAttribute("class", "hide-svg-text");
+				if (leftEdge < rightEdge + 10) {
+					array[n].setAttribute("class", "hide-svg-text");
+				} else {
+					break;
+				}
 			} else {
 				break;
 			}
@@ -7679,9 +7681,7 @@ function buildText() {
 
 	var data = this.expanded ? this.dataByChromosome.find(isActiveChromosome).genes : [];
 
-	this.gText = this.gMainText.selectAll("text").data(data, function (d) {
-		return d.name;
-	});
+	this.gText = this.gMainText.selectAll("text").data(data);
 
 	// Enter
 	this.gText.enter().append("text").attr("x", function (d) {

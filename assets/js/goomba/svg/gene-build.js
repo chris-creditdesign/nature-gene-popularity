@@ -8,7 +8,7 @@ function buildGenes() {
 		// Enter
 		d3.select(this)
 			.selectAll("rect")
-			.data(data.genes, d => d.geneid)
+			.data(data.genes)
 			.enter()
 			.append("rect")
 			.attr("class", "gene contracted")
