@@ -3392,7 +3392,6 @@ var formatTypes = {
   }
 };
 
-// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5304,7 +5303,6 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6385,7 +6383,6 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -7337,14 +7334,6 @@ function completeAssign(target) {
 	return target;
 }
 
-// Don't use Object.assign because the event property is a getter ie:
-// `get event () { return event; },`
-// Object.assign will compute the return value now (before any event is fired)
-// so d3.event will always be null  ie.
-// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
-
-// instead use completeAssign:
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format, _brush);
 
 function Goomba(data) {
@@ -7358,7 +7347,7 @@ function Goomba(data) {
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
 		this.expanded = false;
-		this.activeChromosome = "1";
+		this.activeChromosome = "All";
 }
 
 function buildChart() {
@@ -7388,6 +7377,11 @@ function buildChart() {
 
 	// Group to hold the brush
 	this.gBrush = this.svg.append("g").attr("class", "g-brush").attr("transform", "translate(" + this.margin.left + ", " + (this.margin.top + this.height + this.margin.mid) + ")");
+
+	// Group to hold all the groups that will hold the genes
+	this.gZoom = this.svg.append("g").attr("class", "g-chromosomes").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+
+	this.zoomRect = this.gZoom.append("rect").attr("opacity", 0).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.height);
 
 	return this;
 }
@@ -7445,6 +7439,18 @@ function buildScales() {
 	this.yScaleExpanded = d3.scaleBand().domain([this.activeChromosome]).range([0, this.height]).round(true).paddingInner(0.1).paddingOuter(0.5);
 
 	this.yScaleContracted = d3.scaleBand().domain(inOrder).range([0, this.height]).round(true).paddingInner(0.1).paddingOuter(0.5);
+
+	// Custom invert function 
+	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
+	this.yScaleContracted.invert = function () {
+
+		return function (x) {
+			var range = this.range();
+			var domain = this.domain();
+			var scale = d3.scaleQuantize().domain(range).range(domain);
+			return scale(x);
+		};
+	}();
 
 	this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
 
@@ -7613,16 +7619,23 @@ function buildSvgChromosomeSelector() {
 
 	var that = this;
 
-	this.gChromosomeSelector.selectAll("rect").data(this.dataByChromosome, function (d) {
+	this.chromomsoeSelectors = this.gChromosomeSelector.selectAll("rect").data(this.dataByChromosome, function (d) {
 		return d.name;
-	}).enter().append("rect").attr("class", "chromosome-selector").attr('transform', function (d) {
-		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+	});
+
+	// Enter
+	this.chromomsoeSelectors.enter().append("rect").attr("class", "chromosome-selector").attr('transform', function (d) {
+		var y = _this.yScaleContracted(d.name);
 		return "translate(0, " + y + ")";
-	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.expanded ? this.yScaleExpanded.bandwidth() : this.yScaleContracted.bandwidth()).attr("fill", "#ccc").attr("stroke-width", 0).on("click", function (d, i) {
-		that.activeChromosome = d.name;
-		that.expanded = true;
-		that.chromosomeSelector.node().value = d.name;
-		that.updateAll();
+	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.yScaleContracted.bandwidth()).attr("fill", "#ccc").attr("opacity", 0).attr("stroke-width", 0);
+
+	// Update 
+	this.chromomsoeSelectors.attr("opacity", function (d) {
+		if (_this.activeChromosome === d.name) {
+			return 0.3;
+		} else {
+			return 0;
+		}
 	});
 
 	return this;
@@ -7707,11 +7720,34 @@ function buildZoom() {
 
 	zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom]]);
 
-	this.pane.call(zoom);
-	// this.gChromosomes.call(zoom);
+	this.zoomRect.call(zoom).on("mousemove", mouseMove).on("mouseout", mouseOut).on("click", mouseClick);
+
+	function mouseMove() {
+		if (!that.expanded) {
+			var yPos = d3.mouse(this)[1];
+			that.activeChromosome = that.yScaleContracted.invert(yPos);
+			that.updateAll();
+		}
+	}
+
+	function mouseOut() {
+		if (!that.expanded) {
+			that.activeChromosome = "All";
+			that.updateAll();
+		}
+	}
+
+	function mouseClick() {
+		if (!that.expanded) {
+			var yPos = d3.mouse(this)[1];
+			that.activeChromosome = that.yScaleContracted.invert(yPos);
+			that.expanded = true;
+			that.chromosomeSelector.property("value", that.activeChromosome);
+			that.updateAll();
+		}
+	}
 
 	function zoomed() {
-
 		var t = d3.event.transform;
 		that.xt = t.rescaleX(that.xScale);
 
@@ -7776,9 +7812,7 @@ function updateAll() {
 
 function init$1() {
 
-	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildSvgChromosomeSelector()
-	// .buildZoom()
-	.buildBrush().buildText();
+	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildSvgChromosomeSelector().buildZoom().buildBrush().buildText();
 }
 
 Goomba.prototype.buildChart = buildChart;

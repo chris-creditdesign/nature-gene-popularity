@@ -55,14 +55,6 @@
   opacity: 0;
 }
 
-.outerwrapper svg .chromosome-selector {
-  opacity: 0;
-}
-
-.outerwrapper svg .chromosome-selector:hover {
-  opacity: 0.3;
-}
-
 .outerwrapper svg .gene.contracted {
   pointer-events: none;
 }

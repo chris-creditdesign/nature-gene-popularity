@@ -53,6 +53,18 @@ function buildChart() {
 	this.gBrush = this.svg.append("g")
 		.attr("class", "g-brush")
 		.attr("transform", `translate(${this.margin.left}, ${this.margin.top + this.height + this.margin.mid})`);
+
+	// Group to hold all the groups that will hold the genes
+	this.gZoom = this.svg.append("g")
+		.attr("class", "g-chromosomes")
+		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+
+	this.zoomRect = this.gZoom.append("rect")
+		.attr("opacity", 0)
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", this.width)
+		.attr("height", this.height);
 	
 	return this;
 }

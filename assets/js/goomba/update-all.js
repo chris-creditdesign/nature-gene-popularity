@@ -10,6 +10,7 @@ function updateAll() {
 		.updateAxis();
 	
 	this.buildText();
+
 		
 
 	if (this.expanded) {

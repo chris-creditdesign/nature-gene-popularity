@@ -8,7 +8,7 @@ function init() {
 		.buildChromosomeSelector()
 		.buildGenes()
 		.buildSvgChromosomeSelector()
-		// .buildZoom()
+		.buildZoom()
 		.buildBrush()
 		.buildText();
 		
