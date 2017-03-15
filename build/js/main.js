@@ -7716,12 +7716,6 @@ function buildText() {
 function buildZoom() {
 	var that = this;
 
-	var zoom = d3.zoom().on("zoom", zoomed);
-
-	zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom]]);
-
-	this.zoomRect.call(zoom).on("mousemove", mouseMove).on("mouseout", mouseOut).on("click", mouseClick);
-
 	function mouseMove() {
 		if (!that.expanded) {
 			var yPos = d3.mouse(this)[1];
@@ -7748,11 +7742,21 @@ function buildZoom() {
 	}
 
 	function zoomed() {
+		if (d3.event.sourceEvent && d3.event.sourceEvent.type == "brush") return; // ignore if zoom-by-brush
+
 		var t = d3.event.transform;
 		that.xt = t.rescaleX(that.xScale);
+		var range = that.xt.range().map(t.invertX, t);
+		that.gBrush.select(".brush").call(that.brush.move, range);
 
 		that.updateAll();
 	}
+
+	this.zoom = d3.zoom().on("zoom", zoomed);
+
+	this.zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom]]);
+
+	this.zoomRect.call(this.zoom).on("mousemove", mouseMove).on("mouseout", mouseOut).on("click", mouseClick);
 
 	return this;
 }
@@ -7761,6 +7765,8 @@ function buildBrush() {
 	var that = this;
 
 	function brushed() {
+		if (d3.event.sourceEvent && d3.event.sourceEvent.type == "zoom") return; // ignore if brush-by-zoom
+
 		var s = d3.event.selection || that.xScale.range();
 
 		if (!d3.event.selection) {
@@ -7768,6 +7774,9 @@ function buildBrush() {
 		} // Expand brush if just click and no drag
 
 		that.xt.domain([that.xScale.invert(s[0]), that.xScale.invert(s[1])]);
+
+		that.zoomRect.call(that.zoom).call(that.zoom.transform, d3.zoomIdentity.scale(that.width / (s[1] - s[0])).translate(-s[0], 0));
+
 		that.updateAll();
 	}
 
@@ -7795,19 +7804,6 @@ function updateAll() {
 	} else {
 		this.buildSvgChromosomeSelector();
 	}
-
-	// if (this.expanded) {
-
-	// 	zooming = true;
-	// 	// Throttle the showHideText function
-	// 	setTimeout(function () {
-	// 		if (zooming) {
-	// 			that.showHideText();
-	// 			zooming = false;
-	// 		}
-	// 	}, 200);
-	// }
-
 }
 
 function init$1() {

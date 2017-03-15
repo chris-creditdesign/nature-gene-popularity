@@ -19,20 +19,6 @@ function updateAll() {
 	} else {
 		this.buildSvgChromosomeSelector();
 	}
-		
-	// if (this.expanded) {
-	
-	// 	zooming = true;
-	// 	// Throttle the showHideText function
-	// 	setTimeout(function () {
-	// 		if (zooming) {
-	// 			that.showHideText();
-	// 			zooming = false;
-	// 		}
-	// 	}, 200);
-	// }
-	
-
 
 }
 

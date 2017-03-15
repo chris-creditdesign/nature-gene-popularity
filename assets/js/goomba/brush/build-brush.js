@@ -4,6 +4,8 @@ function buildBrush() {
 	var that = this;
 
 	function brushed() {
+		if (d3.event.sourceEvent && d3.event.sourceEvent.type == "zoom") return; // ignore if brush-by-zoom
+
 		var s = d3.event.selection || that.xScale.range();
 		
 		if (!d3.event.selection) {
@@ -11,6 +13,12 @@ function buildBrush() {
 		}	// Expand brush if just click and no drag
 
 		that.xt.domain([that.xScale.invert(s[0]), that.xScale.invert(s[1])]);
+
+		that.zoomRect.call(that.zoom).call(that.zoom.transform, d3.zoomIdentity
+				.scale(that.width / (s[1] - s[0]))
+				.translate(-s[0], 0)
+			);
+
 		that.updateAll();
 	}
 

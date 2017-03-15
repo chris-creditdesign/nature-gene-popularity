@@ -3,17 +3,6 @@ import d3 from "../../d3-bundle";
 function buildZoom() {
 	var that = this;
 
-	var zoom = d3.zoom()
-		.on("zoom", zoomed);
-
-	zoom.scaleExtent([1, this.data.length / 10])
-			.translateExtent([[0, 0], [(this.width + this.margin.left + this.margin.right), (this.height + this.margin.top + this.margin.bottom)]]);
-
-	this.zoomRect.call(zoom)
-		.on("mousemove", mouseMove)
-		.on("mouseout", mouseOut)
-		.on("click", mouseClick);
-
 	function mouseMove() {
 		if(!that.expanded) {
 			let yPos = d3.mouse(this)[1];
@@ -40,11 +29,26 @@ function buildZoom() {
 	}
 
 	function zoomed() {
+		if (d3.event.sourceEvent && d3.event.sourceEvent.type == "brush") return; // ignore if zoom-by-brush
+
 		var	t = d3.event.transform;
 		that.xt = t.rescaleX(that.xScale);
+		var range = that.xt.range().map(t.invertX, t);
+		that.gBrush.select(".brush").call(that.brush.move, range);
 
 		that.updateAll();
 	}
+
+	this.zoom = d3.zoom()
+		.on("zoom", zoomed);
+
+	this.zoom.scaleExtent([1, this.data.length / 10])
+			.translateExtent([[0, 0], [(this.width + this.margin.left + this.margin.right), (this.height + this.margin.top + this.margin.bottom)]]);
+
+	this.zoomRect.call(this.zoom)
+		.on("mousemove", mouseMove)
+		.on("mouseout", mouseOut)
+		.on("click", mouseClick);
 
 	return this;
 }
