@@ -164,8 +164,6 @@ function brush(dim) {
       .enter().append("rect")
         .attr("class", "selection")
         .attr("cursor", cursors.selection)
-        .attr("fill", "#777")
-        .attr("fill-opacity", 0.3)
         .attr("stroke", "#fff")
         .attr("shape-rendering", "crispEdges");
 
@@ -180,23 +178,34 @@ function brush(dim) {
 
     group.selectAll(".handle").append("rect")
       .attr("class", "handle-box")
-      .attr("x", (handleSize * -0.5))
+      .attr("x", function(d) {
+        return d.type === "e" ? 0 : handleSize * -1;
+        // return (handleSize * -0.5); 
+      })
       .attr("y", 0)
       .attr("width", handleSize )
       .attr("height", extent()[1][1] );
 
     group.selectAll(".handle").append("line")
       .attr("class", "handle-line")
-      .attr("x1", -handleSize/6)
+      .attr("x1", function(d) {
+        return d.type === "e" ? handleSize * 0.6 : (handleSize * 0.6) - handleSize;
+      })
       .attr("y1", handleSize/2)
-      .attr("x2", -handleSize/6)
+      .attr("x2", function(d) {
+        return d.type === "e" ? handleSize * 0.6 : (handleSize * 0.6) - handleSize;
+      })
       .attr("y2", extent()[1][1] - (handleSize/2) );
 
     group.selectAll(".handle").append("line")
       .attr("class", "handle-line")
-      .attr("x1", handleSize/6)
+      .attr("x1", function(d) {
+        return d.type === "e" ? handleSize * 0.4 : (handleSize * 0.4) - handleSize;
+      })
       .attr("y1", handleSize/2)
-      .attr("x2", handleSize/6)
+      .attr("x2", function(d) {
+        return d.type === "e" ? handleSize * 0.4 : (handleSize * 0.4) - handleSize;
+      })
       .attr("y2", extent()[1][1] - (handleSize/2) );
 
 

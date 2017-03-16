@@ -6934,7 +6934,7 @@ function brush$1(dim) {
       select(this).attr("x", extent[0][0]).attr("y", extent[0][1]).attr("width", extent[1][0] - extent[0][0]).attr("height", extent[1][1] - extent[0][1]);
     });
 
-    group.selectAll(".selection").data([type$1("selection")]).enter().append("rect").attr("class", "selection").attr("cursor", cursors.selection).attr("fill", "#777").attr("fill-opacity", 0.3).attr("stroke", "#fff").attr("shape-rendering", "crispEdges");
+    group.selectAll(".selection").data([type$1("selection")]).enter().append("rect").attr("class", "selection").attr("cursor", cursors.selection).attr("stroke", "#fff").attr("shape-rendering", "crispEdges");
 
     var handle = group.selectAll(".handle").data(dim.handles, function (d) {
       return d.type;
@@ -6948,11 +6948,22 @@ function brush$1(dim) {
       return cursors[d.type];
     });
 
-    group.selectAll(".handle").append("rect").attr("class", "handle-box").attr("x", handleSize * -0.5).attr("y", 0).attr("width", handleSize).attr("height", extent()[1][1]);
+    group.selectAll(".handle").append("rect").attr("class", "handle-box").attr("x", function (d) {
+      return d.type === "e" ? 0 : handleSize * -1;
+      // return (handleSize * -0.5); 
+    }).attr("y", 0).attr("width", handleSize).attr("height", extent()[1][1]);
 
-    group.selectAll(".handle").append("line").attr("class", "handle-line").attr("x1", -handleSize / 6).attr("y1", handleSize / 2).attr("x2", -handleSize / 6).attr("y2", extent()[1][1] - handleSize / 2);
+    group.selectAll(".handle").append("line").attr("class", "handle-line").attr("x1", function (d) {
+      return d.type === "e" ? handleSize * 0.6 : handleSize * 0.6 - handleSize;
+    }).attr("y1", handleSize / 2).attr("x2", function (d) {
+      return d.type === "e" ? handleSize * 0.6 : handleSize * 0.6 - handleSize;
+    }).attr("y2", extent()[1][1] - handleSize / 2);
 
-    group.selectAll(".handle").append("line").attr("class", "handle-line").attr("x1", handleSize / 6).attr("y1", handleSize / 2).attr("x2", handleSize / 6).attr("y2", extent()[1][1] - handleSize / 2);
+    group.selectAll(".handle").append("line").attr("class", "handle-line").attr("x1", function (d) {
+      return d.type === "e" ? handleSize * 0.4 : handleSize * 0.4 - handleSize;
+    }).attr("y1", handleSize / 2).attr("x2", function (d) {
+      return d.type === "e" ? handleSize * 0.4 : handleSize * 0.4 - handleSize;
+    }).attr("y2", extent()[1][1] - handleSize / 2);
 
     group.each(redraw).attr("fill", "none").attr("pointer-events", "all").style("-webkit-tap-highlight-color", "rgba(0,0,0,0)").on("mousedown.brush touchstart.brush", started);
   }
@@ -7339,7 +7350,7 @@ var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : { 'top': 0, 'left': 50, 'mid': 60, 'bottom': 40, 'right': 10 };
+		this.margin = data.margin ? data.margin : { 'top': 0, 'left': 50, 'mid': 60, 'bottom': 40, 'right': 20 };
 		this.brushHeight = data.brushHeight ? data.brushHeight : 50;
 		this.handleWidth = data.handleWidth ? data.handleWidth : 10;
 		this.width = this.totalWidth - this.margin.left - this.margin.right;

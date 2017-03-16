@@ -63,19 +63,18 @@
 
 		// Brush
 		rect.handle-box {
-			// stroke: #000;
-			// stroke-width: 1;
 			fill: #555;
 		}
 
 		line.handle-line {
-			stroke: #ddd;
+			stroke: #aaa;
 			stroke-width: 1;
 		}
 
 		rect.selection {
 			stroke-width: 0;
-			opacity: 0.7;
+			opacity: 0.4;
+			fill: #777;
 		}
 
 	}
