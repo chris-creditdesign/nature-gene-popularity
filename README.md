@@ -16,8 +16,7 @@ Animated graphic for @naturenews
 
 ## To Do
 
--	Remove lines from asis
--	Make x-axis start at zero
+-	Make x-axis start at zero - Depends on zoom
 -	Adjust text size so it is legible on video
 -	Add video margins
 -	Adjust gene bars to show height by citation count

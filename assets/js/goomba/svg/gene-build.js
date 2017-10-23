@@ -17,7 +17,7 @@ function buildGenes() {
 			.attr("width", d => that.xt(d.end) - that.xt(d.start) )
 			.attr("height", that.yScale.bandwidth())
 			.attr("stroke", d => that.colorScale(parseInt(d.count, 0)) )
-			.attr("stroke-width", 0.5)
+			.attr("stroke-width", 1)
 			.attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
 
 		// Update

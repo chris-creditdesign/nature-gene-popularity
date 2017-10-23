@@ -6788,7 +6788,7 @@ var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : { 'top': 20, 'left': 60, 'bottom': 40, 'right': 20 };
+		this.margin = data.margin ? data.margin : { 'top': 54, 'left': 210, 'bottom': 160, 'right': 96 };
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
@@ -6830,18 +6830,6 @@ function buildScales() {
 
 	this.yScale = d3.scaleBand().domain(this.inOrder).range([0, this.height]).round(true).paddingInner(0).paddingOuter(0);
 
-	// Custom invert function 
-	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
-	this.yScale.invert = function () {
-
-		return function (x) {
-			var range = this.range();
-			var domain = this.domain();
-			var scale = d3.scaleQuantize().domain(range).range(domain);
-			return scale(x);
-		};
-	}();
-
 	this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
 
 	this.xt = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
@@ -6854,16 +6842,18 @@ function buildScales() {
 
 function buildAxis() {
 
-	this.xAxis = d3.axisBottom(this.xt).tickArguments([4]);
+	this.xAxis = d3.axisBottom(this.xt).tickArguments([4]).tickSize(15).tickPadding(15);
+
 	this.gXAxis.call(this.xAxis);
 
-	this.yAxis = d3.axisLeft(this.yScale);
+	this.yAxis = d3.axisLeft(this.yScale).tickSize(15).tickPadding(10);
+
 	this.gYAxis.call(this.yAxis);
 
 	// Add y axis label 
-	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", this.margin.left * -0.5).attr("dy", -5).text("Chromosome number");
+	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", -90).attr("dy", 0).text("Chromosome number");
 
-	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", this.margin.bottom * 0.5).attr("dy", 15).text("Gene position");
+	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", 100).attr("dy", 0).text("Gene position");
 
 	return this;
 }
@@ -6919,7 +6909,7 @@ function buildGenes() {
 			return that.xt(d.end) - that.xt(d.start);
 		}).attr("height", that.yScale.bandwidth()).attr("stroke", function (d) {
 			return that.colorScale(parseInt(d.count, 0));
-		}).attr("stroke-width", 0.5).attr("fill", function (d) {
+		}).attr("stroke-width", 1).attr("fill", function (d) {
 			return that.colorScale(parseInt(d.count, 0));
 		});
 

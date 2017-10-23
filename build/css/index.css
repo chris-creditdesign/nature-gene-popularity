@@ -19,11 +19,12 @@ svg {
 }
 
 svg text {
-  font-size: 10px;
+  font-size: 33px;
   pointer-events: none;
   -webkit-transition: opacity 150ms linear;
   transition: opacity 150ms linear;
   font-family: "News Gothic MT OT";
+  text-rendering: geometricPrecision;
   fill: #fff;
 }
 
@@ -57,12 +58,9 @@ svg rect.selection {
 
 .axis .tick line {
   stroke: #fff;
+  stroke-width: 2;
 }
 
 .axis .domain {
   display: none;
-}
-
-.axis text {
-  font-size: 12px;
 }

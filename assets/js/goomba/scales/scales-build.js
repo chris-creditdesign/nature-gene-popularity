@@ -11,19 +11,6 @@ function buildScales() {
 		.paddingInner(0)
 		.paddingOuter(0);
 
-	// Custom invert function 
-	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
-	this.yScale.invert = (function() {
-
-		return function(x) {
-			let range = this.range();
-			let domain = this.domain();
-			let scale = d3.scaleQuantize().domain(range).range(domain);
-			return scale(x);
-	    }
-
-	})();
-
 	this.xScale = d3.scaleLinear()
 		.domain(xScaleDomain)
 		.range([0, this.width]);

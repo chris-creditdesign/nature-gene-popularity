@@ -22,11 +22,12 @@ svg {
 	margin: 0;
 
 	text {
-		font-size: 10px;
+		font-size: 33px;
 
 		pointer-events: none;
 		transition: opacity 150ms linear;
 		font-family: "News Gothic MT OT";
+		text-rendering: geometricPrecision;
 		fill: #fff;
 	}
 
@@ -62,14 +63,11 @@ svg {
 
 	.tick line {
 		stroke: #fff;
+		stroke-width: 2;
 	}
 
 	.domain {
 		display: none;
-	}
-
-	text {
-		font-size: 12px;
 	}
 }
 
