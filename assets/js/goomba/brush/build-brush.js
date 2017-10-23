@@ -24,7 +24,7 @@ function buildBrush() {
 
 	this.brush = d3.brushX()
 		.extent([[0,0], [this.width, this.brushHeight]])
-		.handleSize(16)
+		.handleSize(14)
 		.on("brush end", brushed);
 
 	this.gBrush.append("rect")
