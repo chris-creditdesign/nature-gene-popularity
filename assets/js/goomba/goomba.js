@@ -6,6 +6,7 @@ function Goomba (data) {
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
+		this.duration = 2000;
 }
 
 export default Goomba;

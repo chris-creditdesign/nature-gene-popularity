@@ -6793,6 +6793,7 @@ function Goomba(data) {
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
+		this.duration = 2000;
 }
 
 function buildChart() {
@@ -6860,7 +6861,7 @@ function buildAxis() {
 
 function updateAxis() {
 	this.xAxis.scale(this.xt);
-	this.gXAxis.call(this.xAxis);
+	this.gXAxis.transition().duration(this.duration).call(this.xAxis);
 
 	this.yAxis.scale(this.yScale);
 	this.gYAxis.call(this.yAxis);
@@ -6914,7 +6915,7 @@ function buildGenes() {
 		});
 
 		// Update
-		d3.select(this).selectAll("rect").attr('x', function (d) {
+		d3.select(this).selectAll("rect").transition().duration(that.duration).attr('x', function (d) {
 			return that.xt(d.start);
 		}).attr('width', function (d) {
 			return that.xt(d.end) - that.xt(d.start);
@@ -7007,6 +7008,27 @@ function buildZoom() {
 
 		that.updateAll();
 	}
+
+	function zoomToGene() {
+		var _this = this;
+
+		if (this.name !== "reset") {
+			var activeGene = that.data.find(function (d) {
+				return d.symbol === _this.name;
+			});
+			that.xt.domain([parseInt(activeGene.start, 10), parseInt(activeGene.end, 10)]);
+		} else {
+			that.xt.domain([0, d3.max(that.data.map(function (d) {
+				return +d.end;
+			}))]);
+		}
+
+		that.updateAll();
+	}
+
+	d3.selectAll(".buttons > button").on("click", zoomToGene);
+
+	// console.log(this.data.find((d) => d.symbol === "TP53"));
 
 	this.zoom = d3.zoom().on("zoom", zoomed);
 

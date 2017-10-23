@@ -17,8 +17,6 @@ Animated graphic for @naturenews
 ## To Do
 
 -	Make x-axis start at zero - Depends on zoom
--	Adjust text size so it is legible on video
--	Add video margins
 -	Adjust gene bars to show height by citation count
 -	Convert y axis to linear scale to allow zoom
 -	Add buttons to zoom into specific genes and to reset

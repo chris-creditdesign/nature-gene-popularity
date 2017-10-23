@@ -9,7 +9,7 @@ body {
   margin: 0;
 }
 
-div {
+div#goomba-chart {
   background-color: #000;
   display: inline-block;
 }
@@ -63,4 +63,12 @@ svg rect.selection {
 
 .axis .domain {
   display: none;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+.buttons button {
+  margin-right: 20px;
 }
