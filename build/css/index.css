@@ -55,8 +55,12 @@ svg rect.selection {
   stroke: #fff;
 }
 
-.axis .domain, .axis .tick line {
+.axis .tick line {
   stroke: #fff;
+}
+
+.axis .domain {
+  display: none;
 }
 
 .axis text {
