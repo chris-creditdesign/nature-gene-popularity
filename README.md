@@ -16,14 +16,12 @@ Animated graphic for @naturenews
 
 ## To Do
 
--	Add expand each chromosome
--	Add citation slider
+- 	Move build-data into own file
+-	Remove lines from asis
+-	Make x-axis start at zero
+-	Adjust text size so it is legible on video
+-	Add video margins
+-	Adjust gene bars to show height by citation count
+-	Convert y axis to linear scale to allow zoom
+-	Add buttons to zoom into specific genes and to reset
 -	Improve color scale (break into log regions then ordinal)
--	Add UI colours to params
--	Add zoom on top of brush
--	Zoom into chromosome lenghtways when clicked
--	Show Hide text doesn't work in safari
--	Contract isActiveChromosome into one file
--	Reset button
--	Transaction on expand view
--	Add chromosome minimap to brush area

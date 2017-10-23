@@ -10,7 +10,7 @@ body {
 }
 
 div {
-  border: 1px solid #ccc;
+  background-color: #000;
   display: inline-block;
 }
 
@@ -24,6 +24,7 @@ svg text {
   -webkit-transition: opacity 150ms linear;
   transition: opacity 150ms linear;
   font-family: "News Gothic MT OT";
+  fill: #fff;
 }
 
 svg text.hide-svg-text {
@@ -51,6 +52,11 @@ svg rect.selection {
 
 .axis {
   shape-rendering: crispEdges;
+  stroke: #fff;
+}
+
+.axis .domain, .axis .tick line {
+  stroke: #fff;
 }
 
 .axis text {

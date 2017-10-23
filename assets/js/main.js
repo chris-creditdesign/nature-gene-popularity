@@ -6,7 +6,7 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function(error, data) {
 		console.log('error:', error);
 	} else {
 
-		var goombaPlot = new myGoomba({
+		const goombaPlot = new myGoomba({
 			target: "#goomba-chart",
 			data: data,
 			height: 1080,

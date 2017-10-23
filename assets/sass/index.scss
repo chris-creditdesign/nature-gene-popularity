@@ -11,7 +11,7 @@ body {
 }
 
 div {
-	border: 1px solid #ccc;
+	background-color: #000;
 	display: inline-block;
 }
 
@@ -27,6 +27,7 @@ svg {
 		pointer-events: none;
 		transition: opacity 150ms linear;
 		font-family: "News Gothic MT OT";
+		fill: #fff;
 	}
 
 	text.hide-svg-text {
@@ -57,6 +58,11 @@ svg {
 
 .axis {
 	shape-rendering: crispEdges;
+	stroke: #fff;
+
+	.domain, .tick line {
+		stroke: #fff;
+	}
 
 	text {
 		font-size: 12px;
