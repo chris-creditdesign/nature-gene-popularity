@@ -1,6 +1,6 @@
-#Nature Gene Popularity
+# Nature Gene Popularity
 
-Interactive graphic for @naturenews
+Animated graphic for @naturenews
 
 ## Build 
 
