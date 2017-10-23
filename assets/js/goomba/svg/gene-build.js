@@ -15,7 +15,7 @@ function buildGenes() {
 			.attr("x", d => that.xt(d.start) )
 			.attr("y", 0 )
 			.attr("width", d => that.xt(d.end) - that.xt(d.start) )
-			.attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth())
+			.attr("height", that.yScale.bandwidth())
 			.attr("stroke", d => that.colorScale(parseInt(d.count, 0)) )
 			.attr("stroke-width", 0.5)
 			.attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
@@ -25,7 +25,7 @@ function buildGenes() {
 			.selectAll("rect")
 			.attr('x', d => that.xt(d.start) )
 			.attr('width', d => that.xt(d.end) - that.xt(d.start) )
-			.attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth());
+			.attr("height", that.yScale.bandwidth());
 
 	});
 

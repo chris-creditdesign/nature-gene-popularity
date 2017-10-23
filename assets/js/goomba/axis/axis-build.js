@@ -6,16 +6,7 @@ function buildAxis() {
 			.tickArguments([4]);
 	this.gXAxis.call(this.xAxis);
 
-	this.xAxisBrush = d3.axisBottom(this.xScale)
-			.tickArguments([4]);
-	this.gXAxisBrush.call(this.xAxisBrush);
-
-	if (this.expanded) {
-		this.yAxis = d3.axisLeft(this.yScaleExpanded);
-	} else {
-		this.yAxis = d3.axisLeft(this.yScaleContracted);
-	}
-
+	this.yAxis = d3.axisLeft(this.yScale);
 	this.gYAxis.call(this.yAxis);
 
 	// Add y axis label 

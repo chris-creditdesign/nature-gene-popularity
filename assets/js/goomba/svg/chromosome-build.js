@@ -3,13 +3,7 @@ import d3 from "../../d3-bundle";
 function buildChromosomes() {
 	var that = this;
 
-	// Find the active chromosome by name in an array of objects
-	// This should be contracted into one file
-	function isActiveChromosome(elem, index, array) {
-		return elem.name === that.activeChromosome;
-	}
-
-	let data = this.expanded ? [this.dataByChromosome.find(isActiveChromosome)] : this.dataByChromosome;
+	let data = this.dataByChromosome;
 
 	this.gChromosome = this.gChromosomes.selectAll("g")
 		.data(data, d => d.name);
@@ -20,14 +14,14 @@ function buildChromosomes() {
 		.attr("class", "g-genes")
 		.attr("opacity", 1)
 		.attr('transform', d => {
-			let y = this.expanded ? this.yScaleExpanded(d.name) : this.yScaleContracted(d.name);
+			let y = this.yScale(d.name);
 			return `translate(0, ${y})`;
 		});
 
 	// Update
 	this.gChromosome
 		.attr('transform', d => {
-			let y = this.expanded ? this.yScaleExpanded(d.name) : this.yScaleContracted(d.name);
+			let y = this.yScale(d.name);
 			return `translate(0, ${y})`;
 		});		
 

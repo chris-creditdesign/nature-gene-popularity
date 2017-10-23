@@ -7,24 +7,16 @@ function buildScales() {
 	let xScaleDomain = [0, d3.max(this.data.map((d) => { return +d.end; }))];
 	let colorDomain = d3.extent(this.data.map( d => parseInt(d.count, 10) ));
 
-	this.yScaleExpanded = d3.scaleBand()
-		.domain([this.activeChromosome])
-		.range([0, this.height])
-		.round(true)
-		.paddingInner(0.1)
-		.paddingOuter(0.5);
-
-	this.yScaleContracted = d3.scaleBand()
+	this.yScale = d3.scaleBand()
 		.domain(inOrder)
 		.range([0, this.height])
 		.round(true)
 		.paddingInner(0)
 		.paddingOuter(0);
 
-
 	// Custom invert function 
 	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
-	this.yScaleContracted.invert = (function() {
+	this.yScale.invert = (function() {
 
 		return function(x) {
 			let range = this.range();

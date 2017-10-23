@@ -17,11 +17,10 @@ var pump = require('pump');
 
 gulp.task("concat:build", function () {
 	return gulp.src([	
-						'./assets/concat/polopoly-header.html',
+						'./assets/concat/video-header.html',
 						'./assets/concat/style-link.txt',
 						'./assets/widget.html',
 						'./assets/concat/script-link.txt',
-						'./assets/concat/polopoly-footer.html'
 						])
 		.pipe(concat("index.html"))
 		.pipe(gulp.dest("./build/"));

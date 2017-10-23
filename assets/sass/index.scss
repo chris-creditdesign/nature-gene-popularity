@@ -4,90 +4,63 @@
 	padding: 10px;
 }
 
-.outerwrapper {
-	width: 100%;
-	position: relative;
-	border: 1px solid #c8c7cf;
+body {
+	padding: 100px;
+	margin: 0;
 
-	h1,h2,h3,p,ul,label {
-		padding: 10px 10px 0 10px;
-		margin: 0;
-		hyphens: auto;
+}
+
+div {
+	border: 1px solid #ccc;
+	display: inline-block;
+}
+
+// SVG
+svg {
+	
+	// position: absolute;
+	margin: 0;
+
+	text {
+		font-size: 10px;
+
+		pointer-events: none;
+		transition: opacity 150ms linear;
+		font-family: "News Gothic MT OT";
 	}
 
-	label {
-		padding: 10px 10px 0 10px;
-		margin: 0;
-		display: inline-block;
+	text.hide-svg-text {
+		opacity: 0;
 	}
 
-	.key {
-		li {
-			display: inline-block;
-			margin-right: 15px;
-		}
-
-		span {
-			width: 13px;
-			height: 13px;
-			display: inline-block;
-			margin-right: 3px;
-		}
+	.gene.contracted {
+		pointer-events: none;
 	}
 
-	// Canvas 
-	canvas {
-		position: absolute;
+	// Brush
+	rect.handle-box {
+		fill: #555;
 	}
 
-	// SVG
-	svg {
-		
-		// position: absolute;
-		margin: 20px 0;
-
-		text {
-			font-size: 10px;
-
-			pointer-events: none;
-			transition: opacity 150ms linear;
-		}
-
-		text.hide-svg-text {
-			opacity: 0;
-		}
-
-		.gene.contracted {
-			pointer-events: none;
-		}
-
-		// Brush
-		rect.handle-box {
-			fill: #555;
-		}
-
-		line.handle-line {
-			stroke: #aaa;
-			stroke-width: 1;
-		}
-
-		rect.selection {
-			stroke-width: 0;
-			opacity: 0.4;
-			fill: #777;
-		}
-
+	line.handle-line {
+		stroke: #aaa;
+		stroke-width: 1;
 	}
 
-	.axis {
-		shape-rendering: crispEdges;
-
-		text {
-			font-size: 12px;
-		}
+	rect.selection {
+		stroke-width: 0;
+		opacity: 0.4;
+		fill: #777;
 	}
 
+}
 
+.axis {
+	shape-rendering: crispEdges;
 
-} // outerwrapper
+	text {
+		font-size: 12px;
+	}
+}
+
 

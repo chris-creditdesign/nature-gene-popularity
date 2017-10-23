@@ -4,12 +4,7 @@ function updateAxis() {
 	this.xAxis.scale(this.xt);
 	this.gXAxis.call(this.xAxis);
 
-	if (this.expanded) {
-		this.yAxis.scale(this.yScaleExpanded);
-	} else {
-		this.yAxis.scale(this.yScaleContracted);
-	}
-
+	this.yAxis.scale(this.yScale);
 	this.gYAxis.call(this.yAxis);
 
 	return this;	

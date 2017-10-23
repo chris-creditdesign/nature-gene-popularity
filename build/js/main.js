@@ -2736,7 +2736,7 @@ var array$2 = function (a, b) {
       i;
 
   for (i = 0; i < na; ++i) {
-    x[i] = interpolate(a[i], b[i]);
+    x[i] = interpolateValue(a[i], b[i]);
   }for (; i < nb; ++i) {
     c[i] = b[i];
   }return function (t) {
@@ -2858,7 +2858,7 @@ var object$1 = function (a, b) {
 
   for (k in b) {
     if (k in a) {
-      i[k] = interpolate(a[k], b[k]);
+      i[k] = interpolateValue(a[k], b[k]);
     } else {
       c[k] = b[k];
     }
@@ -2940,7 +2940,7 @@ var interpolateString = function (a, b) {
   });
 };
 
-var interpolate = function (a, b) {
+var interpolateValue = function (a, b) {
     var t = typeof b === "undefined" ? "undefined" : _typeof(b),
         c;
     return b == null || t === "boolean" ? constant$2(b) : (t === "number" ? interpolateNumber : t === "string" ? (c = color(b)) ? (b = c, interpolateRgb) : interpolateString : b instanceof color ? interpolateRgb : b instanceof Date ? date : Array.isArray(b) ? array$2 : isNaN(b) ? object$1 : interpolateNumber)(a, b);
@@ -3235,7 +3235,7 @@ function copy(source, target) {
 function continuous(deinterpolate, reinterpolate) {
   var domain = unit,
       range$$1 = unit,
-      interpolate$$1 = interpolate,
+      interpolate$$1 = interpolateValue,
       clamp = false,
       piecewise,
       output,
@@ -3392,7 +3392,6 @@ var formatTypes = {
   }
 };
 
-// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5252,7 +5251,7 @@ var noevent = function () {
   event.stopImmediatePropagation();
 };
 
-var dragDisable = function (view) {
+var nodrag = function (view) {
   var root = view.document.documentElement,
       selection$$1 = select(view).on("dragstart.drag", noevent, true);
   if ("onselectstart" in root) {
@@ -5304,7 +5303,6 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -5707,7 +5705,7 @@ function tweenValue(transition, name, value) {
   };
 }
 
-var interpolate$1 = function (a, b) {
+var interpolate$$1 = function (a, b) {
     var c;
     return (typeof b === "number" ? interpolateNumber : b instanceof color ? interpolateRgb : (c = color(b)) ? (b = c, interpolateRgb) : interpolateString)(a, b);
 };
@@ -5764,7 +5762,7 @@ function attrFunctionNS$1(fullname, interpolate$$1, value) {
 
 var transition_attr = function (name, value) {
   var fullname = namespace(name),
-      i = fullname === "transform" ? interpolateTransformSvg : interpolate$1;
+      i = fullname === "transform" ? interpolateTransformSvg : interpolate$$1;
   return this.attrTween(name, typeof value === "function" ? (fullname.local ? attrFunctionNS$1 : attrFunction$1)(fullname, i, tweenValue(this, "attr." + name, value)) : value == null ? (fullname.local ? attrRemoveNS$1 : attrRemove$1)(fullname) : (fullname.local ? attrConstantNS$1 : attrConstant$1)(fullname, i, value));
 };
 
@@ -5974,13 +5972,13 @@ var transition_selection = function () {
   return new Selection$1(this._groups, this._parents);
 };
 
-function styleRemove$1(name, interpolate$$1) {
+function styleRemove$1(name, interpolate$$2) {
     var value00, value10, interpolate0;
     return function () {
         var style = window(this).getComputedStyle(this, null),
             value0 = style.getPropertyValue(name),
             value1 = (this.style.removeProperty(name), style.getPropertyValue(name));
-        return value0 === value1 ? null : value0 === value00 && value1 === value10 ? interpolate0 : interpolate0 = interpolate$$1(value00 = value0, value10 = value1);
+        return value0 === value1 ? null : value0 === value00 && value1 === value10 ? interpolate0 : interpolate0 = interpolate$$2(value00 = value0, value10 = value1);
     };
 }
 
@@ -5990,27 +5988,27 @@ function styleRemoveEnd(name) {
     };
 }
 
-function styleConstant$1(name, interpolate$$1, value1) {
+function styleConstant$1(name, interpolate$$2, value1) {
     var value00, interpolate0;
     return function () {
         var value0 = window(this).getComputedStyle(this, null).getPropertyValue(name);
-        return value0 === value1 ? null : value0 === value00 ? interpolate0 : interpolate0 = interpolate$$1(value00 = value0, value1);
+        return value0 === value1 ? null : value0 === value00 ? interpolate0 : interpolate0 = interpolate$$2(value00 = value0, value1);
     };
 }
 
-function styleFunction$1(name, interpolate$$1, value) {
+function styleFunction$1(name, interpolate$$2, value) {
     var value00, value10, interpolate0;
     return function () {
         var style = window(this).getComputedStyle(this, null),
             value0 = style.getPropertyValue(name),
             value1 = value(this);
         if (value1 == null) value1 = (this.style.removeProperty(name), style.getPropertyValue(name));
-        return value0 === value1 ? null : value0 === value00 && value1 === value10 ? interpolate0 : interpolate0 = interpolate$$1(value00 = value0, value10 = value1);
+        return value0 === value1 ? null : value0 === value00 && value1 === value10 ? interpolate0 : interpolate0 = interpolate$$2(value00 = value0, value10 = value1);
     };
 }
 
 var transition_style = function (name, value, priority) {
-    var i = (name += "") === "transform" ? interpolateTransformCss : interpolate$1;
+    var i = (name += "") === "transform" ? interpolateTransformCss : interpolate$$1;
     return value == null ? this.styleTween(name, styleRemove$1(name, i)).on("end.style." + name, styleRemoveEnd(name)) : this.styleTween(name, typeof value === "function" ? styleFunction$1(name, i, tweenValue(this, "style." + name, value)) : styleConstant$1(name, i, value), priority);
 };
 
@@ -6385,7 +6383,6 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -6605,7 +6602,7 @@ var zoom = function () {
         v = select(event.view).on("mousemove.zoom", mousemoved, true).on("mouseup.zoom", mouseupped, true),
         p = mouse(this);
 
-    dragDisable(event.view);
+    nodrag(event.view);
     nopropagation$1();
     g.mouse = [p, this.__zoom.invert(p)];
     interrupt(this);
@@ -6764,568 +6761,6 @@ var _zoom = Object.freeze({
 	zoomIdentity: identity$5
 });
 
-var constant$6 = function (x) {
-  return function () {
-    return x;
-  };
-};
-
-var BrushEvent = function (target, type, selection) {
-  this.target = target;
-  this.type = type;
-  this.selection = selection;
-};
-
-function nopropagation$2() {
-  event.stopImmediatePropagation();
-}
-
-var noevent$2 = function () {
-  event.preventDefault();
-  event.stopImmediatePropagation();
-};
-
-var MODE_DRAG = { name: "drag" };
-var MODE_SPACE = { name: "space" };
-var MODE_HANDLE = { name: "handle" };
-var MODE_CENTER = { name: "center" };
-
-var X$1 = {
-  name: "x",
-  handles: ["e", "w"].map(type$1),
-  input: function input(x, e) {
-    return x && [[x[0], e[0][1]], [x[1], e[1][1]]];
-  },
-  output: function output(xy) {
-    return xy && [xy[0][0], xy[1][0]];
-  }
-};
-
-var Y = {
-  name: "y",
-  handles: ["n", "s"].map(type$1),
-  input: function input(y, e) {
-    return y && [[e[0][0], y[0]], [e[1][0], y[1]]];
-  },
-  output: function output(xy) {
-    return xy && [xy[0][1], xy[1][1]];
-  }
-};
-
-var XY = {
-  name: "xy",
-  handles: ["n", "e", "s", "w", "nw", "ne", "se", "sw"].map(type$1),
-  input: function input(xy) {
-    return xy;
-  },
-  output: function output(xy) {
-    return xy;
-  }
-};
-
-var cursors = {
-  overlay: "crosshair",
-  selection: "move",
-  n: "ns-resize",
-  e: "ew-resize",
-  s: "ns-resize",
-  w: "ew-resize",
-  nw: "nwse-resize",
-  ne: "nesw-resize",
-  se: "nwse-resize",
-  sw: "nesw-resize"
-};
-
-var flipX = {
-  e: "w",
-  w: "e",
-  nw: "ne",
-  ne: "nw",
-  se: "sw",
-  sw: "se"
-};
-
-var flipY = {
-  n: "s",
-  s: "n",
-  nw: "sw",
-  ne: "se",
-  se: "ne",
-  sw: "nw"
-};
-
-var signsX = {
-  overlay: +1,
-  selection: +1,
-  n: null,
-  e: +1,
-  s: null,
-  w: -1,
-  nw: -1,
-  ne: +1,
-  se: +1,
-  sw: -1
-};
-
-var signsY = {
-  overlay: +1,
-  selection: +1,
-  n: -1,
-  e: null,
-  s: +1,
-  w: null,
-  nw: -1,
-  ne: -1,
-  se: +1,
-  sw: +1
-};
-
-function type$1(t) {
-  return { type: t };
-}
-
-// Ignore right-click, since that should open the context menu.
-function defaultFilter$2() {
-  return !event.button;
-}
-
-function defaultExtent$1() {
-  var svg = this.ownerSVGElement || this;
-  return [[0, 0], [svg.width.baseVal.value, svg.height.baseVal.value]];
-}
-
-// Like d3.local, but with the name “__brush” rather than auto-generated.
-function local$1(node) {
-  while (!node.__brush) {
-    if (!(node = node.parentNode)) return;
-  }return node.__brush;
-}
-
-function empty$2(extent) {
-  return extent[0][0] === extent[1][0] || extent[0][1] === extent[1][1];
-}
-
-function brushSelection(node) {
-  var state = node.__brush;
-  return state ? state.dim.output(state.selection) : null;
-}
-
-function brushX() {
-  return brush$1(X$1);
-}
-
-function brushY() {
-  return brush$1(Y);
-}
-
-var brush = function () {
-  return brush$1(XY);
-};
-
-function brush$1(dim) {
-  var extent = defaultExtent$1,
-      filter = defaultFilter$2,
-      listeners = dispatch(brush, "start", "brush", "end"),
-      handleSize = 6,
-      touchending;
-
-  function brush(group) {
-    var overlay = group.property("__brush", initialize).selectAll(".overlay").data([type$1("overlay")]);
-
-    overlay.enter().append("rect").attr("class", "overlay").attr("pointer-events", "all").attr("cursor", cursors.overlay).merge(overlay).each(function () {
-      var extent = local$1(this).extent;
-      select(this).attr("x", extent[0][0]).attr("y", extent[0][1]).attr("width", extent[1][0] - extent[0][0]).attr("height", extent[1][1] - extent[0][1]);
-    });
-
-    group.selectAll(".selection").data([type$1("selection")]).enter().append("rect").attr("class", "selection").attr("cursor", cursors.selection).attr("stroke", "#fff").attr("shape-rendering", "crispEdges");
-
-    var handle = group.selectAll(".handle").data(dim.handles, function (d) {
-      return d.type;
-    });
-
-    handle.exit().remove();
-
-    handle.enter().append("g").attr("class", function (d) {
-      return "handle handle--" + d.type;
-    }).attr("cursor", function (d) {
-      return cursors[d.type];
-    });
-
-    group.selectAll(".handle").append("rect").attr("class", "handle-box").attr("x", function (d) {
-      return d.type === "e" ? 0 : handleSize * -1;
-      // return (handleSize * -0.5); 
-    }).attr("y", 0).attr("width", handleSize).attr("height", extent()[1][1]);
-
-    group.selectAll(".handle").append("line").attr("class", "handle-line").attr("x1", function (d) {
-      return d.type === "e" ? handleSize * 0.6 : handleSize * 0.6 - handleSize;
-    }).attr("y1", handleSize / 2).attr("x2", function (d) {
-      return d.type === "e" ? handleSize * 0.6 : handleSize * 0.6 - handleSize;
-    }).attr("y2", extent()[1][1] - handleSize / 2);
-
-    group.selectAll(".handle").append("line").attr("class", "handle-line").attr("x1", function (d) {
-      return d.type === "e" ? handleSize * 0.4 : handleSize * 0.4 - handleSize;
-    }).attr("y1", handleSize / 2).attr("x2", function (d) {
-      return d.type === "e" ? handleSize * 0.4 : handleSize * 0.4 - handleSize;
-    }).attr("y2", extent()[1][1] - handleSize / 2);
-
-    group.each(redraw).attr("fill", "none").attr("pointer-events", "all").style("-webkit-tap-highlight-color", "rgba(0,0,0,0)").on("mousedown.brush touchstart.brush", started);
-  }
-
-  brush.move = function (group, selection$$1) {
-    if (group.selection) {
-      group.on("start.brush", function () {
-        emitter(this, arguments).beforestart().start();
-      }).on("interrupt.brush end.brush", function () {
-        emitter(this, arguments).end();
-      }).tween("brush", function () {
-        var that = this,
-            state = that.__brush,
-            emit = emitter(that, arguments),
-            selection0 = state.selection,
-            selection1 = dim.input(typeof selection$$1 === "function" ? selection$$1.apply(this, arguments) : selection$$1, state.extent),
-            i = interpolate(selection0, selection1);
-
-        function tween(t) {
-          state.selection = t === 1 && empty$2(selection1) ? null : i(t);
-          redraw.call(that);
-          emit.brush();
-        }
-
-        return selection0 && selection1 ? tween : tween(1);
-      });
-    } else {
-      group.each(function () {
-        var that = this,
-            args = arguments,
-            state = that.__brush,
-            selection1 = dim.input(typeof selection$$1 === "function" ? selection$$1.apply(that, args) : selection$$1, state.extent),
-            emit = emitter(that, args).beforestart();
-
-        interrupt(that);
-        state.selection = selection1 == null || empty$2(selection1) ? null : selection1;
-        redraw.call(that);
-        emit.start().brush().end();
-      });
-    }
-  };
-
-  function redraw() {
-    var group = select(this),
-        selection$$1 = local$1(this).selection;
-
-    if (selection$$1) {
-      group.selectAll(".selection").style("display", null).attr("x", selection$$1[0][0]).attr("y", selection$$1[0][1]).attr("width", selection$$1[1][0] - selection$$1[0][0]).attr("height", selection$$1[1][1] - selection$$1[0][1]);
-
-      group.selectAll(".handle").style("display", null).attr("transform", function (d) {
-        return "translate(" + (d.type[d.type.length - 1] === "e" ? selection$$1[1][0] : selection$$1[0][0]) + ",0)";
-      });
-    } else {
-      group.selectAll(".selection,.handle").style("display", "none").attr("x", null).attr("y", null).attr("width", null).attr("height", null);
-    }
-  }
-
-  function emitter(that, args) {
-    return that.__brush.emitter || new Emitter(that, args);
-  }
-
-  function Emitter(that, args) {
-    this.that = that;
-    this.args = args;
-    this.state = that.__brush;
-    this.active = 0;
-  }
-
-  Emitter.prototype = {
-    beforestart: function beforestart() {
-      if (++this.active === 1) this.state.emitter = this, this.starting = true;
-      return this;
-    },
-    start: function start() {
-      if (this.starting) this.starting = false, this.emit("start");
-      return this;
-    },
-    brush: function brush() {
-      this.emit("brush");
-      return this;
-    },
-    end: function end() {
-      if (--this.active === 0) delete this.state.emitter, this.emit("end");
-      return this;
-    },
-    emit: function emit(type) {
-      customEvent(new BrushEvent(brush, type, dim.output(this.state.selection)), listeners.apply, listeners, [type, this.that, this.args]);
-    }
-  };
-
-  function started() {
-    if (event.touches) {
-      if (event.changedTouches.length < event.touches.length) return noevent$2();
-    } else if (touchending) return;
-    if (!filter.apply(this, arguments)) return;
-
-    var that = this,
-        type = event.target.__data__.type,
-        mode = (event.metaKey ? type = "overlay" : type) === "selection" ? MODE_DRAG : event.altKey ? MODE_CENTER : MODE_HANDLE,
-        signX = dim === Y ? null : signsX[type],
-        signY = dim === X$1 ? null : signsY[type],
-        state = local$1(that),
-        extent = state.extent,
-        selection$$1 = state.selection,
-        W = extent[0][0],
-        w0,
-        w1,
-        N = extent[0][1],
-        n0,
-        n1,
-        E = extent[1][0],
-        e0,
-        e1,
-        S = extent[1][1],
-        s0,
-        s1,
-        dx,
-        dy,
-        moving,
-        shifting = signX && signY && event.shiftKey,
-        lockX,
-        lockY,
-        point0 = mouse(that),
-        point = point0,
-        emit = emitter(that, arguments).beforestart();
-
-    if (type === "overlay") {
-      state.selection = selection$$1 = [[w0 = dim === Y ? W : point0[0], n0 = dim === X$1 ? N : point0[1]], [e0 = dim === Y ? E : w0, s0 = dim === X$1 ? S : n0]];
-    } else {
-      w0 = selection$$1[0][0];
-      n0 = selection$$1[0][1];
-      e0 = selection$$1[1][0];
-      s0 = selection$$1[1][1];
-    }
-
-    w1 = w0;
-    n1 = n0;
-    e1 = e0;
-    s1 = s0;
-
-    var group = select(that).attr("pointer-events", "none");
-
-    var overlay = group.selectAll(".overlay").attr("cursor", cursors[type]);
-
-    if (event.touches) {
-      group.on("touchmove.brush", moved, true).on("touchend.brush touchcancel.brush", ended, true);
-    } else {
-      var view = select(event.view).on("keydown.brush", keydowned, true).on("keyup.brush", keyupped, true).on("mousemove.brush", moved, true).on("mouseup.brush", ended, true);
-
-      dragDisable(event.view);
-    }
-
-    nopropagation$2();
-    interrupt(that);
-    redraw.call(that);
-    emit.start();
-
-    function moved() {
-      var point1 = mouse(that);
-      if (shifting && !lockX && !lockY) {
-        if (Math.abs(point1[0] - point[0]) > Math.abs(point1[1] - point[1])) lockY = true;else lockX = true;
-      }
-      point = point1;
-      moving = true;
-      noevent$2();
-      move();
-    }
-
-    function move() {
-      var t;
-
-      dx = point[0] - point0[0];
-      dy = point[1] - point0[1];
-
-      switch (mode) {
-        case MODE_SPACE:
-        case MODE_DRAG:
-          {
-            if (signX) dx = Math.max(W - w0, Math.min(E - e0, dx)), w1 = w0 + dx, e1 = e0 + dx;
-            if (signY) dy = Math.max(N - n0, Math.min(S - s0, dy)), n1 = n0 + dy, s1 = s0 + dy;
-            break;
-          }
-        case MODE_HANDLE:
-          {
-            if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx)), w1 = w0 + dx, e1 = e0;else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx)), w1 = w0, e1 = e0 + dx;
-            if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy)), n1 = n0 + dy, s1 = s0;else if (signY > 0) dy = Math.max(N - s0, Math.min(S - s0, dy)), n1 = n0, s1 = s0 + dy;
-            break;
-          }
-        case MODE_CENTER:
-          {
-            if (signX) w1 = Math.max(W, Math.min(E, w0 - dx * signX)), e1 = Math.max(W, Math.min(E, e0 + dx * signX));
-            if (signY) n1 = Math.max(N, Math.min(S, n0 - dy * signY)), s1 = Math.max(N, Math.min(S, s0 + dy * signY));
-            break;
-          }
-      }
-
-      if (e1 < w1) {
-        signX *= -1;
-        t = w0, w0 = e0, e0 = t;
-        t = w1, w1 = e1, e1 = t;
-        if (type in flipX) overlay.attr("cursor", cursors[type = flipX[type]]);
-      }
-
-      if (s1 < n1) {
-        signY *= -1;
-        t = n0, n0 = s0, s0 = t;
-        t = n1, n1 = s1, s1 = t;
-        if (type in flipY) overlay.attr("cursor", cursors[type = flipY[type]]);
-      }
-
-      if (state.selection) selection$$1 = state.selection; // May be set by brush.move!
-      if (lockX) w1 = selection$$1[0][0], e1 = selection$$1[1][0];
-      if (lockY) n1 = selection$$1[0][1], s1 = selection$$1[1][1];
-
-      if (selection$$1[0][0] !== w1 || selection$$1[0][1] !== n1 || selection$$1[1][0] !== e1 || selection$$1[1][1] !== s1) {
-        state.selection = [[w1, n1], [e1, s1]];
-        redraw.call(that);
-        emit.brush();
-      }
-    }
-
-    function ended() {
-      nopropagation$2();
-      if (event.touches) {
-        if (event.touches.length) return;
-        if (touchending) clearTimeout(touchending);
-        touchending = setTimeout(function () {
-          touchending = null;
-        }, 500); // Ghost clicks are delayed!
-        group.on("touchmove.brush touchend.brush touchcancel.brush", null);
-      } else {
-        yesdrag(event.view, moving);
-        view.on("keydown.brush keyup.brush mousemove.brush mouseup.brush", null);
-      }
-      group.attr("pointer-events", "all");
-      overlay.attr("cursor", cursors.overlay);
-      if (state.selection) selection$$1 = state.selection; // May be set by brush.move (on start)!
-      if (empty$2(selection$$1)) state.selection = null, redraw.call(that);
-      emit.end();
-    }
-
-    function keydowned() {
-      switch (event.keyCode) {
-        case 16:
-          {
-            // SHIFT
-            shifting = signX && signY;
-            break;
-          }
-        case 18:
-          {
-            // ALT
-            if (mode === MODE_HANDLE) {
-              if (signX) e0 = e1 - dx * signX, w0 = w1 + dx * signX;
-              if (signY) s0 = s1 - dy * signY, n0 = n1 + dy * signY;
-              mode = MODE_CENTER;
-              move();
-            }
-            break;
-          }
-        case 32:
-          {
-            // SPACE; takes priority over ALT
-            if (mode === MODE_HANDLE || mode === MODE_CENTER) {
-              if (signX < 0) e0 = e1 - dx;else if (signX > 0) w0 = w1 - dx;
-              if (signY < 0) s0 = s1 - dy;else if (signY > 0) n0 = n1 - dy;
-              mode = MODE_SPACE;
-              overlay.attr("cursor", cursors.selection);
-              move();
-            }
-            break;
-          }
-        default:
-          return;
-      }
-      noevent$2();
-    }
-
-    function keyupped() {
-      switch (event.keyCode) {
-        case 16:
-          {
-            // SHIFT
-            if (shifting) {
-              lockX = lockY = shifting = false;
-              move();
-            }
-            break;
-          }
-        case 18:
-          {
-            // ALT
-            if (mode === MODE_CENTER) {
-              if (signX < 0) e0 = e1;else if (signX > 0) w0 = w1;
-              if (signY < 0) s0 = s1;else if (signY > 0) n0 = n1;
-              mode = MODE_HANDLE;
-              move();
-            }
-            break;
-          }
-        case 32:
-          {
-            // SPACE
-            if (mode === MODE_SPACE) {
-              if (event.altKey) {
-                if (signX) e0 = e1 - dx * signX, w0 = w1 + dx * signX;
-                if (signY) s0 = s1 - dy * signY, n0 = n1 + dy * signY;
-                mode = MODE_CENTER;
-              } else {
-                if (signX < 0) e0 = e1;else if (signX > 0) w0 = w1;
-                if (signY < 0) s0 = s1;else if (signY > 0) n0 = n1;
-                mode = MODE_HANDLE;
-              }
-              overlay.attr("cursor", cursors[type]);
-              move();
-            }
-            break;
-          }
-        default:
-          return;
-      }
-      noevent$2();
-    }
-  }
-
-  function initialize() {
-    var state = this.__brush || { selection: null };
-    state.extent = extent.apply(this, arguments);
-    state.dim = dim;
-    return state;
-  }
-
-  brush.extent = function (_) {
-    return arguments.length ? (extent = typeof _ === "function" ? _ : constant$6([[+_[0][0], +_[0][1]], [+_[1][0], +_[1][1]]]), brush) : extent;
-  };
-
-  brush.filter = function (_) {
-    return arguments.length ? (filter = typeof _ === "function" ? _ : constant$6(!!_), brush) : filter;
-  };
-
-  brush.handleSize = function (_) {
-    return arguments.length ? (handleSize = +_, brush) : handleSize;
-  };
-
-  brush.on = function () {
-    var value = listeners.on.apply(listeners, arguments);
-    return value === listeners ? brush : value;
-  };
-
-  return brush;
-}
-
-var _brush = Object.freeze({
-	brushSelection: brushSelection,
-	brushX: brushX,
-	brushY: brushY,
-	default: brush
-});
-
 function completeAssign(target) {
 	for (var _len = arguments.length, sources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 		sources[_key - 1] = arguments[_key];
@@ -7348,39 +6783,22 @@ function completeAssign(target) {
 	return target;
 }
 
-// Don't use Object.assign because the event property is a getter ie:
-// `get event () { return event; },`
-// Object.assign will compute the return value now (before any event is fired)
-// so d3.event will always be null  ie.
-// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
-
-// instead use completeAssign:
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format, _brush);
+var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format);
 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : { 'top': 0, 'left': 50, 'mid': 60, 'bottom': 40, 'right': 20 };
-		this.brushHeight = data.brushHeight ? data.brushHeight : 50;
-		this.handleWidth = data.handleWidth ? data.handleWidth : 10;
+		this.margin = data.margin ? data.margin : { 'top': 20, 'left': 60, 'bottom': 40, 'right': 20 };
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
-		this.height = this.totalHeight - this.margin.top - this.margin.mid - this.brushHeight - this.margin.bottom;
+		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
-		this.expanded = false;
-		this.activeChromosome = "All";
 }
 
 function buildChart() {
-	this.svg = d3.select(this.target)
-	// .style('height', `${this.height}px`) // Only explicitally set the height when positioning canvas ovre svg
-	.append("svg").attr('width', this.width + this.margin.left + this.margin.right).attr('height', this.height + this.margin.top + this.margin.mid + this.brushHeight + this.margin.bottom).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
+	this.svg = d3.select(this.target).append("svg").attr('width', this.width + this.margin.left + this.margin.right).attr('height', this.height + this.margin.top + this.margin.bottom).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
 	var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.height);
-
-	// Group to hold all the chomosome selector rects
-	this.gChromosomeSelector = this.svg.append("g").attr("class", "g-chromosome-selector").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	// Group to hold all the groups that will hold the genes
 	this.gChromosomes = this.svg.append("g").attr("class", "g-chromosomes").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
@@ -7394,14 +6812,8 @@ function buildChart() {
 	// Group to hold the y axis
 	this.gYAxis = this.svg.append("g").attr("class", "y axis").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
-	// Group to hold the x axis 
-	this.gXAxisBrush = this.svg.append("g").attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height + this.margin.top + this.margin.mid + this.brushHeight) + ")");
-
-	// Group to hold the brush
-	this.gBrush = this.svg.append("g").attr("class", "g-brush").attr("transform", "translate(" + this.margin.left + ", " + (this.margin.top + this.height + this.margin.mid) + ")");
-
-	// Group to hold all the groups that will hold the genes
-	this.gZoom = this.svg.append("g").attr("class", "g-chromosomes").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+	// Group to hold the zoom rect
+	this.gZoom = this.svg.append("g").attr("class", "g-zoom").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	this.zoomRect = this.gZoom.append("rect").attr("opacity", 0).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.height);
 
@@ -7458,13 +6870,11 @@ function buildScales() {
 		return parseInt(d.count, 10);
 	}));
 
-	this.yScaleExpanded = d3.scaleBand().domain([this.activeChromosome]).range([0, this.height]).round(true).paddingInner(0.1).paddingOuter(0.5);
-
-	this.yScaleContracted = d3.scaleBand().domain(inOrder).range([0, this.height]).round(true).paddingInner(0).paddingOuter(0);
+	this.yScale = d3.scaleBand().domain(inOrder).range([0, this.height]).round(true).paddingInner(0).paddingOuter(0);
 
 	// Custom invert function 
 	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
-	this.yScaleContracted.invert = function () {
+	this.yScale.invert = function () {
 
 		return function (x) {
 			var range = this.range();
@@ -7489,15 +6899,7 @@ function buildAxis() {
 	this.xAxis = d3.axisBottom(this.xt).tickArguments([4]);
 	this.gXAxis.call(this.xAxis);
 
-	this.xAxisBrush = d3.axisBottom(this.xScale).tickArguments([4]);
-	this.gXAxisBrush.call(this.xAxisBrush);
-
-	if (this.expanded) {
-		this.yAxis = d3.axisLeft(this.yScaleExpanded);
-	} else {
-		this.yAxis = d3.axisLeft(this.yScaleContracted);
-	}
-
+	this.yAxis = d3.axisLeft(this.yScale);
 	this.gYAxis.call(this.yAxis);
 
 	// Add y axis label 
@@ -7512,62 +6914,8 @@ function updateAxis() {
 	this.xAxis.scale(this.xt);
 	this.gXAxis.call(this.xAxis);
 
-	if (this.expanded) {
-		this.yAxis.scale(this.yScaleExpanded);
-	} else {
-		this.yAxis.scale(this.yScaleContracted);
-	}
-
+	this.yAxis.scale(this.yScale);
 	this.gYAxis.call(this.yAxis);
-
-	return this;
-}
-
-function buildKey() {
-	var _this = this;
-
-	function oneInFour(elem, index, array) {
-		return index % 4 ? false : true;
-	}
-
-	var ticks = this.colorScale.ticks().filter(oneInFour);
-
-	d3.select("#temp-key").selectAll("li").data(ticks).enter().append("li").html(function (d) {
-		return "<span style=\"background-color: " + _this.colorScale(d) + "\"></span> " + d3.format(',')(d) + " citations";
-	});
-
-	return this;
-}
-
-function buildChromosomeSelector() {
-	var that = this;
-	var firstItem = "All";
-
-	function justNames(d) {
-		return d.name;
-	}
-
-	var names = this.dataByChromosome.map(justNames);
-	names.unshift(firstItem);
-
-	this.chromosomeSelector = d3.select("#temp-chromosome-selector");
-
-	this.chromosomeSelector.selectAll("option").data(names).enter().append("option").attr("value", function (d) {
-		return d;
-	}).text(function (d) {
-		return d;
-	});
-
-	this.chromosomeSelector.on("change", function () {
-		if (this.value === firstItem) {
-			that.expanded = false;
-		} else {
-			that.expanded = true;
-			that.activeChromosome = this.value;
-		}
-
-		that.updateAll();
-	});
 
 	return this;
 }
@@ -7577,13 +6925,7 @@ function buildChromosomes() {
 
 	var that = this;
 
-	// Find the active chromosome by name in an array of objects
-	// This should be contracted into one file
-	function isActiveChromosome(elem, index, array) {
-		return elem.name === that.activeChromosome;
-	}
-
-	var data = this.expanded ? [this.dataByChromosome.find(isActiveChromosome)] : this.dataByChromosome;
+	var data = this.dataByChromosome;
 
 	this.gChromosome = this.gChromosomes.selectAll("g").data(data, function (d) {
 		return d.name;
@@ -7591,13 +6933,13 @@ function buildChromosomes() {
 
 	// Enter
 	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
-		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+		var y = _this.yScale(d.name);
 		return "translate(0, " + y + ")";
 	});
 
 	// Update
 	this.gChromosome.attr('transform', function (d) {
-		var y = _this.expanded ? _this.yScaleExpanded(d.name) : _this.yScaleContracted(d.name);
+		var y = _this.yScale(d.name);
 		return "translate(0, " + y + ")";
 	});
 
@@ -7617,7 +6959,7 @@ function buildGenes() {
 			return that.xt(d.start);
 		}).attr("y", 0).attr("width", function (d) {
 			return that.xt(d.end) - that.xt(d.start);
-		}).attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth()).attr("stroke", function (d) {
+		}).attr("height", that.yScale.bandwidth()).attr("stroke", function (d) {
 			return that.colorScale(parseInt(d.count, 0));
 		}).attr("stroke-width", 0.5).attr("fill", function (d) {
 			return that.colorScale(parseInt(d.count, 0));
@@ -7628,34 +6970,7 @@ function buildGenes() {
 			return that.xt(d.start);
 		}).attr('width', function (d) {
 			return that.xt(d.end) - that.xt(d.start);
-		}).attr("height", that.expanded ? that.yScaleExpanded.bandwidth() : that.yScaleContracted.bandwidth());
-	});
-
-	return this;
-}
-
-function buildSvgChromosomeSelector() {
-	var _this = this;
-
-	var that = this;
-
-	this.chromomsoeSelectors = this.gChromosomeSelector.selectAll("rect").data(this.dataByChromosome, function (d) {
-		return d.name;
-	});
-
-	// Enter
-	this.chromomsoeSelectors.enter().append("rect").attr("class", "chromosome-selector").attr('transform', function (d) {
-		var y = _this.yScaleContracted(d.name);
-		return "translate(0, " + y + ")";
-	}).attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.yScaleContracted.bandwidth()).attr("fill", "#ccc").attr("opacity", 0).attr("stroke-width", 0);
-
-	// Update 
-	this.chromomsoeSelectors.attr("opacity", function (d) {
-		if (_this.activeChromosome === d.name) {
-			return 0.3;
-		} else {
-			return 0;
-		}
+		}).attr("height", that.yScale.bandwidth());
 	});
 
 	return this;
@@ -7738,41 +7053,9 @@ function buildText() {
 function buildZoom() {
 	var that = this;
 
-	function mouseMove() {
-		if (!that.expanded) {
-			var yPos = d3.mouse(this)[1];
-			that.activeChromosome = that.yScaleContracted.invert(yPos);
-			that.updateAll();
-		}
-	}
-
-	function mouseOut() {
-		if (!that.expanded) {
-			that.activeChromosome = "All";
-			that.updateAll();
-		}
-	}
-
-	function mouseClick() {
-		if (!that.expanded) {
-			var yPos = d3.mouse(this)[1];
-			that.activeChromosome = that.yScaleContracted.invert(yPos);
-			that.expanded = true;
-			that.chromosomeSelector.property("value", that.activeChromosome);
-			that.updateAll();
-		}
-	}
-
 	function zoomed() {
-		if (d3.event.sourceEvent && d3.event.sourceEvent.type == "brush") return; // ignore if zoom-by-brush
-
 		var t = d3.event.transform;
 		that.xt.domain(t.rescaleX(that.xScale).domain());
-
-		// console.log(that.xt.domain());
-
-		// var range = that.xt.range().map(t.invertX, t);
-		// that.gBrush.select(".brush").call(that.brush.move, range);
 
 		that.updateAll();
 	}
@@ -7780,61 +7063,24 @@ function buildZoom() {
 	this.zoom = d3.zoom().on("zoom", zoomed);
 
 	this.zoom.scaleExtent([1, this.data.length / 10]).translateExtent([[0, 0], [this.width, this.height]]);
-	// .extent([0, 0], [this.width, this.height]);   
 
-	this.zoomRect.call(this.zoom).on("mousemove", mouseMove).on("mouseout", mouseOut).on("click", mouseClick);
-
-	return this;
-}
-
-function buildBrush() {
-	var that = this;
-
-	function brushed() {
-		if (d3.event.sourceEvent && d3.event.sourceEvent.type == "zoom") return; // ignore if brush-by-zoom
-
-		var s = d3.event.selection || that.xScale.range();
-
-		if (!d3.event.selection) {
-			that.gBrush.select(".brush").call(that.brush.move, s);
-		} // Expand brush if just click and no drag
-
-		that.xt.domain([that.xScale.invert(s[0]), that.xScale.invert(s[1])]);
-
-		that.zoomRect.call(that.zoom).call(that.zoom.transform, d3.zoomIdentity.scale(that.width / (s[1] - s[0])).translate(-s[0], 0));
-
-		that.updateAll();
-	}
-
-	this.brush = d3.brushX().extent([[0, 0], [this.width, this.brushHeight]]).handleSize(14).on("brush end", brushed);
-
-	this.gBrush.append("rect").attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.brushHeight).attr("fill", "#ccc");
-
-	this.gBrush.append("g").attr("class", "brush").call(this.brush).call(this.brush.move, this.xScale.range()); // Sets the initial state of the brush to cover the rect
+	this.zoomRect.call(this.zoom);
 
 	return this;
 }
 
 function updateAll() {
 	var that = this;
-	// var zooming = false;
-
-	this.yScaleExpanded.domain([this.activeChromosome]);
 
 	this.buildChromosomes().buildGenes().updateAxis();
 
-	this.buildText();
-
-	if (this.expanded) {
-		this.gChromosomeSelector.selectAll("rect").remove();
-	} else {
-		this.buildSvgChromosomeSelector();
-	}
+	// this.buildText();
 }
 
 function init$1() {
 
-	this.buildChart().buildScales().buildKey().buildAxis().buildChromosomes().buildChromosomeSelector().buildGenes().buildSvgChromosomeSelector().buildZoom().buildBrush().buildText();
+	this.buildChart().buildScales().buildAxis().buildChromosomes().buildGenes().buildZoom();
+	// .buildText();	
 }
 
 Goomba.prototype.buildChart = buildChart;
@@ -7842,17 +7088,13 @@ Goomba.prototype.buildScales = buildScales;
 Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
 
-Goomba.prototype.buildKey = buildKey;
 Goomba.prototype.buildChromosomes = buildChromosomes;
 
-Goomba.prototype.buildChromosomeSelector = buildChromosomeSelector;
 Goomba.prototype.buildGenes = buildGenes;
-Goomba.prototype.buildSvgChromosomeSelector = buildSvgChromosomeSelector;
 
 Goomba.prototype.buildText = buildText;
 
 Goomba.prototype.buildZoom = buildZoom;
-Goomba.prototype.buildBrush = buildBrush;
 
 Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.init = init$1;
@@ -7865,8 +7107,8 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 600,
-			width: 630
+			height: 1080,
+			width: 1920
 		});
 
 		goombaPlot.init();

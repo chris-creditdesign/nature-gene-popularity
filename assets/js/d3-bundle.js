@@ -5,7 +5,6 @@ import * as _array from "d3-array";
 import * as _axis from  "d3-axis";
 import * as _zoom from "d3-zoom";
 import * as _format from "d3-format";
-import * as _brush from "./lib/brush";
 import completeAssign from "./helpers/complete-assign";
 
 // Don't use Object.assign because the event property is a getter ie:
@@ -16,6 +15,6 @@ import completeAssign from "./helpers/complete-assign";
 
 // instead use completeAssign:
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format, _brush);
+var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format);
 
 export default d3;

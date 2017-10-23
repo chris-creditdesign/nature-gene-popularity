@@ -4,80 +4,55 @@
   padding: 10px;
 }
 
-.outerwrapper {
-  width: 100%;
-  position: relative;
-  border: 1px solid #c8c7cf;
-}
-
-.outerwrapper h1, .outerwrapper h2, .outerwrapper h3, .outerwrapper p, .outerwrapper ul, .outerwrapper label {
-  padding: 10px 10px 0 10px;
+body {
+  padding: 100px;
   margin: 0;
-  -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-          hyphens: auto;
 }
 
-.outerwrapper label {
-  padding: 10px 10px 0 10px;
+div {
+  border: 1px solid #ccc;
+  display: inline-block;
+}
+
+svg {
   margin: 0;
-  display: inline-block;
 }
 
-.outerwrapper .key li {
-  display: inline-block;
-  margin-right: 15px;
-}
-
-.outerwrapper .key span {
-  width: 13px;
-  height: 13px;
-  display: inline-block;
-  margin-right: 3px;
-}
-
-.outerwrapper canvas {
-  position: absolute;
-}
-
-.outerwrapper svg {
-  margin: 20px 0;
-}
-
-.outerwrapper svg text {
+svg text {
   font-size: 10px;
   pointer-events: none;
   -webkit-transition: opacity 150ms linear;
   transition: opacity 150ms linear;
+  font-family: "News Gothic MT OT";
 }
 
-.outerwrapper svg text.hide-svg-text {
+svg text.hide-svg-text {
   opacity: 0;
 }
 
-.outerwrapper svg .gene.contracted {
+svg .gene.contracted {
   pointer-events: none;
 }
 
-.outerwrapper svg rect.handle-box {
+svg rect.handle-box {
   fill: #555;
 }
 
-.outerwrapper svg line.handle-line {
+svg line.handle-line {
   stroke: #aaa;
   stroke-width: 1;
 }
 
-.outerwrapper svg rect.selection {
+svg rect.selection {
   stroke-width: 0;
   opacity: 0.4;
   fill: #777;
 }
 
-.outerwrapper .axis {
+.axis {
   shape-rendering: crispEdges;
 }
 
-.outerwrapper .axis text {
+.axis text {
   font-size: 12px;
 }
