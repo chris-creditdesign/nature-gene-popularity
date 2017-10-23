@@ -11,6 +11,7 @@ import buildText from "./goomba/text/text-build";
 
 import buildZoom from "./goomba/zoom/zoom";
 import updateAll from "./goomba/update-all";
+import buildData from "./goomba/build-data";
 import init from "./goomba/init";
 
 Goomba.prototype.buildChart = buildChart;
@@ -27,6 +28,7 @@ Goomba.prototype.buildText = buildText;
 Goomba.prototype.buildZoom = buildZoom;
 
 Goomba.prototype.updateAll = updateAll;
+Goomba.prototype.buildData = buildData;
 Goomba.prototype.init = init;
 
 export default Goomba;

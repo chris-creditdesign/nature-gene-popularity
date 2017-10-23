@@ -16,7 +16,6 @@ Animated graphic for @naturenews
 
 ## To Do
 
-- 	Move build-data into own file
 -	Remove lines from asis
 -	Make x-axis start at zero
 -	Adjust text size so it is legible on video

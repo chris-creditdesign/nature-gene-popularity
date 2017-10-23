@@ -6820,49 +6820,7 @@ function buildChart() {
 	return this;
 }
 
-var chromosomesInOrder = function chromosomesInOrder(data) {
-	// Get the names of the chromosomes
-	// Return an array of strings
-	// Use .map to get an array of 'chr' strings
-	// Use Set to get just the unique values from that array as a Set
-	// use .from to turn it back into an array
-	var chromosomes = Array.from(new Set(data.map(function (d) {
-		return d.chr;
-	})));
-
-	/*	Return an array of objects containing a name 
- 	and an array of the genes in that chromosome and the maximum length*/
-	var chromosomesCollected = chromosomes.map(function (d) {
-		var genes = data.filter(function (e) {
-			return e.chr == d;
-		}).sort(function (a, b) {
-			return a.start - b.start;
-		});
-
-		var lengths = genes.map(function (e) {
-			return +e.end;
-		});
-
-		return { "name": d,
-			"genes": genes,
-			"length": d3.max(lengths)
-		};
-	});
-
-	// order them according to the maximum start position
-	// of all genes
-	var inOrder = chromosomesCollected.sort(function (a, b) {
-		return b.length - a.length;
-	});
-
-	return inOrder;
-};
-
 function buildScales() {
-	this.dataByChromosome = chromosomesInOrder(this.data);
-	var inOrder = this.dataByChromosome.map(function (d) {
-		return d.name;
-	});
 	var xScaleDomain = [0, d3.max(this.data.map(function (d) {
 		return +d.end;
 	}))];
@@ -6870,7 +6828,7 @@ function buildScales() {
 		return parseInt(d.count, 10);
 	}));
 
-	this.yScale = d3.scaleBand().domain(inOrder).range([0, this.height]).round(true).paddingInner(0).paddingOuter(0);
+	this.yScale = d3.scaleBand().domain(this.inOrder).range([0, this.height]).round(true).paddingInner(0).paddingOuter(0);
 
 	// Custom invert function 
 	// https://bl.ocks.org/shimizu/808e0f5cadb6a63f28bb00082dc8fe3f
@@ -7077,9 +7035,56 @@ function updateAll() {
 	// this.buildText();
 }
 
+var chromosomesInOrder = function chromosomesInOrder(data) {
+	// Get the names of the chromosomes
+	// Return an array of strings
+	// Use .map to get an array of 'chr' strings
+	// Use Set to get just the unique values from that array as a Set
+	// use .from to turn it back into an array
+	var chromosomes = Array.from(new Set(data.map(function (d) {
+		return d.chr;
+	})));
+
+	/*	Return an array of objects containing a name 
+ 	and an array of the genes in that chromosome and the maximum length*/
+	var chromosomesCollected = chromosomes.map(function (d) {
+		var genes = data.filter(function (e) {
+			return e.chr == d;
+		}).sort(function (a, b) {
+			return a.start - b.start;
+		});
+
+		var lengths = genes.map(function (e) {
+			return +e.end;
+		});
+
+		return { "name": d,
+			"genes": genes,
+			"length": d3.max(lengths)
+		};
+	});
+
+	// order them according to the maximum start position
+	// of all genes
+	var inOrder = chromosomesCollected.sort(function (a, b) {
+		return b.length - a.length;
+	});
+
+	return inOrder;
+};
+
+function buildData() {
+	this.dataByChromosome = chromosomesInOrder(this.data);
+	this.inOrder = this.dataByChromosome.map(function (d) {
+		return d.name;
+	});
+
+	return this;
+}
+
 function init$1() {
 
-	this.buildChart().buildScales().buildAxis().buildChromosomes().buildGenes().buildZoom();
+	this.buildData().buildChart().buildScales().buildAxis().buildChromosomes().buildGenes().buildZoom();
 	// .buildText();	
 }
 
@@ -7097,6 +7102,7 @@ Goomba.prototype.buildText = buildText;
 Goomba.prototype.buildZoom = buildZoom;
 
 Goomba.prototype.updateAll = updateAll;
+Goomba.prototype.buildData = buildData;
 Goomba.prototype.init = init$1;
 
 d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {

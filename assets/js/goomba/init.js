@@ -1,6 +1,7 @@
 function init() {
 
-	this.buildChart()
+	this.buildData()
+		.buildChart()
 		.buildScales()
 		.buildAxis()
 		.buildChromosomes()
