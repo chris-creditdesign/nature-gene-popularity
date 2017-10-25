@@ -7,8 +7,8 @@ function buildScales() {
 	this.yScale = d3.scaleBand()
 		.domain(this.inOrder)
 		.range([0, this.height])
-		.paddingInner(0.3)
-		.paddingOuter(0.15)
+		.paddingInner(0.2)
+		.paddingOuter(0.1)
 		.round(true);
 
 	this.xScale = d3.scaleLinear()

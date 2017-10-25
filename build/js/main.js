@@ -6798,12 +6798,8 @@ function Goomba(data) {
 function buildChart() {
 	this.svg = d3.select(this.target).append("svg").attr('width', this.width + this.margin.left + this.margin.right).attr('height', this.height + this.margin.top + this.margin.bottom).style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
-	var clip = this.svg.append("defs").append("svg:clipPath").attr("id", "clip").append("svg:rect").attr("x", 0).attr("y", 0).attr("width", this.width).attr("height", this.height);
-
-	this.svg.append("rect").attr("x", this.margin.left).attr("y", this.margin.top).attr("width", this.width).attr("height", this.height).attr("fill", "#ffffff");
-
 	// Group to hold all the groups that will hold the genes
-	this.gChromosomes = this.svg.append("g").attr("class", "g-chromosomes").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
+	this.gChromosomes = this.svg.append("g").attr("class", "g-chromosomes").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	// Group to hold all the rects
 	this.gMainText = this.svg.append("g").attr("class", "g-main-text").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
@@ -6825,7 +6821,7 @@ function buildScales() {
 		return parseInt(d.count, 10);
 	}));
 
-	this.yScale = d3.scaleBand().domain(this.inOrder).range([0, this.height]).paddingInner(0.3).paddingOuter(0.15).round(true);
+	this.yScale = d3.scaleBand().domain(this.inOrder).range([0, this.height]).paddingInner(0.2).paddingOuter(0.1).round(true);
 
 	this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
 
@@ -6850,7 +6846,7 @@ function buildAxis() {
 	this.gYAxis.call(this.yAxis);
 
 	// Add y axis label 
-	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", -35).attr("dy", 0).text("Chromosome number");
+	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", -30).attr("dy", 0).text("Chromosome");
 
 	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", 40).attr("dy", 0).text("Gene position");
 
@@ -6874,6 +6870,8 @@ function buildChromosomes() {
 
 	var data = this.dataByChromosome;
 
+	console.log(this.dataByChromosome);
+
 	this.gChromosome = this.gChromosomes.selectAll("g").data(data, function (d) {
 		return d.name;
 	});
@@ -6882,7 +6880,9 @@ function buildChromosomes() {
 	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
 		var y = _this.yScale(d.name);
 		return "translate(0, " + y + ")";
-	}).append("line").attr("x1", 0).attr("y1", this.yScale.bandwidth()).attr("x2", this.width).attr("y2", this.yScale.bandwidth()).attr("stroke-width", 1).attr("stroke", "#000");
+	}).append("rect").attr("x", 0).attr("y", 0).attr("width", function (d) {
+		return _this.xScale(d.length) + 1;
+	}).attr("height", this.yScale.bandwidth()).attr("fill", "#fff").attr("stroke", "none");
 
 	// Update
 	this.gChromosome.attr('transform', function (d) {
@@ -6908,19 +6908,13 @@ function buildGenes() {
 			return that.xt(d.start);
 		}).attr("y", function (d) {
 			return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10));
-		}).attr("width", function (d) {
-			return that.xt(d.end) - that.xt(d.start);
-		}).attr("height", function (d) {
+		})
+		// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
+		.attr("width", 1).attr("height", function (d) {
 			return that.geneScale(parseInt(d.count, 10));
-		}).attr("stroke", "#CE1421").attr("stroke-width", 1).attr("fill", "#CE1421");
+		}).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421");
+		// .attr("fill", "#CE1421");
 		// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
-
-		// Update
-		// d3.select(this)
-		// 	.selectAll("rect")
-		// 	.attr('x', d => that.xt(d.start) )
-		// 	.attr('width', d => that.xt(d.end) - that.xt(d.start) )
-		// 	.attr("height", that.yScale.bandwidth());
 	});
 
 	return this;
@@ -7085,7 +7079,7 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 900,
+			height: 1200,
 			width: 630
 		});
 

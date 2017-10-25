@@ -18,19 +18,14 @@ function buildGenes() {
 			.attr("y", d => {
 				return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10))
 			})
-			.attr("width", d => that.xt(d.end) - that.xt(d.start) )
+			// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
+			.attr("width", 1 )
 			.attr("height", d => that.geneScale(parseInt(d.count, 10)))
-			.attr("stroke", "#CE1421")
-			.attr("stroke-width", 1)
+			.attr("stroke", "none")
+			.attr("stroke-width", 0)
 			.attr("fill", "#CE1421");
+			// .attr("fill", "#CE1421");
 			// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
-
-		// Update
-		// d3.select(this)
-		// 	.selectAll("rect")
-		// 	.attr('x', d => that.xt(d.start) )
-		// 	.attr('width', d => that.xt(d.end) - that.xt(d.start) )
-		// 	.attr("height", that.yScale.bandwidth());
 
 	});
 

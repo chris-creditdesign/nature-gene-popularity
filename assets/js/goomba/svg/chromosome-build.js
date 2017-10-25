@@ -5,6 +5,8 @@ function buildChromosomes() {
 
 	let data = this.dataByChromosome;
 
+	console.log(this.dataByChromosome);
+
 	this.gChromosome = this.gChromosomes.selectAll("g")
 		.data(data, d => d.name);
 
@@ -17,13 +19,13 @@ function buildChromosomes() {
 			let y = this.yScale(d.name);
 			return `translate(0, ${y})`;
 		})
-		.append("line")
-		.attr("x1", 0)
-		.attr("y1", this.yScale.bandwidth())
-		.attr("x2", this.width)
-		.attr("y2", this.yScale.bandwidth())
-		.attr("stroke-width", 1)
-		.attr("stroke", "#000");
+	  .append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", d => this.xScale(d.length) + 1)
+		.attr("height", this.yScale.bandwidth())
+		.attr("fill", "#fff")
+		.attr("stroke", "none");
 
 	// Update
 	this.gChromosome

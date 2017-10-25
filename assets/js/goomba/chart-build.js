@@ -7,25 +7,9 @@ function buildChart() {
 		.attr('height', this.height + this.margin.top + this.margin.bottom)
 		.style("-webkit-tap-highlight-color", "rgba(0, 0, 0, 0)");
 
-	var clip = this.svg.append("defs").append("svg:clipPath")
-						.attr("id", "clip")
-					  .append("svg:rect")
-						.attr("x", 0)
-						.attr("y", 0)
-						.attr("width", this.width)
-						.attr("height", this.height);
-
-	this.svg.append("rect")
-		.attr("x", this.margin.left)
-		.attr("y", this.margin.top)
-		.attr("width", this.width)
-		.attr("height", this.height)
-		.attr("fill", "#ffffff");
-
 	// Group to hold all the groups that will hold the genes
 	this.gChromosomes = this.svg.append("g")
 		.attr("class", "g-chromosomes")
-		.attr("clip-path", "url(#clip)")
 		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
 	// Group to hold all the rects
