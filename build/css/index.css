@@ -10,7 +10,7 @@ body {
 }
 
 div {
-  background-color: #000;
+  background-color: #F6F5EE;
   display: inline-block;
 }
 
@@ -19,13 +19,11 @@ svg {
 }
 
 svg text {
-  font-size: 33px;
+  font-size: 12px;
   pointer-events: none;
-  -webkit-transition: opacity 150ms linear;
-  transition: opacity 150ms linear;
   font-family: "News Gothic MT OT";
-  text-rendering: geometricPrecision;
-  fill: #fff;
+  text-rendering: optimizeLegibility;
+  fill: #000;
 }
 
 svg text.hide-svg-text {
@@ -53,12 +51,12 @@ svg rect.selection {
 
 .axis {
   shape-rendering: crispEdges;
-  stroke: #fff;
+  stroke: #000;
 }
 
 .axis .tick line {
-  stroke: #fff;
-  stroke-width: 2;
+  stroke: #000;
+  stroke-width: 1;
 }
 
 .axis .domain {

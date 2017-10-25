@@ -9,7 +9,6 @@ import buildGenes from "./goomba/svg/gene-build";
 
 import buildText from "./goomba/text/text-build";
 
-import buildZoom from "./goomba/zoom/zoom";
 import updateAll from "./goomba/update-all";
 import buildData from "./goomba/build-data";
 import init from "./goomba/init";
@@ -24,8 +23,6 @@ Goomba.prototype.buildChromosomes = buildChromosomes;
 Goomba.prototype.buildGenes = buildGenes;
 
 Goomba.prototype.buildText = buildText;
-
-Goomba.prototype.buildZoom = buildZoom;
 
 Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.buildData = buildData;

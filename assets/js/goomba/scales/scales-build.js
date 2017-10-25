@@ -2,14 +2,14 @@ import d3 from "../../d3-bundle";
 
 function buildScales() {
 	let xScaleDomain = [0, d3.max(this.data.map((d) => { return +d.end; }))];
-	let colorDomain = d3.extent(this.data.map( d => parseInt(d.count, 10) ));
+	let countDomain = d3.extent(this.data.map( d => parseInt(d.count, 10) ));
 
 	this.yScale = d3.scaleBand()
 		.domain(this.inOrder)
 		.range([0, this.height])
-		.round(true)
-		.paddingInner(0)
-		.paddingOuter(0);
+		.paddingInner(0.3)
+		.paddingOuter(0.15)
+		.round(true);
 
 	this.xScale = d3.scaleLinear()
 		.domain(xScaleDomain)
@@ -21,9 +21,13 @@ function buildScales() {
 
 	// Use a log scale to account for the wide range of numbers
 	this.colorScale = d3.scaleLog()
-		.domain(colorDomain)
+		.domain(countDomain)
 		.range(['#FFFF00', '#FF0000']);
-			
+
+	this.geneScale = d3.scaleLog()
+		.domain(countDomain)
+		.range([1, this.yScale.bandwidth()]);
+
 	return this;
 }
 

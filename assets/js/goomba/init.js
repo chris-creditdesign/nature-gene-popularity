@@ -5,8 +5,8 @@ function init() {
 		.buildScales()
 		.buildAxis()
 		.buildChromosomes()
-		.buildGenes()
-		.buildZoom();
+		.buildGenes();
+		// .buildZoom();
 		// .buildText();	
 }
 

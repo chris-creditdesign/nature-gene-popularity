@@ -4,14 +4,14 @@ function buildAxis() {
 
 	this.xAxis = d3.axisBottom(this.xt)
 			.tickArguments([4])
-			.tickSize(15)
-			.tickPadding(15);
+			.tickSize(5)
+			.tickPadding(5);
 
 	this.gXAxis.call(this.xAxis);
 
 	this.yAxis = d3.axisLeft(this.yScale)
-		.tickSize(15)
-		.tickPadding(10);
+		.tickSize(0)
+		.tickPadding(5);
 
 	this.gYAxis.call(this.yAxis);
 
@@ -21,7 +21,7 @@ function buildAxis() {
 		.attr("text-anchor","middle")
 		.attr("transform", "translate(0, 0) rotate(-90)")
 		.attr("x", this.height * -0.5)
-		.attr("y", -90)
+		.attr("y", -35)
 		.attr("dy", 0)
 		.text("Chromosome number");
 
@@ -29,7 +29,7 @@ function buildAxis() {
 		.attr("fill","#000000")
 		.attr("text-anchor","middle")
 		.attr("x", this.width * 0.5)
-		.attr("y", 100)
+		.attr("y", 40)
 		.attr("dy", 0)
 		.text("Gene position");
 

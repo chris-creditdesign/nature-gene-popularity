@@ -4,6 +4,8 @@ function buildGenes() {
 
 	var that = this;
 
+	console.log(this.geneScale(168));
+
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
 		d3.select(this)
@@ -13,19 +15,22 @@ function buildGenes() {
 			.append("rect")
 			.attr("class", "gene contracted")
 			.attr("x", d => that.xt(d.start) )
-			.attr("y", 0 )
+			.attr("y", d => {
+				return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10))
+			})
 			.attr("width", d => that.xt(d.end) - that.xt(d.start) )
-			.attr("height", that.yScale.bandwidth())
-			.attr("stroke", d => that.colorScale(parseInt(d.count, 0)) )
+			.attr("height", d => that.geneScale(parseInt(d.count, 10)))
+			.attr("stroke", "#CE1421")
 			.attr("stroke-width", 1)
-			.attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
+			.attr("fill", "#CE1421");
+			// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
 
 		// Update
-		d3.select(this)
-			.selectAll("rect")
-			.attr('x', d => that.xt(d.start) )
-			.attr('width', d => that.xt(d.end) - that.xt(d.start) )
-			.attr("height", that.yScale.bandwidth());
+		// d3.select(this)
+		// 	.selectAll("rect")
+		// 	.attr('x', d => that.xt(d.start) )
+		// 	.attr('width', d => that.xt(d.end) - that.xt(d.start) )
+		// 	.attr("height", that.yScale.bandwidth());
 
 	});
 

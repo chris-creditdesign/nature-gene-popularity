@@ -11,7 +11,7 @@ body {
 }
 
 div {
-	background-color: #000;
+	background-color: #F6F5EE;
 	display: inline-block;
 }
 
@@ -22,13 +22,13 @@ svg {
 	margin: 0;
 
 	text {
-		font-size: 33px;
+		font-size: 12px;
 
 		pointer-events: none;
-		transition: opacity 150ms linear;
+		
 		font-family: "News Gothic MT OT";
-		text-rendering: geometricPrecision;
-		fill: #fff;
+		text-rendering: optimizeLegibility;
+		fill: #000;
 	}
 
 	text.hide-svg-text {
@@ -59,11 +59,11 @@ svg {
 
 .axis {
 	shape-rendering: crispEdges;
-	stroke: #fff;
+	stroke: #000;
 
 	.tick line {
-		stroke: #fff;
-		stroke-width: 2;
+		stroke: #000;
+		stroke-width: 1;
 	}
 
 	.domain {

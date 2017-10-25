@@ -16,7 +16,14 @@ function buildChromosomes() {
 		.attr('transform', d => {
 			let y = this.yScale(d.name);
 			return `translate(0, ${y})`;
-		});
+		})
+		.append("line")
+		.attr("x1", 0)
+		.attr("y1", this.yScale.bandwidth())
+		.attr("x2", this.width)
+		.attr("y2", this.yScale.bandwidth())
+		.attr("stroke-width", 1)
+		.attr("stroke", "#000");
 
 	// Update
 	this.gChromosome

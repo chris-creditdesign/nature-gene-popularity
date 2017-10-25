@@ -9,8 +9,8 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function(error, data) {
 		const goombaPlot = new myGoomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 1080,
-			width: 1920
+			height: 900,
+			width: 630
 		});
 
 		goombaPlot.init();

@@ -15,6 +15,13 @@ function buildChart() {
 						.attr("width", this.width)
 						.attr("height", this.height);
 
+	this.svg.append("rect")
+		.attr("x", this.margin.left)
+		.attr("y", this.margin.top)
+		.attr("width", this.width)
+		.attr("height", this.height)
+		.attr("fill", "#ffffff");
+
 	// Group to hold all the groups that will hold the genes
 	this.gChromosomes = this.svg.append("g")
 		.attr("class", "g-chromosomes")
@@ -36,18 +43,6 @@ function buildChart() {
 	this.gYAxis = this.svg.append("g")
 			.attr("class", "y axis")
 			.attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
-
-	// Group to hold the zoom rect
-	this.gZoom = this.svg.append("g")
-		.attr("class", "g-zoom")
-		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-
-	this.zoomRect = this.gZoom.append("rect")
-		.attr("opacity", 0)
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", this.width)
-		.attr("height", this.height);
 	
 	return this;
 }
