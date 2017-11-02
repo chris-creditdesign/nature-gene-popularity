@@ -2,18 +2,18 @@ import d3 from "../../d3-bundle";
 
 function buildAxis() {
 
-	this.xAxis = d3.axisBottom(this.xt)
-			.tickArguments([4])
+	this.yAxis = d3.axisLeft(this.yt)
+			.tickArguments([8])
 			.tickSize(5)
 			.tickPadding(5);
 
-	this.gXAxis.call(this.xAxis);
+	this.gYAxis.call(this.yAxis);
 
-	this.yAxis = d3.axisLeft(this.yScale)
-		.tickSize(0)
+	this.xAxis = d3.axisBottom(this.xScale)
+		.tickSize(5)
 		.tickPadding(5);
 
-	this.gYAxis.call(this.yAxis);
+	this.gXAxis.call(this.xAxis);
 
 	// Add y axis label 
 	this.gYAxis.append("text")
@@ -21,9 +21,9 @@ function buildAxis() {
 		.attr("text-anchor","middle")
 		.attr("transform", "translate(0, 0) rotate(-90)")
 		.attr("x", this.height * -0.5)
-		.attr("y", -30)
+		.attr("y", -100)
 		.attr("dy", 0)
-		.text("Chromosome");
+		.text("Gene position");
 
 	this.gXAxis.append("text")
 		.attr("fill","#000000")
@@ -31,7 +31,7 @@ function buildAxis() {
 		.attr("x", this.width * 0.5)
 		.attr("y", 40)
 		.attr("dy", 0)
-		.text("Gene position");
+		.text("Chromosome");
 
 
 	return this;

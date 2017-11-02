@@ -19,14 +19,14 @@ function buildChart() {
 		.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
 	// Group to hold the x axis 
-	this.gXAxis = this.svg.append("g")
-			.attr("class", "x axis")
-			.attr("transform", `translate(${this.margin.left}, ${this.height + this.margin.top})`);
-
-	// Group to hold the y axis
 	this.gYAxis = this.svg.append("g")
 			.attr("class", "y axis")
 			.attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
+
+	// Group to hold the y axis
+	this.gXAxis = this.svg.append("g")
+			.attr("class", "x axis")
+			.attr("transform", `translate(${this.margin.left}, ${this.height + this.margin.top})`);
 	
 	return this;
 }

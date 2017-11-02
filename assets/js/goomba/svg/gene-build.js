@@ -12,18 +12,13 @@ function buildGenes() {
 			.enter()
 			.append("rect")
 			.attr("class", "gene contracted")
-			.attr("x", d => that.xt(d.start) )
-			.attr("y", d => {
-				return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10))
-			})
-			// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
-			.attr("width", 1 )
-			.attr("height", d => that.geneScale(parseInt(d.count, 10)))
+			.attr("y", d => that.yt(d.start) )
+			.attr("x", 0)
+			.attr("height", 1 )
+			.attr("width", d => that.geneScale(parseInt(d.count, 10)))
 			.attr("stroke", "none")
 			.attr("stroke-width", 0)
 			.attr("fill", "#CE1421");
-			// .attr("fill", "#CE1421");
-			// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
 
 	});
 

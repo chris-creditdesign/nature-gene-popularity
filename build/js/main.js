@@ -6788,7 +6788,7 @@ var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : { 'top': 20, 'left': 50, 'bottom': 50, 'right': 20 };
+		this.margin = data.margin ? data.margin : { 'top': 20, 'left': 130, 'bottom': 50, 'right': 20 };
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
@@ -6805,60 +6805,60 @@ function buildChart() {
 	this.gMainText = this.svg.append("g").attr("class", "g-main-text").attr("clip-path", "url(#clip)").attr('transform', "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	// Group to hold the x axis 
-	this.gXAxis = this.svg.append("g").attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height + this.margin.top) + ")");
+	this.gYAxis = this.svg.append("g").attr("class", "y axis").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
 	// Group to hold the y axis
-	this.gYAxis = this.svg.append("g").attr("class", "y axis").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
+	this.gXAxis = this.svg.append("g").attr("class", "x axis").attr("transform", "translate(" + this.margin.left + ", " + (this.height + this.margin.top) + ")");
 
 	return this;
 }
 
 function buildScales() {
-	var xScaleDomain = [0, d3.max(this.data.map(function (d) {
+	var yScaleDomain = [d3.max(this.data.map(function (d) {
 		return +d.end;
-	}))];
+	})), 0];
 	var countDomain = d3.extent(this.data.map(function (d) {
 		return parseInt(d.count, 10);
 	}));
 
-	this.yScale = d3.scaleBand().domain(this.inOrder).range([0, this.height]).paddingInner(0.2).paddingOuter(0.1).round(true);
+	this.xScale = d3.scaleBand().domain(this.inOrder).range([0, this.width]).paddingInner(0.25).paddingOuter(0).round(true);
 
-	this.xScale = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
+	this.yScale = d3.scaleLinear().domain(yScaleDomain).range([0, this.height]);
 
-	this.xt = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
+	this.yt = d3.scaleLinear().domain(yScaleDomain).range([0, this.height]);
 
 	// Use a log scale to account for the wide range of numbers
 	this.colorScale = d3.scaleLog().domain(countDomain).range(['#FFFF00', '#FF0000']);
 
-	this.geneScale = d3.scaleLog().domain(countDomain).range([1, this.yScale.bandwidth()]);
+	this.geneScale = d3.scaleLog().domain(countDomain).range([1, this.xScale.bandwidth()]);
 
 	return this;
 }
 
 function buildAxis() {
 
-	this.xAxis = d3.axisBottom(this.xt).tickArguments([4]).tickSize(5).tickPadding(5);
-
-	this.gXAxis.call(this.xAxis);
-
-	this.yAxis = d3.axisLeft(this.yScale).tickSize(0).tickPadding(5);
+	this.yAxis = d3.axisLeft(this.yt).tickArguments([8]).tickSize(5).tickPadding(5);
 
 	this.gYAxis.call(this.yAxis);
 
-	// Add y axis label 
-	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", -30).attr("dy", 0).text("Chromosome");
+	this.xAxis = d3.axisBottom(this.xScale).tickSize(5).tickPadding(5);
 
-	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", 40).attr("dy", 0).text("Gene position");
+	this.gXAxis.call(this.xAxis);
+
+	// Add y axis label 
+	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", -100).attr("dy", 0).text("Gene position");
+
+	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", 40).attr("dy", 0).text("Chromosome");
 
 	return this;
 }
 
 function updateAxis() {
-	this.xAxis.scale(this.xt);
-	this.gXAxis.call(this.xAxis);
+	// this.xAxis.scale(this.xt);
+	// this.gXAxis.call(this.xAxis);
 
-	this.yAxis.scale(this.yScale);
-	this.gYAxis.call(this.yAxis);
+	// this.yAxis.scale(this.yScale);
+	// this.gYAxis.call(this.yAxis);
 
 	return this;
 }
@@ -6876,17 +6876,20 @@ function buildChromosomes() {
 
 	// Enter
 	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
-		var y = _this.yScale(d.name);
-		return "translate(0, " + y + ")";
-	}).append("rect").attr("x", 0).attr("y", 0).attr("width", function (d) {
-		return _this.xScale(d.length) + 1;
-	}).attr("height", this.yScale.bandwidth()).attr("fill", "#fff").attr("stroke", "none");
+		var x = _this.xScale(d.name);
+		return "translate(" + x + ", 0)";
+	}).append("rect").attr("x", 0).attr("y", function (d) {
+		return _this.yScale(d.length);
+	}).attr("width", this.xScale.bandwidth()).attr("height", function (d) {
+		return _this.height - _this.yScale(d.length);
+	}).attr("fill", "#fff").attr("stroke", "none");
 
 	// Update
-	this.gChromosome.attr('transform', function (d) {
-		var y = _this.yScale(d.name);
-		return "translate(0, " + y + ")";
-	});
+	// this.gChromosome
+	// 	.attr('transform', d => {
+	// 		let y = this.xScale(d.name);
+	// 		return `translate(0, ${y})`;
+	// 	});		
 
 	// Exit
 	this.gChromosome.exit().transition().attr("opacity", 0).remove();
@@ -6900,17 +6903,11 @@ function buildGenes() {
 
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
-		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
-			return that.xt(d.start);
-		}).attr("y", function (d) {
-			return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10));
-		})
-		// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
-		.attr("width", 1).attr("height", function (d) {
+		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("y", function (d) {
+			return that.yt(d.start);
+		}).attr("x", 0).attr("height", 1).attr("width", function (d) {
 			return that.geneScale(parseInt(d.count, 10));
 		}).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421");
-		// .attr("fill", "#CE1421");
-		// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
 	});
 
 	return this;
@@ -7079,8 +7076,8 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 1200,
-			width: 630
+			height: 630,
+			width: 1200
 		});
 
 		goombaPlot.init();

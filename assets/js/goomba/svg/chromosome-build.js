@@ -14,23 +14,23 @@ function buildChromosomes() {
 		.attr("class", "g-genes")
 		.attr("opacity", 1)
 		.attr('transform', d => {
-			let y = this.yScale(d.name);
-			return `translate(0, ${y})`;
+			let x = this.xScale(d.name);
+			return `translate(${x}, 0)`;
 		})
 	  .append("rect")
 		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", d => this.xScale(d.length) + 1)
-		.attr("height", this.yScale.bandwidth())
+		.attr("y", d => this.yScale(d.length))
+		.attr("width", this.xScale.bandwidth())
+		.attr("height", d => this.height - this.yScale(d.length))
 		.attr("fill", "#fff")
 		.attr("stroke", "none");
 
 	// Update
-	this.gChromosome
-		.attr('transform', d => {
-			let y = this.yScale(d.name);
-			return `translate(0, ${y})`;
-		});		
+	// this.gChromosome
+	// 	.attr('transform', d => {
+	// 		let y = this.xScale(d.name);
+	// 		return `translate(0, ${y})`;
+	// 	});		
 
 	// Exit
 	this.gChromosome.exit()
