@@ -6788,11 +6788,13 @@ var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : { 'top': 20, 'left': 130, 'bottom': 50, 'right': 20 };
+		this.margin = data.margin ? data.margin : { 'top': 54, 'left': 96, 'bottom': 54, 'right': 96 };
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
 		this.target = data.target ? data.target : "body";
+		this.duration = 1500;
+		this.delay = 100;
 }
 
 function buildChart() {
@@ -6878,11 +6880,13 @@ function buildChromosomes() {
 	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
 		var x = _this.xScale(d.name);
 		return "translate(" + x + ", 0)";
-	}).append("rect").attr("x", 0).attr("y", function (d) {
-		return _this.yScale(d.length);
-	}).attr("width", this.xScale.bandwidth()).attr("height", function (d) {
+	}).append("rect").attr("x", 0).attr("y", this.height).attr("width", this.xScale.bandwidth()).attr("height", 0).attr("fill", "#fff").attr("stroke", "none").transition().duration(this.duration).delay(function (d, i) {
+		return i * _this.delay;
+	}).attr("height", function (d) {
 		return _this.height - _this.yScale(d.length);
-	}).attr("fill", "#fff").attr("stroke", "none");
+	}).attr("y", function (d) {
+		return _this.yScale(d.length);
+	});
 
 	// Update
 	// this.gChromosome
@@ -6905,9 +6909,11 @@ function buildGenes() {
 		// Enter
 		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("y", function (d) {
 			return that.yt(d.start);
-		}).attr("x", 0).attr("height", 1).attr("width", function (d) {
+		}).attr("x", 0).attr("height", 2).attr("width", 0).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421").transition(that.duration).delay(function (d, i) {
+			return that.duration * 1.8 + that.yt(d.start) * 0.01 * that.delay;
+		}).duration(that.duration).attr("width", function (d) {
 			return that.geneScale(parseInt(d.count, 10));
-		}).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421");
+		});
 	});
 
 	return this;
@@ -7048,7 +7054,9 @@ function buildData() {
 
 function init$1() {
 
-	this.buildData().buildChart().buildScales().buildAxis().buildChromosomes().buildGenes();
+	this.buildData().buildChart().buildScales()
+	// .buildAxis()
+	.buildChromosomes().buildGenes();
 	// .buildZoom();
 	// .buildText();	
 }
@@ -7076,8 +7084,8 @@ d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
 		var goombaPlot = new Goomba({
 			target: "#goomba-chart",
 			data: data,
-			height: 630,
-			width: 1200
+			height: 1080,
+			width: 1920
 		});
 
 		goombaPlot.init();

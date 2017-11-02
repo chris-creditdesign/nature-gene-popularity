@@ -3,7 +3,7 @@ function init() {
 	this.buildData()
 		.buildChart()
 		.buildScales()
-		.buildAxis()
+		// .buildAxis()
 		.buildChromosomes()
 		.buildGenes();
 		// .buildZoom();
