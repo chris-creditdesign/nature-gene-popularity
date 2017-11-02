@@ -3,9 +3,7 @@ import d3 from "../../d3-bundle";
 function buildGenes() {
 
 	var that = this;
-
-	console.log(this.geneScale(168));
-
+	
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
 		d3.select(this)

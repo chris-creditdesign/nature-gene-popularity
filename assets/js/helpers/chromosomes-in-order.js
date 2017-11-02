@@ -22,12 +22,15 @@ var chromosomesInOrder = function (data) {
 				};
 		});
 
-	// order them according to the maximum start position
-	// of all genes
+	// Put all the genes in name order
 	let inOrder = chromosomesCollected
-		.sort( (a,b) => b.length - a.length );
+		.sort( (a,b) => parseInt(a.name, 10) - parseInt(b.name, 10) );
+
+	// Find the X chromosome and move it to the end
+	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "X"),1)[0]);
 
 	return inOrder;
+
 };
 
 export default chromosomesInOrder;

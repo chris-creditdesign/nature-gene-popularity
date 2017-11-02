@@ -6870,8 +6870,6 @@ function buildChromosomes() {
 
 	var data = this.dataByChromosome;
 
-	console.log(this.dataByChromosome);
-
 	this.gChromosome = this.gChromosomes.selectAll("g").data(data, function (d) {
 		return d.name;
 	});
@@ -6899,8 +6897,6 @@ function buildChromosomes() {
 function buildGenes() {
 
 	var that = this;
-
-	console.log(this.geneScale(168));
 
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
@@ -7031,11 +7027,15 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 		};
 	});
 
-	// order them according to the maximum start position
-	// of all genes
+	// Put all the genes in name order
 	var inOrder = chromosomesCollected.sort(function (a, b) {
-		return b.length - a.length;
+		return parseInt(a.name, 10) - parseInt(b.name, 10);
 	});
+
+	// Find the X chromosome and move it to the end
+	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
+		return d.name === "X";
+	}), 1)[0]);
 
 	return inOrder;
 };

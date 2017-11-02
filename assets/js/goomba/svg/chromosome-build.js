@@ -5,8 +5,6 @@ function buildChromosomes() {
 
 	let data = this.dataByChromosome;
 
-	console.log(this.dataByChromosome);
-
 	this.gChromosome = this.gChromosomes.selectAll("g")
 		.data(data, d => d.name);
 
