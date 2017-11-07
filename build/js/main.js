@@ -6815,11 +6815,18 @@ function buildChart() {
 
 function buildScales() {
 	var xScaleDomain = [0, d3.max(this.data.map(function (d) {
-		return +d.end;
+		return +d.geneEnd;
 	}))];
 	var countDomain = d3.extent(this.data.map(function (d) {
-		return parseInt(d.count, 10);
+		return parseInt(d.citations, 10);
 	}));
+
+	console.log('Highest cited gene: ' + d3.max(this.data.map(function (d) {
+		return +d.citations;
+	})));
+	console.log('Lowest cited gene: ' + d3.min(this.data.map(function (d) {
+		return +d.citations;
+	})));
 
 	this.yScale = d3.scaleBand().domain(this.inOrder).range([0, this.height]).paddingInner(0.2).paddingOuter(0.1).round(true);
 
@@ -6846,7 +6853,14 @@ function buildAxis() {
 	this.gYAxis.call(this.yAxis);
 
 	// Add y axis label 
-	this.gYAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("transform", "translate(0, 0) rotate(-90)").attr("x", this.height * -0.5).attr("y", -30).attr("dy", 0).text("Chromosome");
+	/*this.gYAxis.append("text")
+ 	.attr("fill","#000000")
+ 	.attr("text-anchor","middle")
+ 	.attr("transform", "translate(0, 0) rotate(-90)")
+ 	.attr("x", this.height * -0.5)
+ 	.attr("y", -30)
+ 	.attr("dy", 0)
+ 	.text("Chromosome");*/
 
 	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", 40).attr("dy", 0).text("Gene position");
 
@@ -6901,13 +6915,13 @@ function buildGenes() {
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
 		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
-			return that.xt(d.start);
+			return that.xt(d.geneStart);
 		}).attr("y", function (d) {
-			return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10));
+			return that.yScale.bandwidth() - that.geneScale(parseInt(d.citations, 10));
 		})
 		// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
 		.attr("width", 1).attr("height", function (d) {
-			return that.geneScale(parseInt(d.count, 10));
+			return that.geneScale(parseInt(d.citations, 10));
 		}).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421");
 		// .attr("fill", "#CE1421");
 		// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
@@ -7014,11 +7028,11 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 		var genes = data.filter(function (e) {
 			return e.chr == d;
 		}).sort(function (a, b) {
-			return a.start - b.start;
+			return a.geneStart - b.geneStart;
 		});
 
 		var lengths = genes.map(function (e) {
-			return +e.end;
+			return +e.geneEnd;
 		});
 
 		return { "name": d,
@@ -7029,13 +7043,18 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 
 	// Put all the genes in name order
 	var inOrder = chromosomesCollected.sort(function (a, b) {
-		return parseInt(a.name, 10) - parseInt(b.name, 10);
+		return parseInt(a.name.substr(3, 2), 10) - parseInt(b.name.substr(3, 2), 10);
 	});
 
 	// Find the X chromosome and move it to the end
 	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
-		return d.name === "X";
+		return d.name === "chrX";
 	}), 1)[0]);
+	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
+		return d.name === "chrY";
+	}), 1)[0]);
+
+	console.log("Number of genes: " + data.length);
 
 	return inOrder;
 };
@@ -7052,8 +7071,6 @@ function buildData() {
 function init$1() {
 
 	this.buildData().buildChart().buildScales().buildAxis().buildChromosomes().buildGenes();
-	// .buildZoom();
-	// .buildText();	
 }
 
 Goomba.prototype.buildChart = buildChart;
@@ -7071,7 +7088,7 @@ Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.buildData = buildData;
 Goomba.prototype.init = init$1;
 
-d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
+d3.csv('./data/graphic-idea-1.csv', function (error, data) {
 	if (error) {
 		console.log('error:', error);
 	} else {

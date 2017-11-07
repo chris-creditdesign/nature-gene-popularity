@@ -6,8 +6,6 @@ function init() {
 		.buildAxis()
 		.buildChromosomes()
 		.buildGenes();
-		// .buildZoom();
-		// .buildText();	
 }
 
 export default init;

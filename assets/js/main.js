@@ -1,7 +1,7 @@
 import d3 from "./d3-bundle";
 import myGoomba from "./goomba-bundle";
 
-d3.tsv('./data/sorted_genes_by_popularity.tsv', function(error, data) {
+d3.csv('./data/graphic-idea-1.csv', function(error, data) {
 	if (error) {
 		console.log('error:', error);
 	} else {

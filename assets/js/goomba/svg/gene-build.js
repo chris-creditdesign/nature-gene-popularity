@@ -12,13 +12,13 @@ function buildGenes() {
 			.enter()
 			.append("rect")
 			.attr("class", "gene contracted")
-			.attr("x", d => that.xt(d.start) )
+			.attr("x", d => that.xt(d.geneStart) )
 			.attr("y", d => {
-				return that.yScale.bandwidth() - that.geneScale(parseInt(d.count, 10))
+				return that.yScale.bandwidth() - that.geneScale(parseInt(d.citations, 10))
 			})
 			// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
 			.attr("width", 1 )
-			.attr("height", d => that.geneScale(parseInt(d.count, 10)))
+			.attr("height", d => that.geneScale(parseInt(d.citations, 10)))
 			.attr("stroke", "none")
 			.attr("stroke-width", 0)
 			.attr("fill", "#CE1421");

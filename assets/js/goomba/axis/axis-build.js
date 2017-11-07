@@ -16,14 +16,14 @@ function buildAxis() {
 	this.gYAxis.call(this.yAxis);
 
 	// Add y axis label 
-	this.gYAxis.append("text")
+	/*this.gYAxis.append("text")
 		.attr("fill","#000000")
 		.attr("text-anchor","middle")
 		.attr("transform", "translate(0, 0) rotate(-90)")
 		.attr("x", this.height * -0.5)
 		.attr("y", -30)
 		.attr("dy", 0)
-		.text("Chromosome");
+		.text("Chromosome");*/
 
 	this.gXAxis.append("text")
 		.attr("fill","#000000")

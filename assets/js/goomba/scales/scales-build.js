@@ -1,8 +1,11 @@
 import d3 from "../../d3-bundle";
 
 function buildScales() {
-	let xScaleDomain = [0, d3.max(this.data.map((d) => { return +d.end; }))];
-	let countDomain = d3.extent(this.data.map( d => parseInt(d.count, 10) ));
+	let xScaleDomain = [0, d3.max(this.data.map((d) => { return +d.geneEnd; }))];
+	let countDomain = d3.extent(this.data.map( d => parseInt(d.citations, 10) ));
+
+	console.log(`Highest cited gene: ${d3.max(this.data.map((d) => { return +d.citations; }))}`)
+	console.log(`Lowest cited gene: ${d3.min(this.data.map((d) => { return +d.citations; }))}`)
 
 	this.yScale = d3.scaleBand()
 		.domain(this.inOrder)

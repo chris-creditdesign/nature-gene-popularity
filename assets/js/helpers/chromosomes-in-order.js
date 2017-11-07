@@ -12,9 +12,9 @@ var chromosomesInOrder = function (data) {
 		and an array of the genes in that chromosome and the maximum length*/
 	let chromosomesCollected = chromosomes.map( d => {
 		let genes = data.filter( e => e.chr == d )
-			.sort( (a,b) => a.start - b.start );
+			.sort( (a,b) => a.geneStart - b.geneStart );
 
-		let lengths = genes.map( e => +e.end );
+		let lengths = genes.map( e => +e.geneEnd );
 		
 		return {"name": d,
 				"genes": genes,
@@ -24,10 +24,13 @@ var chromosomesInOrder = function (data) {
 
 	// Put all the genes in name order
 	let inOrder = chromosomesCollected
-		.sort( (a,b) => parseInt(a.name, 10) - parseInt(b.name, 10) );
+		.sort( (a,b) => parseInt(a.name.substr(3,2), 10) - parseInt(b.name.substr(3,2), 10) );
 
 	// Find the X chromosome and move it to the end
-	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "X"),1)[0]);
+	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "chrX"),1)[0]);
+	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "chrY"),1)[0]);
+
+	console.log(`Number of genes: ${data.length}`);
 
 	return inOrder;
 
