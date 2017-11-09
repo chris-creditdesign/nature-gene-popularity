@@ -4,24 +4,28 @@ function buildGenes() {
 
 	var that = this;
 	
+	function findXPosition(d) {
+		let midPoint = (d.geneEnd - d.geneEnd) / 2; 
+		return that.xt(midPoint + d.geneStart)
+	}
+
 	this.gChromosomes.selectAll("g").each(function (data) {
 
-		// Enter
 		d3.select(this)
-			.selectAll("rect")
+			.selectAll("line")
 			.data(data.genes)
 			.enter()
-			.append("rect")
-			.attr("class", "gene contracted")
-			.attr("x", d => that.xt(d.geneStart) )
-			.attr("y", d => {
+			.append("line")
+			.attr("x1", d => findXPosition(d))
+			.attr("y1", d => {
 				return that.yScale.bandwidth() - that.geneScale(parseInt(d.citations, 10))
 			})
-			.attr("width", 1 )
-			.attr("height", d => that.geneScale(parseInt(d.citations, 10)))
-			.attr("stroke", "none")
-			.attr("stroke-width", 0)
-			.attr("fill", "#CE1421");
+			.attr("x2", d => findXPosition(d))
+			.attr("y2", d => {
+				return that.yScale.bandwidth()
+			})
+			.attr("stroke-width", 1)
+			.attr("stroke", "#CE1421");
 
 	});
 

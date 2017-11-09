@@ -6880,16 +6880,22 @@ function buildGenes() {
 
 	var that = this;
 
+	function findXPosition(d) {
+		var midPoint = (d.geneEnd - d.geneEnd) / 2;
+		return that.xt(midPoint + d.geneStart);
+	}
+
 	this.gChromosomes.selectAll("g").each(function (data) {
 
-		// Enter
-		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
-			return that.xt(d.geneStart);
-		}).attr("y", function (d) {
+		d3.select(this).selectAll("line").data(data.genes).enter().append("line").attr("x1", function (d) {
+			return findXPosition(d);
+		}).attr("y1", function (d) {
 			return that.yScale.bandwidth() - that.geneScale(parseInt(d.citations, 10));
-		}).attr("width", 1).attr("height", function (d) {
-			return that.geneScale(parseInt(d.citations, 10));
-		}).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421");
+		}).attr("x2", function (d) {
+			return findXPosition(d);
+		}).attr("y2", function (d) {
+			return that.yScale.bandwidth();
+		}).attr("stroke-width", 1).attr("stroke", "#CE1421");
 	});
 
 	return this;
