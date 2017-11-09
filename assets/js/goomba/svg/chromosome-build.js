@@ -25,19 +25,6 @@ function buildChromosomes() {
 		.attr("fill", "#fff")
 		.attr("stroke", "none");
 
-	// Update
-	this.gChromosome
-		.attr('transform', d => {
-			let y = this.yScale(d.name);
-			return `translate(0, ${y})`;
-		});		
-
-	// Exit
-	this.gChromosome.exit()
-		.transition()
-		.attr("opacity", 0)
-		.remove();
-
 	return this;
 }
 

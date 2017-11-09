@@ -6849,27 +6849,7 @@ function buildAxis() {
 
 	this.gYAxis.call(this.yAxis);
 
-	// Add y axis label 
-	/*this.gYAxis.append("text")
- 	.attr("fill","#000000")
- 	.attr("text-anchor","middle")
- 	.attr("transform", "translate(0, 0) rotate(-90)")
- 	.attr("x", this.height * -0.5)
- 	.attr("y", -30)
- 	.attr("dy", 0)
- 	.text("Chromosome");*/
-
 	this.gXAxis.append("text").attr("fill", "#000000").attr("text-anchor", "middle").attr("x", this.width * 0.5).attr("y", 40).attr("dy", 0).text("Gene position");
-
-	return this;
-}
-
-function updateAxis() {
-	this.xAxis.scale(this.xt);
-	this.gXAxis.call(this.xAxis);
-
-	this.yAxis.scale(this.yScale);
-	this.gYAxis.call(this.yAxis);
 
 	return this;
 }
@@ -6893,15 +6873,6 @@ function buildChromosomes() {
 		return _this.xScale(d.length) + 1;
 	}).attr("height", this.yScale.bandwidth()).attr("fill", "#fff").attr("stroke", "none");
 
-	// Update
-	this.gChromosome.attr('transform', function (d) {
-		var y = _this.yScale(d.name);
-		return "translate(0, " + y + ")";
-	});
-
-	// Exit
-	this.gChromosome.exit().transition().attr("opacity", 0).remove();
-
 	return this;
 }
 
@@ -6910,103 +6881,18 @@ function buildGenes() {
 	var that = this;
 
 	this.gChromosomes.selectAll("g").each(function (data) {
+
 		// Enter
 		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("x", function (d) {
 			return that.xt(d.geneStart);
 		}).attr("y", function (d) {
 			return that.yScale.bandwidth() - that.geneScale(parseInt(d.citations, 10));
-		})
-		// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
-		.attr("width", 1).attr("height", function (d) {
+		}).attr("width", 1).attr("height", function (d) {
 			return that.geneScale(parseInt(d.citations, 10));
 		}).attr("stroke", "none").attr("stroke-width", 0).attr("fill", "#CE1421");
-		// .attr("fill", "#CE1421");
-		// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
 	});
 
 	return this;
-}
-
-var collisionDetection = function collisionDetection(elem, index, array) {
-	// Check all subsequent elements
-	// until they are out of reach of this element
-	// if they are in reach - set visibility to hidden
-	// Only bother checking if this element is visible
-	// This should probably be throttled...
-
-	var thisBox = elem.getBBox();
-	var rightEdge = thisBox.x + thisBox.width;
-
-	if (!elem.hasAttribute("class")) {
-		for (var n = index + 1; n < array.length; n++) {
-
-			if (array[n]) {
-				var nextBox = array[n].getBBox();
-				var leftEdge = nextBox.x;
-
-				if (leftEdge < rightEdge + 10) {
-					array[n].setAttribute("class", "hide-svg-text");
-				} else {
-					break;
-				}
-			} else {
-				break;
-			}
-		}
-	}
-};
-
-function buildText() {
-	var _this = this;
-
-	var that = this;
-
-	// Find the active chromosome by name in an array of objects
-	// This should be contracted into one file
-	function isActiveChromosome(elem, index, array) {
-		return elem.name === that.activeChromosome;
-	}
-
-	var data = this.expanded ? this.dataByChromosome.find(isActiveChromosome).genes : [];
-
-	this.gText = this.gMainText.selectAll("text").data(data);
-
-	// Enter
-	this.gText.enter().append("text").attr("x", function (d) {
-		var start = that.xt(d.start);
-		var width = that.xt(d.end) - that.xt(d.start);
-
-		return start + width / 2;
-	}).attr("y", function () {
-		return _this.height / 2 - _this.yScaleExpanded.bandwidth() / 2 - 10;
-	}).attr("text-anchor", "middle").text(function (d) {
-		return d.symbol;
-	}).attr("class", null).each(function (elem, index, array) {
-		collisionDetection(this, index, array);
-	});
-
-	// Update
-	this.gText.attr("x", function (d) {
-		var start = that.xt(d.start);
-		var width = that.xt(d.end) - that.xt(d.start);
-
-		return start + width / 2;
-	}).attr("class", null).each(function (elem, index, array) {
-		collisionDetection(this, index, array);
-	});
-
-	// Exit 
-	this.gText.exit().remove();
-
-	return this;
-}
-
-function updateAll() {
-	var that = this;
-
-	this.buildChromosomes().buildGenes().updateAxis();
-
-	// this.buildText();
 }
 
 var chromosomesInOrder = function chromosomesInOrder(data) {
@@ -7073,15 +6959,11 @@ function init$1() {
 Goomba.prototype.buildChart = buildChart;
 Goomba.prototype.buildScales = buildScales;
 Goomba.prototype.buildAxis = buildAxis;
-Goomba.prototype.updateAxis = updateAxis;
 
 Goomba.prototype.buildChromosomes = buildChromosomes;
 
 Goomba.prototype.buildGenes = buildGenes;
 
-Goomba.prototype.buildText = buildText;
-
-Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.buildData = buildData;
 Goomba.prototype.init = init$1;
 

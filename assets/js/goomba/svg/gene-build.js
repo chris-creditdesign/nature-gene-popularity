@@ -5,6 +5,7 @@ function buildGenes() {
 	var that = this;
 	
 	this.gChromosomes.selectAll("g").each(function (data) {
+
 		// Enter
 		d3.select(this)
 			.selectAll("rect")
@@ -16,14 +17,11 @@ function buildGenes() {
 			.attr("y", d => {
 				return that.yScale.bandwidth() - that.geneScale(parseInt(d.citations, 10))
 			})
-			// .attr("width", d => that.xt(d.end) - that.xt(d.start) )
 			.attr("width", 1 )
 			.attr("height", d => that.geneScale(parseInt(d.citations, 10)))
 			.attr("stroke", "none")
 			.attr("stroke-width", 0)
 			.attr("fill", "#CE1421");
-			// .attr("fill", "#CE1421");
-			// .attr("fill", d => that.colorScale(parseInt(d.count, 0)) );
 
 	});
 
