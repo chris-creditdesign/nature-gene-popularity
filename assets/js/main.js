@@ -10,7 +10,7 @@ d3.csv('./data/graphic-idea-1.csv', function(error, data) {
 			target: "#goomba-chart",
 			data: data,
 			height: 1200,
-			width: 630
+			width: 1000
 		});
 
 		goombaPlot.init();

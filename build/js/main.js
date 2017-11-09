@@ -6817,14 +6817,14 @@ function buildScales() {
 	var xScaleDomain = [0, d3.max(this.data.map(function (d) {
 		return +d.geneEnd;
 	}))];
-	var countDomain = d3.extent(this.data.map(function (d) {
-		return parseInt(d.citations, 10);
-	}));
 
-	console.log('Highest cited gene: ' + d3.max(this.data.map(function (d) {
+	//	Fix the domain for the print graphic
+	var countDomain = [0, 10000];
+
+	console.log("Highest cited gene: " + d3.max(this.data.map(function (d) {
 		return +d.citations;
 	})));
-	console.log('Lowest cited gene: ' + d3.min(this.data.map(function (d) {
+	console.log("Lowest cited gene: " + d3.min(this.data.map(function (d) {
 		return +d.citations;
 	})));
 
@@ -6834,10 +6834,7 @@ function buildScales() {
 
 	this.xt = d3.scaleLinear().domain(xScaleDomain).range([0, this.width]);
 
-	// Use a log scale to account for the wide range of numbers
-	this.colorScale = d3.scaleLog().domain(countDomain).range(['#FFFF00', '#FF0000']);
-
-	this.geneScale = d3.scaleLog().domain(countDomain).range([1, this.yScale.bandwidth()]);
+	this.geneScale = d3.scaleLinear().domain(countDomain).range([1, this.yScale.bandwidth()]);
 
 	return this;
 }
@@ -7097,7 +7094,7 @@ d3.csv('./data/graphic-idea-1.csv', function (error, data) {
 			target: "#goomba-chart",
 			data: data,
 			height: 1200,
-			width: 630
+			width: 1000
 		});
 
 		goombaPlot.init();
