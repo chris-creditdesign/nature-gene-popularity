@@ -28,7 +28,7 @@ function buildGenes() {
 					console.log(d);
 					return "#000000;"
 				} else {
-					return "#CE1421"
+					return "yellow"
 				}
 			})
 			.transition(that.duration)

@@ -22,7 +22,7 @@ function buildChromosomes() {
 		.attr("y", this.height)
 		.attr("width", this.xScale.bandwidth())
 		.attr("height", 0)
-		.attr("fill", "#fff")
+		.attr("fill", "#333")
 		.attr("stroke", "none")
 		.transition()
 		.duration(this.duration)

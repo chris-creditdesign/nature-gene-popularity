@@ -6880,7 +6880,7 @@ function buildChromosomes() {
 	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
 		var x = _this.xScale(d.name);
 		return "translate(" + x + ", 0)";
-	}).append("rect").attr("x", 0).attr("y", this.height).attr("width", this.xScale.bandwidth()).attr("height", 0).attr("fill", "#fff").attr("stroke", "none").transition().duration(this.duration).delay(function (d, i) {
+	}).append("rect").attr("x", 0).attr("y", this.height).attr("width", this.xScale.bandwidth()).attr("height", 0).attr("fill", "#333").attr("stroke", "none").transition().duration(this.duration).delay(function (d, i) {
 		return i * _this.delay;
 	}).attr("height", function (d) {
 		return _this.height - _this.yScale(d.length);
@@ -6914,7 +6914,7 @@ function buildGenes() {
 				console.log(d);
 				return "#000000;";
 			} else {
-				return "#CE1421";
+				return "yellow";
 			}
 		}).transition(that.duration).delay(function (d, i) {
 			return that.duration * 1.8 + that.yt(d.start) * 0.01 * that.delay;
