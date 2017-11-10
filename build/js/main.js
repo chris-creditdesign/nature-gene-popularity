@@ -6817,20 +6817,18 @@ function buildChart() {
 
 function buildScales() {
 	var yScaleDomain = [d3.max(this.data.map(function (d) {
-		return +d.end;
+		return +d.geneEnd;
 	})), 0];
-	var countDomain = d3.extent(this.data.map(function (d) {
-		return parseInt(d.count, 10);
-	}));
+	//	Fix the domain for the print graphic
+	var countDomain = [1, 10000];
 
 	this.xScale = d3.scaleBand().domain(this.inOrder).range([0, this.width]).paddingInner(0.25).paddingOuter(0).round(true);
 
 	this.yScale = d3.scaleLinear().domain(yScaleDomain).range([0, this.height]);
 
-	this.yt = d3.scaleLinear().domain(yScaleDomain).range([0, this.height]);
-
-	// Use a log scale to account for the wide range of numbers
-	this.colorScale = d3.scaleLog().domain(countDomain).range(['#FFFF00', '#FF0000']);
+	// this.yt = d3.scaleLinear()
+	// 	.domain(yScaleDomain)
+	// 	.range([0, this.height]);
 
 	this.geneScale = d3.scaleLog().domain(countDomain).range([1, this.xScale.bandwidth()]);
 
@@ -6896,7 +6894,10 @@ function buildChromosomes() {
 	// 	});		
 
 	// Exit
-	this.gChromosome.exit().transition().attr("opacity", 0).remove();
+	// this.gChromosome.exit()
+	// 	.transition()
+	// 	.attr("opacity", 0)
+	// 	.remove();
 
 	return this;
 }
@@ -6907,19 +6908,54 @@ function buildGenes() {
 
 	this.gChromosomes.selectAll("g").each(function (data) {
 		// Enter
-		d3.select(this).selectAll("rect").data(data.genes).enter().append("rect").attr("class", "gene contracted").attr("y", function (d) {
-			return that.yt(d.start);
-		}).attr("x", 0).attr("height", 2).attr("width", 0).attr("stroke", "none").attr("stroke-width", 0).attr("fill", function (d) {
-			if (d.symbol === "CD4" || d.symbol === "TP53" || d.symbol === "GRB2" || d.symbol === "HBB" || d.symbol === "TNF" || d.symbol === "APOE") {
-				console.log(d);
-				return "#000000;";
-			} else {
-				return "yellow";
-			}
-		}).transition(that.duration).delay(function (d, i) {
-			return that.duration * 1.8 + that.yt(d.start) * 0.01 * that.delay;
-		}).duration(that.duration).attr("width", function (d) {
-			return that.geneScale(parseInt(d.count, 10));
+		// d3.select(this)
+		// 	.selectAll("rect")
+		// 	.data(data.genes)
+		// 	.enter()
+		// 	.append("rect")
+		// 	.attr("class", "gene contracted")
+		// 	.attr("y", d => that.yt(d.start) )
+		// 	.attr("x", 0)
+		// 	.attr("height", 2 )
+		// 	.attr("width", 0)
+		// 	.attr("stroke", "none")
+		// 	.attr("stroke-width", 0)
+		// 	.attr("fill", d => {
+		// 		if (d.symbol === "CD4" || 
+		// 			d.symbol === "TP53"  ||
+		// 			d.symbol === "GRB2" ||
+		// 			d.symbol === "HBB" ||
+		// 			d.symbol === "TNF" ||
+		// 			d.symbol === "APOE") {
+		// 			console.log(d);
+		// 			return "#000000;"
+		// 		} else {
+		// 			return "yellow"
+		// 		}
+		// 	})
+		// 	.transition(that.duration)
+		// 	.delay( (d,i) => {
+		// 		return (that.duration * 1.8) + (that.yt(d.start) * 0.01 * that.delay);
+		// 	})
+		// 	.duration(that.duration)
+		// 	.attr("width", d => that.geneScale(parseInt(d.count, 10)));
+
+		function findXPosition(d) {
+			var midPoint = (d.geneEnd - d.geneEnd) / 2;
+			return that.yScale(midPoint + d.geneStart);
+		}
+
+		// Enter
+		d3.select(this).selectAll("line").data(data.genes).enter().append("line").attr("y1", function (d) {
+			return findXPosition(d);
+		}).attr("x1", function (d) {
+			return 0;
+		}).attr("y2", function (d) {
+			return findXPosition(d);
+		}).attr("x2", 0).attr("stroke-width", 1).attr("stroke", "#ffff00").transition(that.duration).delay(function (d, i) {
+			return that.duration * 1.8 + findXPosition(d) * 0.01 * that.delay;
+		}).duration(that.duration).attr("x2", function (d) {
+			return that.geneScale(parseInt(d.citations, 10));
 		});
 	});
 
@@ -7001,11 +7037,8 @@ function buildText() {
 }
 
 function updateAll() {
-	var that = this;
 
-	this.buildChromosomes().buildGenes().updateAxis();
-
-	// this.buildText();
+	this.buildGenes();
 }
 
 var chromosomesInOrder = function chromosomesInOrder(data) {
@@ -7014,7 +7047,9 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 	// Use .map to get an array of 'chr' strings
 	// Use Set to get just the unique values from that array as a Set
 	// use .from to turn it back into an array
-	var chromosomes = Array.from(new Set(data.map(function (d) {
+	var chromosomes = Array.from(new Set(data.filter(function (d) {
+		return d.chr.length > 3;
+	}).map(function (d) {
 		return d.chr;
 	})));
 
@@ -7024,11 +7059,11 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 		var genes = data.filter(function (e) {
 			return e.chr == d;
 		}).sort(function (a, b) {
-			return a.start - b.start;
+			return a.geneStart - b.geneStart;
 		});
 
 		var lengths = genes.map(function (e) {
-			return +e.end;
+			return +e.geneEnd;
 		});
 
 		return { "name": d,
@@ -7039,13 +7074,18 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 
 	// Put all the genes in name order
 	var inOrder = chromosomesCollected.sort(function (a, b) {
-		return parseInt(a.name, 10) - parseInt(b.name, 10);
+		return parseInt(a.name.substr(3, 2), 10) - parseInt(b.name.substr(3, 2), 10);
 	});
 
-	// Find the X chromosome and move it to the end
+	// Find the X and Y chromosomes and move them to the end
 	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
-		return d.name === "X";
+		return d.name === "chrX";
 	}), 1)[0]);
+	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
+		return d.name === "chrY";
+	}), 1)[0]);
+
+	console.log(inOrder);
 
 	return inOrder;
 };
@@ -7061,9 +7101,7 @@ function buildData() {
 
 function init$1() {
 
-	this.buildData().buildChart().buildScales()
-	// .buildAxis()
-	.buildChromosomes().buildGenes();
+	this.buildData().buildChart().buildScales().buildChromosomes().buildGenes();
 	// .buildZoom();
 	// .buildText();	
 }
@@ -7083,7 +7121,7 @@ Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.buildData = buildData;
 Goomba.prototype.init = init$1;
 
-d3.tsv('./data/sorted_genes_by_popularity.tsv', function (error, data) {
+d3.csv('./data/merged_yearsDf.csv', function (error, data) {
 	if (error) {
 		console.log('error:', error);
 	} else {

@@ -1,8 +1,9 @@
 import d3 from "../../d3-bundle";
 
 function buildScales() {
-	let yScaleDomain = [d3.max(this.data.map((d) => { return +d.end; })),0];
-	let countDomain = d3.extent(this.data.map( d => parseInt(d.count, 10) ));
+	let yScaleDomain = [d3.max(this.data.map((d) => { return +d.geneEnd; })),0];
+	//	Fix the domain for the print graphic
+	let countDomain = [1,10000];
 
 	this.xScale = d3.scaleBand()
 		.domain(this.inOrder)
@@ -15,14 +16,9 @@ function buildScales() {
 		.domain(yScaleDomain)
 		.range([0, this.height]);
 
-	this.yt = d3.scaleLinear()
-		.domain(yScaleDomain)
-		.range([0, this.height]);
-
-	// Use a log scale to account for the wide range of numbers
-	this.colorScale = d3.scaleLog()
-		.domain(countDomain)
-		.range(['#FFFF00', '#FF0000']);
+	// this.yt = d3.scaleLinear()
+	// 	.domain(yScaleDomain)
+	// 	.range([0, this.height]);
 
 	this.geneScale = d3.scaleLog()
 		.domain(countDomain)

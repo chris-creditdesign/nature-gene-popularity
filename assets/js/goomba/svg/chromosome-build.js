@@ -40,10 +40,10 @@ function buildChromosomes() {
 	// 	});		
 
 	// Exit
-	this.gChromosome.exit()
-		.transition()
-		.attr("opacity", 0)
-		.remove();
+	// this.gChromosome.exit()
+	// 	.transition()
+	// 	.attr("opacity", 0)
+	// 	.remove();
 
 	return this;
 }
