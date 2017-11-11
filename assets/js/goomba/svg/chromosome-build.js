@@ -19,18 +19,18 @@ function buildChromosomes() {
 		})
 	  .append("rect")
 		.attr("x", 0)
-		.attr("y", this.height)
+		.attr("y", d => this.yScale(d.length))
 		.attr("width", this.xScale.bandwidth())
-		.attr("height", 0)
-		.attr("fill", "#333")
-		.attr("stroke", "none")
-		.transition()
-		.duration(this.duration)
-		.delay( (d,i) => {
-			return i * this.delay;
-		})
 		.attr("height", d => this.height - this.yScale(d.length))
-		.attr("y", d => this.yScale(d.length));
+		.attr("fill", "#333")
+		.attr("stroke", "none");
+		// .transition()
+		// .duration(this.duration)
+		// .delay( (d,i) => {
+		// 	return i * this.delay;
+		// })
+		// .attr("height", d => this.height - this.yScale(d.length))
+		// .attr("y", d => this.yScale(d.length));
 
 	// Update
 	// this.gChromosome

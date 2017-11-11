@@ -8,6 +8,7 @@ function Goomba (data) {
 		this.target = data.target ? data.target : "body";
 		this.duration = 1500;
 		this.delay = 100;
+		this.year = "1980";
 }
 
 export default Goomba;

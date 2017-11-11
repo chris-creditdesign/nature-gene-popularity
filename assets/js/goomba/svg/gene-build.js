@@ -5,66 +5,55 @@ function buildGenes() {
 	var that = this;
 	
 	this.gChromosomes.selectAll("g").each(function (data) {
-		// Enter
-		// d3.select(this)
-		// 	.selectAll("rect")
-		// 	.data(data.genes)
-		// 	.enter()
-		// 	.append("rect")
-		// 	.attr("class", "gene contracted")
-		// 	.attr("y", d => that.yt(d.start) )
-		// 	.attr("x", 0)
-		// 	.attr("height", 2 )
-		// 	.attr("width", 0)
-		// 	.attr("stroke", "none")
-		// 	.attr("stroke-width", 0)
-		// 	.attr("fill", d => {
-		// 		if (d.symbol === "CD4" || 
-		// 			d.symbol === "TP53"  ||
-		// 			d.symbol === "GRB2" ||
-		// 			d.symbol === "HBB" ||
-		// 			d.symbol === "TNF" ||
-		// 			d.symbol === "APOE") {
-		// 			console.log(d);
-		// 			return "#000000;"
-		// 		} else {
-		// 			return "yellow"
-		// 		}
-		// 	})
-		// 	.transition(that.duration)
-		// 	.delay( (d,i) => {
-		// 		return (that.duration * 1.8) + (that.yt(d.start) * 0.01 * that.delay);
-		// 	})
-		// 	.duration(that.duration)
-		// 	.attr("width", d => that.geneScale(parseInt(d.count, 10)));
 
 		function findXPosition(d) {
 			let midPoint = (d.geneEnd - d.geneEnd) / 2; 
 			return that.yScale(midPoint + d.geneStart)
 		}
 
-		// Enter
-		d3.select(this)
+		let myGenes = d3.select(this)
 			.selectAll("line")
-			.data(data.genes)
-			.enter()
+			.data(data.genes.filter( d => d[that.year] > 0));
+		
+		// Enter
+		myGenes.enter()
 			.append("line")
 			.attr("y1", d => findXPosition(d))
 			.attr("x1", d => {
 				return 0;
 			})
 			.attr("y2", d => findXPosition(d))
-			.attr("x2", 0)
+			// .attr("x2", 0)
 			.attr("stroke-width", 1)
 			.attr("stroke", "#ffff00")
-			.transition(that.duration)
-			.delay( (d,i) => {
-				return (that.duration * 1.8) + (findXPosition(d) * 0.01 * that.delay);
-			})
-			.duration(that.duration)
 			.attr("x2", d => {
-				return that.geneScale(parseInt(d.citations, 10))
-			})
+				if (d[that.year] === 0) {
+					return 1;
+				} else {
+					return that.geneScale(parseInt(d[that.year], 10))
+				}
+			});
+			// .transition(that.duration)
+			// .delay( (d,i) => {
+			// 	return (that.duration * 1.8) + (findXPosition(d) * 0.01 * that.delay);
+			// })
+			// .duration(that.duration)
+			// .attr("x2", d => {
+			// 	return that.geneScale(parseInt(d.citations, 10))
+			// });
+
+		// Update
+		myGenes.attr("x2", d => {
+				if (d[that.year] === 0) {
+					return 1;
+				} else {
+					return that.geneScale(parseInt(d[that.year], 10))
+				}
+			});
+
+		myGenes.exit()
+			.remove();
+
 
 	});
 

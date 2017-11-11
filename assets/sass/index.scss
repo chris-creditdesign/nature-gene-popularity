@@ -10,9 +10,18 @@ body {
 
 }
 
-div {
+div#goomba-chart {
 	background-color: #000000;
 	display: inline-block;
+	position: relative;
+
+	h2 {
+		font-family: helvetica;
+		color: #ffffff;
+		font-size: 100px;
+		position: absolute;
+		right: 100px
+	}
 }
 
 // SVG

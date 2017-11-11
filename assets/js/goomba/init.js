@@ -1,6 +1,7 @@
 function init() {
 
 	this.buildData()
+		.buildSlider()
 		.buildChart()
 		.buildScales()
 		.buildChromosomes()

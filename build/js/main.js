@@ -6795,6 +6795,7 @@ function Goomba(data) {
 		this.target = data.target ? data.target : "body";
 		this.duration = 1500;
 		this.delay = 100;
+		this.year = "1980";
 }
 
 function buildChart() {
@@ -6820,7 +6821,7 @@ function buildScales() {
 		return +d.geneEnd;
 	})), 0];
 	//	Fix the domain for the print graphic
-	var countDomain = [1, 10000];
+	var countDomain = [1, 700];
 
 	this.xScale = d3.scaleBand().domain(this.inOrder).range([0, this.width]).paddingInner(0.25).paddingOuter(0).round(true);
 
@@ -6878,13 +6879,18 @@ function buildChromosomes() {
 	this.gChromosome.enter().append("g").attr("class", "g-genes").attr("opacity", 1).attr('transform', function (d) {
 		var x = _this.xScale(d.name);
 		return "translate(" + x + ", 0)";
-	}).append("rect").attr("x", 0).attr("y", this.height).attr("width", this.xScale.bandwidth()).attr("height", 0).attr("fill", "#333").attr("stroke", "none").transition().duration(this.duration).delay(function (d, i) {
-		return i * _this.delay;
-	}).attr("height", function (d) {
-		return _this.height - _this.yScale(d.length);
-	}).attr("y", function (d) {
+	}).append("rect").attr("x", 0).attr("y", function (d) {
 		return _this.yScale(d.length);
-	});
+	}).attr("width", this.xScale.bandwidth()).attr("height", function (d) {
+		return _this.height - _this.yScale(d.length);
+	}).attr("fill", "#333").attr("stroke", "none");
+	// .transition()
+	// .duration(this.duration)
+	// .delay( (d,i) => {
+	// 	return i * this.delay;
+	// })
+	// .attr("height", d => this.height - this.yScale(d.length))
+	// .attr("y", d => this.yScale(d.length));
 
 	// Update
 	// this.gChromosome
@@ -6907,56 +6913,51 @@ function buildGenes() {
 	var that = this;
 
 	this.gChromosomes.selectAll("g").each(function (data) {
-		// Enter
-		// d3.select(this)
-		// 	.selectAll("rect")
-		// 	.data(data.genes)
-		// 	.enter()
-		// 	.append("rect")
-		// 	.attr("class", "gene contracted")
-		// 	.attr("y", d => that.yt(d.start) )
-		// 	.attr("x", 0)
-		// 	.attr("height", 2 )
-		// 	.attr("width", 0)
-		// 	.attr("stroke", "none")
-		// 	.attr("stroke-width", 0)
-		// 	.attr("fill", d => {
-		// 		if (d.symbol === "CD4" || 
-		// 			d.symbol === "TP53"  ||
-		// 			d.symbol === "GRB2" ||
-		// 			d.symbol === "HBB" ||
-		// 			d.symbol === "TNF" ||
-		// 			d.symbol === "APOE") {
-		// 			console.log(d);
-		// 			return "#000000;"
-		// 		} else {
-		// 			return "yellow"
-		// 		}
-		// 	})
-		// 	.transition(that.duration)
-		// 	.delay( (d,i) => {
-		// 		return (that.duration * 1.8) + (that.yt(d.start) * 0.01 * that.delay);
-		// 	})
-		// 	.duration(that.duration)
-		// 	.attr("width", d => that.geneScale(parseInt(d.count, 10)));
 
 		function findXPosition(d) {
 			var midPoint = (d.geneEnd - d.geneEnd) / 2;
 			return that.yScale(midPoint + d.geneStart);
 		}
 
+		var myGenes = d3.select(this).selectAll("line").data(data.genes.filter(function (d) {
+			return d[that.year] > 0;
+		}));
+
 		// Enter
-		d3.select(this).selectAll("line").data(data.genes).enter().append("line").attr("y1", function (d) {
+		myGenes.enter().append("line").attr("y1", function (d) {
 			return findXPosition(d);
 		}).attr("x1", function (d) {
 			return 0;
 		}).attr("y2", function (d) {
 			return findXPosition(d);
-		}).attr("x2", 0).attr("stroke-width", 1).attr("stroke", "#ffff00").transition(that.duration).delay(function (d, i) {
-			return that.duration * 1.8 + findXPosition(d) * 0.01 * that.delay;
-		}).duration(that.duration).attr("x2", function (d) {
-			return that.geneScale(parseInt(d.citations, 10));
+		})
+		// .attr("x2", 0)
+		.attr("stroke-width", 1).attr("stroke", "#ffff00").attr("x2", function (d) {
+			if (d[that.year] === 0) {
+				return 1;
+			} else {
+				return that.geneScale(parseInt(d[that.year], 10));
+			}
 		});
+		// .transition(that.duration)
+		// .delay( (d,i) => {
+		// 	return (that.duration * 1.8) + (findXPosition(d) * 0.01 * that.delay);
+		// })
+		// .duration(that.duration)
+		// .attr("x2", d => {
+		// 	return that.geneScale(parseInt(d.citations, 10))
+		// });
+
+		// Update
+		myGenes.attr("x2", function (d) {
+			if (d[that.year] === 0) {
+				return 1;
+			} else {
+				return that.geneScale(parseInt(d[that.year], 10));
+			}
+		});
+
+		myGenes.exit().remove();
 	});
 
 	return this;
@@ -7036,9 +7037,22 @@ function buildText() {
 	return this;
 }
 
+function buildSlider() {
+	var that = this;
+
+	d3.select("#slider").append("input").attr("type", "range").attr("min", 1980).attr("max", 2016).attr("step", 1).attr("style", "width: " + that.width + "px;").on("input", function () {
+		that.year = this.value;
+		that.updateAll();
+	});
+
+	return this;
+}
+
 function updateAll() {
 
-	this.buildGenes();
+	this.buildChromosomes().buildGenes();
+
+	d3.select("#date").text(this.year);
 }
 
 var chromosomesInOrder = function chromosomesInOrder(data) {
@@ -7085,8 +7099,6 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 		return d.name === "chrY";
 	}), 1)[0]);
 
-	console.log(inOrder);
-
 	return inOrder;
 };
 
@@ -7101,7 +7113,7 @@ function buildData() {
 
 function init$1() {
 
-	this.buildData().buildChart().buildScales().buildChromosomes().buildGenes();
+	this.buildData().buildSlider().buildChart().buildScales().buildChromosomes().buildGenes();
 	// .buildZoom();
 	// .buildText();	
 }
@@ -7116,6 +7128,8 @@ Goomba.prototype.buildChromosomes = buildChromosomes;
 Goomba.prototype.buildGenes = buildGenes;
 
 Goomba.prototype.buildText = buildText;
+
+Goomba.prototype.buildSlider = buildSlider;
 
 Goomba.prototype.updateAll = updateAll;
 Goomba.prototype.buildData = buildData;

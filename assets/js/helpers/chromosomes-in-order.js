@@ -32,8 +32,6 @@ var chromosomesInOrder = function (data) {
 	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "chrX"),1)[0]);
 	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "chrY"),1)[0]);
 
-	console.log(inOrder);
-
 	return inOrder;
 
 };

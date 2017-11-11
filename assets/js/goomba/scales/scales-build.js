@@ -3,7 +3,7 @@ import d3 from "../../d3-bundle";
 function buildScales() {
 	let yScaleDomain = [d3.max(this.data.map((d) => { return +d.geneEnd; })),0];
 	//	Fix the domain for the print graphic
-	let countDomain = [1,10000];
+	let countDomain = [1,700];
 
 	this.xScale = d3.scaleBand()
 		.domain(this.inOrder)

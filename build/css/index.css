@@ -9,9 +9,18 @@ body {
   margin: 0;
 }
 
-div {
+div#goomba-chart {
   background-color: #000000;
   display: inline-block;
+  position: relative;
+}
+
+div#goomba-chart h2 {
+  font-family: helvetica;
+  color: #ffffff;
+  font-size: 100px;
+  position: absolute;
+  right: 100px;
 }
 
 svg {
