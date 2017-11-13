@@ -9,7 +9,7 @@ import buildGenes from "./goomba/svg/gene-build";
 
 import buildText from "./goomba/text/text-build";
 
-import buildSlider from "./goomba/build-slider"
+import buildSlider from "./goomba/build-slider";
 
 import updateAll from "./goomba/update-all";
 import buildData from "./goomba/build-data";

@@ -6821,7 +6821,7 @@ function buildScales() {
 		return +d.geneEnd;
 	})), 0];
 	//	Fix the domain for the print graphic
-	var countDomain = [0, 700];
+	var countDomain = [0, 8500];
 
 	this.xScale = d3.scaleBand().domain(this.inOrder).range([0, this.width]).paddingInner(0.25).paddingOuter(0).round(true);
 
@@ -6908,10 +6908,6 @@ function buildGenes() {
 
 	var that = this;
 
-	var yearRange = d3.range(1980, 2017).map(function (d) {
-		return d.toString();
-	});
-
 	this.gChromosomes.selectAll("g").each(function (data) {
 
 		function findXPosition(d) {
@@ -6929,16 +6925,12 @@ function buildGenes() {
 		}).attr("y2", function (d) {
 			return findXPosition(d);
 		}).attr("x2", function (d) {
-			return that.geneScale(parseInt(d[that.year], 10));
-		}).attr("stroke-width", 1).attr("stroke", "#ffff00");
+			return that.geneScale(d[that.year + "-sum"]);
+		}).attr("stroke-width", 3).attr("stroke", "#ffff00");
 
 		// Update
 		myGenes.attr("x2", function (d) {
-			if (d[that.year] === 0) {
-				return 1;
-			} else {
-				return that.geneScale(parseInt(d[that.year], 10));
-			}
+			return that.geneScale(d[that.year + "-sum"]);
 		});
 
 		myGenes.exit().remove();
@@ -7039,6 +7031,27 @@ function updateAll() {
 	d3.select("#date").text(this.year);
 }
 
+function sumCitations(data) {
+	var yearRange = d3.range(1980, 2017).map(function (d) {
+		return d.toString();
+	});
+
+	data.forEach(function (gene) {
+		yearRange.forEach(function (year) {
+			var yearSliced = yearRange.slice(0, yearRange.indexOf(year) + 1);
+			var total = 0;
+
+			yearSliced.forEach(function (slice) {
+				total += parseInt(gene[slice], 10);
+			});
+
+			gene[year + "-sum"] = total;
+		});
+	});
+
+	return data;
+}
+
 var chromosomesInOrder = function chromosomesInOrder(data) {
 	// Get the names of the chromosomes
 	// Return an array of strings
@@ -7087,7 +7100,9 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 };
 
 function buildData() {
-	this.dataByChromosome = chromosomesInOrder(this.data);
+	var summedData = sumCitations(this.data);
+
+	this.dataByChromosome = chromosomesInOrder(summedData);
 	this.inOrder = this.dataByChromosome.map(function (d) {
 		return d.name;
 	});

@@ -1,7 +1,10 @@
+import sumCitations from "../helpers/sum-citations";
 import chromosomesInOrder from "../helpers/chromosomes-in-order";
 
 function buildData() {
-	this.dataByChromosome = chromosomesInOrder(this.data);
+	let summedData = sumCitations(this.data);
+
+	this.dataByChromosome = chromosomesInOrder(summedData);
 	this.inOrder = this.dataByChromosome.map( d => d.name );
 
 	return this;

@@ -3,13 +3,11 @@ import d3 from "../../d3-bundle";
 function buildGenes() {
 
 	var that = this;
-
-	let yearRange = d3.range(1980,2017).map(d => d.toString());
 	
 	this.gChromosomes.selectAll("g").each(function (data) {
 
 		function findXPosition(d) {
-			let midPoint = (d.geneEnd - d.geneEnd) / 2; 
+			let midPoint = (d.geneEnd - d.geneEnd) / 2;
 			return that.yScale(midPoint + d.geneStart)
 		}
 
@@ -26,18 +24,14 @@ function buildGenes() {
 			})
 			.attr("y2", d => findXPosition(d))
 			.attr("x2", d => {
-				return that.geneScale(parseInt(d[that.year], 10))
+				return that.geneScale(d[that.year + "-sum"]);
 			})
-			.attr("stroke-width", 1)
+			.attr("stroke-width", 3)
 			.attr("stroke", "#ffff00");
 
 		// Update
 		myGenes.attr("x2", d => {
-				if (d[that.year] === 0) {
-					return 1;
-				} else {
-					return that.geneScale(parseInt(d[that.year], 10))
-				}
+				return that.geneScale(d[that.year + "-sum"]);
 			});
 
 		myGenes.exit()
