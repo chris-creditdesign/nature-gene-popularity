@@ -6821,17 +6821,13 @@ function buildScales() {
 		return +d.geneEnd;
 	})), 0];
 	//	Fix the domain for the print graphic
-	var countDomain = [1, 700];
+	var countDomain = [0, 700];
 
 	this.xScale = d3.scaleBand().domain(this.inOrder).range([0, this.width]).paddingInner(0.25).paddingOuter(0).round(true);
 
 	this.yScale = d3.scaleLinear().domain(yScaleDomain).range([0, this.height]);
 
-	// this.yt = d3.scaleLinear()
-	// 	.domain(yScaleDomain)
-	// 	.range([0, this.height]);
-
-	this.geneScale = d3.scaleLog().domain(countDomain).range([1, this.xScale.bandwidth()]);
+	this.geneScale = d3.scaleLinear().domain(countDomain).range([0, this.xScale.bandwidth()]);
 
 	return this;
 }
@@ -6912,6 +6908,10 @@ function buildGenes() {
 
 	var that = this;
 
+	var yearRange = d3.range(1980, 2017).map(function (d) {
+		return d.toString();
+	});
+
 	this.gChromosomes.selectAll("g").each(function (data) {
 
 		function findXPosition(d) {
@@ -6919,9 +6919,7 @@ function buildGenes() {
 			return that.yScale(midPoint + d.geneStart);
 		}
 
-		var myGenes = d3.select(this).selectAll("line").data(data.genes.filter(function (d) {
-			return d[that.year] > 0;
-		}));
+		var myGenes = d3.select(this).selectAll("line").data(data.genes);
 
 		// Enter
 		myGenes.enter().append("line").attr("y1", function (d) {
@@ -6930,23 +6928,9 @@ function buildGenes() {
 			return 0;
 		}).attr("y2", function (d) {
 			return findXPosition(d);
-		})
-		// .attr("x2", 0)
-		.attr("stroke-width", 1).attr("stroke", "#ffff00").attr("x2", function (d) {
-			if (d[that.year] === 0) {
-				return 1;
-			} else {
-				return that.geneScale(parseInt(d[that.year], 10));
-			}
-		});
-		// .transition(that.duration)
-		// .delay( (d,i) => {
-		// 	return (that.duration * 1.8) + (findXPosition(d) * 0.01 * that.delay);
-		// })
-		// .duration(that.duration)
-		// .attr("x2", d => {
-		// 	return that.geneScale(parseInt(d.citations, 10))
-		// });
+		}).attr("x2", function (d) {
+			return that.geneScale(parseInt(d[that.year], 10));
+		}).attr("stroke-width", 1).attr("stroke", "#ffff00");
 
 		// Update
 		myGenes.attr("x2", function (d) {

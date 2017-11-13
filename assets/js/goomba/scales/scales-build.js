@@ -3,7 +3,7 @@ import d3 from "../../d3-bundle";
 function buildScales() {
 	let yScaleDomain = [d3.max(this.data.map((d) => { return +d.geneEnd; })),0];
 	//	Fix the domain for the print graphic
-	let countDomain = [1,700];
+	let countDomain = [0,700];
 
 	this.xScale = d3.scaleBand()
 		.domain(this.inOrder)
@@ -16,13 +16,9 @@ function buildScales() {
 		.domain(yScaleDomain)
 		.range([0, this.height]);
 
-	// this.yt = d3.scaleLinear()
-	// 	.domain(yScaleDomain)
-	// 	.range([0, this.height]);
-
-	this.geneScale = d3.scaleLog()
+	this.geneScale = d3.scaleLinear()
 		.domain(countDomain)
-		.range([1, this.xScale.bandwidth()]);
+		.range([0, this.xScale.bandwidth()]);
 
 	return this;
 }
