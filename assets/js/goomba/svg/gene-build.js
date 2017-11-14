@@ -7,8 +7,8 @@ function buildGenes() {
 	this.gChromosomes.selectAll("g").each(function (data) {
 
 		function findXPosition(d) {
-			let midPoint = (d.geneEnd - d.geneEnd) / 2;
-			return that.yScale(midPoint + d.geneStart)
+			let midPoint = (d.geneEnd - d.geneStart) / 2;
+			return that.yScale(midPoint + d.geneStart);
 		}
 
 		let myGenes = d3.select(this)

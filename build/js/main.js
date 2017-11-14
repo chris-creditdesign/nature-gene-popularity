@@ -6911,7 +6911,7 @@ function buildGenes() {
 	this.gChromosomes.selectAll("g").each(function (data) {
 
 		function findXPosition(d) {
-			var midPoint = (d.geneEnd - d.geneEnd) / 2;
+			var midPoint = (d.geneEnd - d.geneStart) / 2;
 			return that.yScale(midPoint + d.geneStart);
 		}
 
@@ -7037,6 +7037,9 @@ function sumCitations(data) {
 	});
 
 	data.forEach(function (gene) {
+		gene.geneStart = parseInt(gene.geneStart, 10);
+		gene.geneEnd = parseInt(gene.geneEnd, 10);
+
 		yearRange.forEach(function (year) {
 			var yearSliced = yearRange.slice(0, yearRange.indexOf(year) + 1);
 			var total = 0;
@@ -7048,6 +7051,8 @@ function sumCitations(data) {
 			gene[year + "-sum"] = total;
 		});
 	});
+
+	console.log(data[0]);
 
 	return data;
 }
