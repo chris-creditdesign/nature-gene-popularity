@@ -6821,7 +6821,7 @@ function buildScales() {
 		return +d.geneEnd;
 	})), 0];
 	//	Fix the domain for the print graphic
-	var countDomain = [0, 8500];
+	var countDomain = [0, 1000];
 
 	this.xScale = d3.scaleBand().domain(this.inOrder).range([0, this.width]).paddingInner(0.25).paddingOuter(0).round(true);
 
@@ -6926,7 +6926,13 @@ function buildGenes() {
 			return findXPosition(d);
 		}).attr("x2", function (d) {
 			return that.geneScale(d[that.year + "-sum"]);
-		}).attr("stroke-width", 3).attr("stroke", "#ffff00");
+		}).attr("stroke-width", 3).attr("stroke", function (d) {
+			if (d.geneSymbol === "TNF" || d.geneSymbol === "HBB" || d.geneSymbol === "CD4" || d.geneSymbol === "TP53" || d.geneSymbol === "GRB2" || d.geneSymbol === "APOE") {
+				return "#ff0000";
+			} else {
+				return "#ffff00";
+			}
+		});
 
 		// Update
 		myGenes.attr("x2", function (d) {
@@ -7089,15 +7095,15 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 	});
 
 	// Put all the genes in name order
-	var inOrder = chromosomesCollected.sort(function (a, b) {
+	var inOrder = chromosomesCollected.sort(function (b, a) {
 		return parseInt(a.name.substr(3, 2), 10) - parseInt(b.name.substr(3, 2), 10);
 	});
 
 	// Find the X and Y chromosomes and move them to the end
-	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
+	inOrder.unshift(inOrder.splice(inOrder.findIndex(function (d) {
 		return d.name === "chrX";
 	}), 1)[0]);
-	inOrder.push(inOrder.splice(inOrder.findIndex(function (d) {
+	inOrder.unshift(inOrder.splice(inOrder.findIndex(function (d) {
 		return d.name === "chrY";
 	}), 1)[0]);
 
@@ -7110,7 +7116,7 @@ function buildData() {
 	this.dataByChromosome = chromosomesInOrder(summedData);
 	this.inOrder = this.dataByChromosome.map(function (d) {
 		return d.name;
-	});
+	}).reverse();
 
 	return this;
 }

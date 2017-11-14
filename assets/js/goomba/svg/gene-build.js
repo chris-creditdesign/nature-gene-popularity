@@ -27,7 +27,18 @@ function buildGenes() {
 				return that.geneScale(d[that.year + "-sum"]);
 			})
 			.attr("stroke-width", 3)
-			.attr("stroke", "#ffff00");
+			.attr("stroke", d => {
+				if (d.geneSymbol === "TNF" ||
+					d.geneSymbol === "HBB" ||
+					d.geneSymbol === "CD4" ||
+					d.geneSymbol === "TP53" ||
+					d.geneSymbol === "GRB2" ||
+					d.geneSymbol === "APOE") {
+					return "#ff0000";
+				} else {
+					return "#ffff00";
+				}
+			});
 
 		// Update
 		myGenes.attr("x2", d => {

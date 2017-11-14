@@ -5,7 +5,7 @@ function buildData() {
 	let summedData = sumCitations(this.data);
 
 	this.dataByChromosome = chromosomesInOrder(summedData);
-	this.inOrder = this.dataByChromosome.map( d => d.name );
+	this.inOrder = this.dataByChromosome.map( d => d.name ).reverse();
 
 	return this;
 }

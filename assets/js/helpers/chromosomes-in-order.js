@@ -26,11 +26,11 @@ var chromosomesInOrder = function (data) {
 
 	// Put all the genes in name order
 	let inOrder = chromosomesCollected
-		.sort( (a,b) => parseInt(a.name.substr(3,2), 10) - parseInt(b.name.substr(3,2), 10) );
+		.sort( (b,a) => parseInt(a.name.substr(3,2), 10) - parseInt(b.name.substr(3,2), 10) );
 
 	// Find the X and Y chromosomes and move them to the end
-	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "chrX"),1)[0]);
-	inOrder.push(inOrder.splice(inOrder.findIndex(d => d.name === "chrY"),1)[0]);
+	inOrder.unshift(inOrder.splice(inOrder.findIndex(d => d.name === "chrX"),1)[0]);
+	inOrder.unshift(inOrder.splice(inOrder.findIndex(d => d.name === "chrY"),1)[0]);
 
 	return inOrder;
 
