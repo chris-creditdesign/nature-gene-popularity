@@ -20,8 +20,6 @@ function sumCitations(data) {
 		});
 	});
 
-	console.log(data[0]);
-
 	return data;
 
 }

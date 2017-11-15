@@ -19,31 +19,11 @@ function buildChromosomes() {
 		})
 	  .append("rect")
 		.attr("x", 0)
-		.attr("y", d => this.yScale(d.length))
-		.attr("width", this.xScale.bandwidth())
-		.attr("height", d => this.height - this.yScale(d.length))
+		.attr("y", d => that.yScale(d.length))
+		.attr("width", that.xScale.bandwidth())
+		.attr("height", d => that.height - that.yScale(d.length))
 		.attr("fill", "#333")
 		.attr("stroke", "none");
-		// .transition()
-		// .duration(this.duration)
-		// .delay( (d,i) => {
-		// 	return i * this.delay;
-		// })
-		// .attr("height", d => this.height - this.yScale(d.length))
-		// .attr("y", d => this.yScale(d.length));
-
-	// Update
-	// this.gChromosome
-	// 	.attr('transform', d => {
-	// 		let y = this.xScale(d.name);
-	// 		return `translate(0, ${y})`;
-	// 	});		
-
-	// Exit
-	// this.gChromosome.exit()
-	// 	.transition()
-	// 	.attr("opacity", 0)
-	// 	.remove();
 
 	return this;
 }

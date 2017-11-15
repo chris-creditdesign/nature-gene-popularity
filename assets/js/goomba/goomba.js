@@ -1,7 +1,7 @@
 function Goomba (data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : {'top': 54, 'left': 96, 'bottom': 54, 'right': 96};
+		this.margin = data.margin ? data.margin : {'top': 54, 'left': 96, 'bottom': 400, 'right': 96};
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;

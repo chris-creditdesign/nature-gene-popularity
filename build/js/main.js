@@ -3392,6 +3392,7 @@ var formatTypes = {
   }
 };
 
+// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5303,6 +5304,7 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
+// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6383,6 +6385,7 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
+// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -6783,12 +6786,20 @@ function completeAssign(target) {
 	return target;
 }
 
+// Don't use Object.assign because the event property is a getter ie:
+// `get event () { return event; },`
+// Object.assign will compute the return value now (before any event is fired)
+// so d3.event will always be null  ie.
+// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
+
+// instead use completeAssign:
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format);
 
 function Goomba(data) {
 		this.totalWidth = data.width ? data.width : 630;
 		this.totalHeight = data.height ? data.height : 450;
-		this.margin = data.margin ? data.margin : { 'top': 54, 'left': 96, 'bottom': 54, 'right': 96 };
+		this.margin = data.margin ? data.margin : { 'top': 54, 'left': 96, 'bottom': 400, 'right': 96 };
 		this.width = this.totalWidth - this.margin.left - this.margin.right;
 		this.height = this.totalHeight - this.margin.top - this.margin.bottom;
 		this.data = data.data;
@@ -6876,73 +6887,53 @@ function buildChromosomes() {
 		var x = _this.xScale(d.name);
 		return "translate(" + x + ", 0)";
 	}).append("rect").attr("x", 0).attr("y", function (d) {
-		return _this.yScale(d.length);
-	}).attr("width", this.xScale.bandwidth()).attr("height", function (d) {
-		return _this.height - _this.yScale(d.length);
+		return that.yScale(d.length);
+	}).attr("width", that.xScale.bandwidth()).attr("height", function (d) {
+		return that.height - that.yScale(d.length);
 	}).attr("fill", "#333").attr("stroke", "none");
-	// .transition()
-	// .duration(this.duration)
-	// .delay( (d,i) => {
-	// 	return i * this.delay;
-	// })
-	// .attr("height", d => this.height - this.yScale(d.length))
-	// .attr("y", d => this.yScale(d.length));
-
-	// Update
-	// this.gChromosome
-	// 	.attr('transform', d => {
-	// 		let y = this.xScale(d.name);
-	// 		return `translate(0, ${y})`;
-	// 	});		
-
-	// Exit
-	// this.gChromosome.exit()
-	// 	.transition()
-	// 	.attr("opacity", 0)
-	// 	.remove();
 
 	return this;
 }
 
 function buildGenes() {
 
-	var that = this;
+    var that = this;
 
-	this.gChromosomes.selectAll("g").each(function (data) {
+    this.gChromosomes.selectAll("g").each(function (data) {
 
-		function findXPosition(d) {
-			var midPoint = (d.geneEnd - d.geneStart) / 2;
-			return that.yScale(midPoint + d.geneStart);
-		}
+        function findXPosition(d) {
+            var midPoint = (d.geneEnd - d.geneStart) / 2;
+            return that.yScale(midPoint + d.geneStart);
+        }
 
-		var myGenes = d3.select(this).selectAll("line").data(data.genes);
+        var myGenes = d3.select(this).selectAll("line").data(data.genes);
 
-		// Enter
-		myGenes.enter().append("line").attr("y1", function (d) {
-			return findXPosition(d);
-		}).attr("x1", function (d) {
-			return 0;
-		}).attr("y2", function (d) {
-			return findXPosition(d);
-		}).attr("x2", function (d) {
-			return that.geneScale(d[that.year + "-sum"]);
-		}).attr("stroke-width", 3).attr("stroke", function (d) {
-			if (d.geneSymbol === "TNF" || d.geneSymbol === "HBB" || d.geneSymbol === "CD4" || d.geneSymbol === "TP53" || d.geneSymbol === "GRB2" || d.geneSymbol === "APOE") {
-				return "#ff0000";
-			} else {
-				return "#ffff00";
-			}
-		});
+        // Enter
+        myGenes.enter().append("line").attr("y1", function (d) {
+            return findXPosition(d);
+        }).attr("x1", function (d) {
+            return 0;
+        }).attr("y2", function (d) {
+            return findXPosition(d);
+        }).attr("x2", function (d) {
+            return that.geneScale(d[that.year + "-sum"]);
+        }).attr("stroke-width", 3).attr("stroke", function (d) {
+            if (d.geneSymbol === "TP53") {
+                return "#ff0000";
+            } else {
+                return "rgba(255,255,0,1)";
+            }
+        });
 
-		// Update
-		myGenes.attr("x2", function (d) {
-			return that.geneScale(d[that.year + "-sum"]);
-		});
+        // Update
+        myGenes.attr("x2", function (d) {
+            return that.geneScale(d[that.year + "-sum"]);
+        });
 
-		myGenes.exit().remove();
-	});
+        myGenes.exit().remove();
+    });
 
-	return this;
+    return this;
 }
 
 var collisionDetection = function collisionDetection(elem, index, array) {
@@ -7057,8 +7048,6 @@ function sumCitations(data) {
 			gene[year + "-sum"] = total;
 		});
 	});
-
-	console.log(data[0]);
 
 	return data;
 }
