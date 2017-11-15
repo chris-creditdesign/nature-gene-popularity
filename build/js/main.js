@@ -3392,7 +3392,6 @@ var formatTypes = {
   }
 };
 
-// [[fill]align][sign][symbol][0][width][,][.precision][type]
 var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
 
 var formatSpecifier = function (specifier) {
@@ -5304,7 +5303,6 @@ DragEvent.prototype.on = function () {
   return value === this._ ? this : value;
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter$1() {
   return !event.button;
 }
@@ -6385,7 +6383,6 @@ var noevent$1 = function () {
   event.stopImmediatePropagation();
 };
 
-// Ignore right-click, since that should open the context menu.
 function defaultFilter() {
   return !event.button;
 }
@@ -6786,14 +6783,6 @@ function completeAssign(target) {
 	return target;
 }
 
-// Don't use Object.assign because the event property is a getter ie:
-// `get event () { return event; },`
-// Object.assign will compute the return value now (before any event is fired)
-// so d3.event will always be null  ie.
-// `var d3 = Object.assign({}, _request, _selection, _scale, _array, _axis, _zoom);`
-
-// instead use completeAssign:
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 var d3 = completeAssign({}, _request, _selection, _scale, _array, _axis, _zoom, _format);
 
 function Goomba(data) {
@@ -6936,6 +6925,20 @@ function buildGenes() {
     return this;
 }
 
+function buildCentromeres() {
+
+    var that = this;
+
+    this.gChromosomes.selectAll("g").each(function (data) {
+
+        d3.select(this).append("path").attr("d", "m " + (that.xScale.bandwidth() - 10) + " " + that.yScale(data.centromere) + " l 10 10 l 0 -20 z").attr("stroke", "none").attr("fill", "#000000");
+
+        d3.select(this).append("path").attr("d", "m 0 " + (that.yScale(data.centromere) - 10) + " l 10 10 l -10 10 z").attr("stroke", "none").attr("fill", "#000000");
+    });
+
+    return this;
+}
+
 var collisionDetection = function collisionDetection(elem, index, array) {
 	// Check all subsequent elements
 	// until they are out of reach of this element
@@ -7023,7 +7026,7 @@ function buildSlider() {
 
 function updateAll() {
 
-	this.buildChromosomes().buildGenes();
+	this.buildChromosomes().buildGenes().buildCentromeres();
 
 	d3.select("#date").text(this.year);
 }
@@ -7099,7 +7102,11 @@ var chromosomesInOrder = function chromosomesInOrder(data) {
 	return inOrder;
 };
 
+var centromeres = [{ name: "chr1", centromere: 125000000 }, { name: "chr2", centromere: 93300000 }, { name: "chr3", centromere: 91000000 }, { name: "chr4", centromere: 50400000 }, { name: "chr5", centromere: 48400000 }, { name: "chr6", centromere: 61000000 }, { name: "chr7", centromere: 59900000 }, { name: "chr8", centromere: 45600000 }, { name: "chr9", centromere: 49000000 }, { name: "chr10", centromere: 40200000 }, { name: "chr11", centromere: 53700000 }, { name: "chr12", centromere: 35800000 }, { name: "chr13", centromere: 17900000 }, { name: "chr14", centromere: 17600000 }, { name: "chr15", centromere: 19000000 }, { name: "chr16", centromere: 36600000 }, { name: "chr17", centromere: 24000000 }, { name: "chr18", centromere: 17200000 }, { name: "chr19", centromere: 26500000 }, { name: "chr20", centromere: 27500000 }, { name: "chr21", centromere: 13200000 }, { name: "chr22", centromere: 14700000 }, { name: "chrX", centromere: 60600000 }, { name: "chrY", centromere: 12500000 }];
+
 function buildData() {
+	var _this = this;
+
 	var summedData = sumCitations(this.data);
 
 	this.dataByChromosome = chromosomesInOrder(summedData);
@@ -7107,14 +7114,19 @@ function buildData() {
 		return d.name;
 	}).reverse();
 
+	centromeres.forEach(function (centromere) {
+		var centromereName = centromere.name;
+		_this.dataByChromosome.find(function (elem) {
+			return elem.name === centromereName;
+		}).centromere = centromere.centromere;
+	});
+
 	return this;
 }
 
 function init$1() {
 
-	this.buildData().buildSlider().buildChart().buildScales().buildChromosomes().buildGenes();
-	// .buildZoom();
-	// .buildText();	
+	this.buildData().buildSlider().buildChart().buildScales().buildChromosomes().buildGenes().buildCentromeres();
 }
 
 Goomba.prototype.buildChart = buildChart;
@@ -7123,8 +7135,8 @@ Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
 
 Goomba.prototype.buildChromosomes = buildChromosomes;
-
 Goomba.prototype.buildGenes = buildGenes;
+Goomba.prototype.buildCentromeres = buildCentromeres;
 
 Goomba.prototype.buildText = buildText;
 

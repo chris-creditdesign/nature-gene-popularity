@@ -5,9 +5,8 @@ function init() {
 		.buildChart()
 		.buildScales()
 		.buildChromosomes()
-		.buildGenes();
-		// .buildZoom();
-		// .buildText();	
+		.buildGenes()
+		.buildCentromeres();
 }
 
 export default init;

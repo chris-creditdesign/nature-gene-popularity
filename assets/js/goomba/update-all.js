@@ -3,7 +3,8 @@ import d3 from "../d3-bundle";
 function updateAll() {
 	
 	this.buildChromosomes()
-		.buildGenes();
+		.buildGenes()
+		.buildCentromeres();
 
 	d3.select("#date")
 		.text(this.year);
