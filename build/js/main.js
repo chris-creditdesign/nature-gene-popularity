@@ -6884,6 +6884,20 @@ function buildChromosomes() {
 	return this;
 }
 
+function buildCircles() {
+
+    var that = this;
+
+    this.gChromosomes.selectAll("g").each(function (data) {
+
+        d3.select(this).append("circle").attr("cx", that.xScale.bandwidth() / 2).attr("cy", that.yScale(data.length)).attr("r", that.xScale.bandwidth() / 2).attr("stroke", "none").attr("fill", "#333");
+
+        d3.select(this).append("circle").attr("cx", that.xScale.bandwidth() / 2).attr("cy", that.yScale(0)).attr("r", that.xScale.bandwidth() / 2).attr("stroke", "none").attr("fill", "#333");
+    });
+
+    return this;
+}
+
 function buildGenes() {
 
     var that = this;
@@ -7126,7 +7140,7 @@ function buildData() {
 
 function init$1() {
 
-	this.buildData().buildSlider().buildChart().buildScales().buildChromosomes().buildGenes().buildCentromeres();
+	this.buildData().buildSlider().buildChart().buildScales().buildChromosomes().buildCircles().buildGenes().buildCentromeres();
 }
 
 Goomba.prototype.buildChart = buildChart;
@@ -7135,6 +7149,7 @@ Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
 
 Goomba.prototype.buildChromosomes = buildChromosomes;
+Goomba.prototype.buildCircles = buildCircles;
 Goomba.prototype.buildGenes = buildGenes;
 Goomba.prototype.buildCentromeres = buildCentromeres;
 

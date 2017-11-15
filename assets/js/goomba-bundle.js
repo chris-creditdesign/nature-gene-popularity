@@ -5,6 +5,7 @@ import buildAxis from "./goomba/axis/axis-build";
 import updateAxis from "./goomba/axis/axis-update";
 
 import buildChromosomes from "./goomba/svg/chromosome-build";
+import buildCircles from "./goomba/svg/circle-build";
 import buildGenes from "./goomba/svg/gene-build";
 import buildCentromeres from "./goomba/svg/centromere-build";
 
@@ -22,6 +23,7 @@ Goomba.prototype.buildAxis = buildAxis;
 Goomba.prototype.updateAxis = updateAxis;
 
 Goomba.prototype.buildChromosomes = buildChromosomes;
+Goomba.prototype.buildCircles = buildCircles;
 Goomba.prototype.buildGenes = buildGenes;
 Goomba.prototype.buildCentromeres = buildCentromeres;
 

@@ -5,6 +5,7 @@ function init() {
 		.buildChart()
 		.buildScales()
 		.buildChromosomes()
+		.buildCircles()
 		.buildGenes()
 		.buildCentromeres();
 }
